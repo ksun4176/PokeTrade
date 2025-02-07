@@ -14,6 +14,12 @@ The web app to manage trade requests/offers.
 - `package.json` and `tsconfig.json`: These files are used to configure React
 - `src/`: This is where your bot code would live
    - `./index.tsx`: Entrypoint of your app
+   - `./App.tsx`: All routes
+   - `./pages/*`: Page for each route
+   - `./components/*`: Individual components to add to pages
+   - `./styles/*`: Custom Sass styling
+   - `./utils/*` TypeScript types and functions
+   - `./utils/contexts/*`: Information to pass between pages without having to explicitly pass through props
 - All other files are auto generated so they do not need to be touched.
 
 ## Contributing
