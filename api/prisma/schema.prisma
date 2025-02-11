@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model account_cards {
+  id       Int      @id @default(autoincrement())
+  dex_id   Int
+  favorite Boolean
+  added    DateTime @default(now()) @db.DateTime(0)
+}
+
+model account_decks {
+  id         Int @id @default(autoincrement())
+  account_id Int
+  card_id    Int
+}
+
+model account_dex {
+  id         Int @id @default(autoincrement())
+  dex_id     Int
+  account_id Int
+}
+
+model accounts {
+  id             Int              @id @default(autoincrement())
+  in_game_name   String           @db.VarChar(32)
+  friend_code    String           @unique(map: "friend_code") @db.VarChar(32)
+  player_id      Int
+  players        players          @relation(fields: [player_id], references: [id], onDelete: NoAction, map: "Accounts_ibfk_1")
+  pokemon_trades pokemon_trades[]
+
+  @@index([player_id], map: "player_id")
+}
+
+model discord_channels {
+  id              Int    @id @default(autoincrement())
+  guild_id        String @db.VarChar(32)
+  channel_id      String @db.VarChar(32)
+  channel_type_id Int
+}
+
+model expansion_boosters {
+  id               Int                @id @default(autoincrement())
+  expansion_id     Int?
+  name             String             @db.VarChar(16)
+  expansions       expansions?        @relation(fields: [expansion_id], references: [id], map: "Expansion_Boosters_ibfk_1")
+  pokemon_card_dex pokemon_card_dex[]
+
+  @@index([expansion_id], map: "expansion_id")
+}
+
+model expansions {
+  id                 Int                  @id @default(autoincrement())
+  code               String               @db.VarChar(8)
+  name               String               @db.VarChar(32)
+  total_cards        Int
+  expansion_boosters expansion_boosters[]
+  pokemon_card_dex   pokemon_card_dex[]
+}
+
+model permissions {
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar(32)
+  hierarchy_level Int
+  players         players[]
+}
+
+model players {
+  id            Int         @id @default(autoincrement())
+  discord_id    String      @unique(map: "discord_id") @db.VarChar(32)
+  username      String      @db.VarChar(32)
+  permission_id Int         @default(8)
+  accounts      accounts[]
+  permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: NoAction, map: "Players_ibfk_1")
+
+  @@index([permission_id], map: "permission_id")
+}
+
+model pokemon_attack {
+  id          Int    @id @default(autoincrement())
+  name        String @db.VarChar(32)
+  description String @db.MediumText
+
+  @@map("pokémon_attack")
+}
+
+model pokemon_card_dex {
+  id                    Int                    @id @default(autoincrement())
+  dex_id                Int
+  name                  String                 @db.VarChar(32)
+  name_postfix_id       Int?
+  hp                    Int?
+  type_id               Int?
+  rarity_id             Int
+  expansion_id          Int
+  booster_id            Int
+  evolution_stage_id    Int?
+  ability_id            Int?
+  attack_one_id         Int?
+  attack_two_id         Int?
+  attack_three_id       Int?
+  pre_evolution_id      Int?                   @map("pre-evolution_id")
+  evolution_id          Int?
+  illustrator_id        Int?
+  language_id           Int?
+  pokemon_card_language pokemon_card_language? @relation(fields: [language_id], references: [id], map: "Pokémon_Card_Dex_ibfk_1")
+  pokemon_types         pokemon_types?         @relation(fields: [type_id], references: [id], onDelete: NoAction, map: "Pokémon_Card_Dex_ibfk_2")
+  pokemon_card_rarities pokemon_card_rarities  @relation(fields: [rarity_id], references: [id], onDelete: NoAction, map: "Pokémon_Card_Dex_ibfk_3")
+  pokemon_postfixes     pokemon_postfixes?     @relation(fields: [name_postfix_id], references: [id], onDelete: NoAction, map: "Pokémon_Card_Dex_ibfk_4")
+  expansions            expansions             @relation(fields: [expansion_id], references: [id], onDelete: NoAction, map: "Pokémon_Card_Dex_ibfk_5")
+  expansion_boosters    expansion_boosters     @relation(fields: [booster_id], references: [id], onDelete: NoAction, map: "Pokémon_Card_Dex_ibfk_6")
+  pokemon_trades        pokemon_trades[]
+
+  @@unique([dex_id, expansion_id], map: "dex_id")
+  @@index([expansion_id], map: "Pokémon_Card_Dex_ibfk_5")
+  @@index([booster_id], map: "booster_id")
+  @@index([language_id], map: "language_id")
+  @@index([name_postfix_id], map: "name_variation_id")
+  @@index([rarity_id], map: "rarity_id")
+  @@index([type_id], map: "type_id")
+  @@map("pokémon_card_dex")
+}
+
+model pokemon_card_language {
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(16)
+  pokemon_card_dex pokemon_card_dex[]
+
+  @@map("pokémon_card_language")
+}
+
+model pokemon_card_rarities {
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(32)
+  pokemon_card_dex pokemon_card_dex[]
+
+  @@map("pokémon_card_rarities")
+}
+
+model pokemon_energy {
+  id     Int @id @default(autoincrement())
+  type   Int
+  amount Int
+
+  @@map("pokémon_energy")
+}
+
+model pokemon_postfixes {
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(8)
+  pokemon_card_dex pokemon_card_dex[]
+
+  @@map("pokémon_postfixes")
+}
+
+model pokemon_stage {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(8)
+
+  @@map("pokémon_stage")
+}
+
+model pokemon_trades {
+  id               Int              @id @default(autoincrement())
+  card_id          Int
+  account_id       Int
+  trade_type_id    Int
+  accounts         accounts         @relation(fields: [account_id], references: [id], onDelete: NoAction, map: "Pokémon_Trades_ibfk_1")
+  pokemon_card_dex pokemon_card_dex @relation(fields: [card_id], references: [id], onDelete: NoAction, map: "Pokémon_Trades_ibfk_2")
+  trade_types      trade_types      @relation(fields: [trade_type_id], references: [id], onDelete: NoAction, map: "Pokémon_Trades_ibfk_3")
+  updated          DateTime         @default(now()) @db.DateTime(0)
+
+  @@unique([card_id, account_id], map: "card_id")
+  @@index([account_id], map: "account_id")
+  @@index([trade_type_id], map: "trade_type_id")
+  @@map("pokémon_trades")
+}
+
+model pokemon_types {
+  id               Int                @id @default(autoincrement())
+  name             String             @db.VarChar(16)
+  weakness         Int?
+  pokemon_card_dex pokemon_card_dex[]
+
+  @@map("pokémon_types")
+}
+
+model session {
+  id          String   @id @db.VarChar(255)
+  sid         String   @unique
+  data        String   @db.MediumText
+  expiresAt   DateTime @db.Timestamp(6)
+
+  @@index([expiresAt], map: "expiresAt")
+}
+
+model trade_types {
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(8)
+  pokemon_trades pokemon_trades[]
+}
