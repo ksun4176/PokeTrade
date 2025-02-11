@@ -22,7 +22,7 @@ export class SessionSerializer extends PassportSerializer {
       userDb ? done(null, userDb) : done(null, null);
     }
     catch (error) {
-      done(error, null);
+      done(error as Error, null);
     }
   }
 }

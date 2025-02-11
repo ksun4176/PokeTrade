@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as session from "express-session"; 
+import session from "express-session"; 
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import  { PrismaClient } from '@prisma/client';
-import * as passport from 'passport';
+import passport from 'passport';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -37,7 +37,7 @@ async function bootstrap() {
   app.use(passport.session());
   
   try {
-    const port = process.env.API_PORT || 3000;
+    const port = process.env.API_PORT || 9000;
     await app.listen(port);
     console.log(`Running on port ${port}`);
   }
