@@ -3,9 +3,9 @@ import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { Services } from 'src/utils/constants';
-import { DiscordStrategy } from 'src/utils/DiscordStrategy';
+import { DiscordStrategy } from './utils/DiscordStrategy';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { SessionSerializer } from 'src/utils/SessionSerializer';
+import { SessionSerializer } from './utils/SessionSerializer';
 
 @Module({
   imports: [

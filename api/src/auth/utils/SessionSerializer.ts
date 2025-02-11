@@ -1,8 +1,8 @@
 import { PassportSerializer } from '@nestjs/passport';
 import { players } from '@prisma/client';
-import { SerializerDone } from './types';
+import { SerializerDone } from '../../utils/types';
 import { Inject } from '@nestjs/common';
-import { Services } from './constants';
+import { Services } from '../../utils/constants';
 import { PrismaService } from 'src/prisma/services/prisma.service';
 
 export class SessionSerializer extends PassportSerializer {
