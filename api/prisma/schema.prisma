@@ -75,6 +75,8 @@ model players {
   discord_id    String      @unique(map: "discord_id") @db.VarChar(32)
   username      String      @db.VarChar(32)
   permission_id Int         @default(8)
+  accessToken   String?     @map("access_token")
+  refreshToken  String?     @map("refresh_token")
   accounts      accounts[]
   permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: NoAction, map: "Players_ibfk_1")
 

@@ -17,10 +17,12 @@ export class DiscordStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(_accessToken: string, _refreshToken: string, profile: Profile) {
+  async validate(accessToken: string, refreshToken: string, profile: Profile) {
     return await this.authService.login({
       username: profile.username,
-      discordId: profile.id
-    })
+      discordId: profile.id,
+      accessToken,
+      refreshToken
+    });
   }
 }

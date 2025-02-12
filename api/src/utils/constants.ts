@@ -1,8 +1,9 @@
 export enum Routes {
-  AUTH = 'auth'
+  AUTH = 'auth',
 }
 
 export enum Services {
+  PRISMA = 'PRISMA_SERVICE',
   AUTH = 'AUTH_SERVICE',
-  PRISMA = 'PRISMA_SERVICE'
+  USER = 'USER_SERVICE',
 }

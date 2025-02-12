@@ -9,6 +9,11 @@ import { Services } from 'src/utils/constants';
       useClass: PrismaService
     }
   ],
-  exports: [Services.PRISMA]
+  exports: [
+    {
+      provide: Services.PRISMA,
+      useClass: PrismaService
+    }
+  ]
 })
 export class PrismaModule { }
