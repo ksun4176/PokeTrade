@@ -3,15 +3,20 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
+import CssBaseline from '@mui/material/CssBaseline';
+import AppTheme from './sharedTheme/AppTheme';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
+    <AppTheme>
+      <CssBaseline enableColorScheme/>
+      <Router>
+        <App />
+      </Router>
+    </AppTheme>
   </React.StrictMode>
 );
 

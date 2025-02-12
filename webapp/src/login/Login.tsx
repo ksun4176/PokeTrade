@@ -4,7 +4,6 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import AppTheme from '../sharedTheme/AppTheme';
 import { FaDiscord, FaQuestionCircle } from "react-icons/fa";
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -55,37 +54,35 @@ export default function LogIn() {
   }
 
   return (
-    <AppTheme>
-      <LogInContainer direction="column" justifyContent="space-between">
-        <Card variant="outlined">
-          <Typography
-            component="h1"
-            variant="h4"
-            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+    <LogInContainer direction="column" justifyContent="space-between">
+      <Card variant="outlined">
+        <Typography
+          component="h1"
+          variant="h4"
+          sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+        >
+          Log in
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<FaDiscord color="5865F2" />}
+            onClick={login}
           >
-            Log in
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<FaDiscord color="5865F2" />}
-              onClick={login}
-            >
-              Log in with Discord
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              startIcon={<FaQuestionCircle />}
-              href='https://discord.gg/eTJR8VfXPw'
-              target='_blank'
-            >
-              Go to Support Server
-            </Button>
-            </Box>
-        </Card>
-      </LogInContainer>
-    </AppTheme>
+            Log in with Discord
+          </Button>
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<FaQuestionCircle />}
+            href='https://discord.gg/eTJR8VfXPw'
+            target='_blank'
+          >
+            Go to Support Server
+          </Button>
+          </Box>
+      </Card>
+    </LogInContainer>
   );
 }

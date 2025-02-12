@@ -2,9 +2,10 @@ import React from "react";
 import { EditPokemonList } from "./EditPokemonList";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import { pokemon_card_dex } from "@prisma/client";
 
 export interface IStepContentProps {
-  availablePokemons: Set<number>;
+  pokemons: Map<number, pokemon_card_dex>;
   selectedPokemons: Set<number>;
   updateList: (id: number, isAdd: boolean) => void;
   handleSteps: (isNext: boolean) => void;
@@ -13,15 +14,15 @@ export interface IStepContentProps {
 }
 export class StepContent extends React.Component<IStepContentProps> {
   override render() {
-    const { availablePokemons, selectedPokemons, updateList, handleSteps, isFirstStep, isLastStep } = this.props;
+    const { pokemons, selectedPokemons, updateList, handleSteps, isFirstStep, isLastStep } = this.props;
 
     return <>
       <EditPokemonList
-        availablePokemons={availablePokemons}
+        pokemons={pokemons}
         selectedPokemons={selectedPokemons}
         updatePokemonIds={updateList}
       />
-      <Box sx={{ display: 'flex', flexDirection: 'row', p: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'row', p: 1 }}>
         <Button
           color="inherit"
           disabled={isFirstStep}

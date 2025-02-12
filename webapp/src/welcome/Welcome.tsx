@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box';
-import AppTheme from '../sharedTheme/AppTheme';
 import React, { JSX } from 'react';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -10,6 +9,7 @@ import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import { gray } from '../sharedTheme/themePrimitives';
 import Button from '@mui/material/Button';
+import { pokemon_card_dex } from '@prisma/client';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -32,7 +32,10 @@ type StepInfo = {
   content: JSX.Element,
 }
 
-export default function Welcome() {
+type WelcomeProps = {
+  pokemons: Map<number, pokemon_card_dex>;
+}
+export default function Welcome(props: WelcomeProps) {
   const [activeStep, setActiveStep] = React.useState(0);
 
   const [modalOpen, setModalOpen] = React.useState(false);
@@ -40,7 +43,8 @@ export default function Welcome() {
 
   const [wishlist, setWishlist] = React.useState(new Set<number>());
   const [listToTrade, setListToTrade] = React.useState(new Set<number>());
-  const availablePokemons = new Set(Array(200).fill(0).map((_,index) => index));
+
+  const { pokemons } = props;
 
   const handleSteps = (isNext: boolean) => {
     if (!isNext) {
@@ -110,7 +114,7 @@ export default function Welcome() {
     {
       label: 'Wishlist',
       content: <StepContent 
-        availablePokemons={availablePokemons}
+        pokemons={pokemons}
         selectedPokemons={wishlist}
         updateList={updateWishlist}
         handleSteps={handleSteps}
@@ -120,7 +124,7 @@ export default function Welcome() {
     {
       label: 'List for Trading',
       content: <StepContent 
-        availablePokemons={availablePokemons}
+        pokemons={pokemons}
         selectedPokemons={listToTrade}
         updateList={updateListToTrade}
         handleSteps={handleSteps}
@@ -129,7 +133,7 @@ export default function Welcome() {
     }
   ];
 
-  return <AppTheme>
+  return <>
     <Box
       display='flex'
       flexDirection='column'
@@ -191,5 +195,5 @@ export default function Welcome() {
         </Box>
       </ModalContent>
     </Modal>
-  </AppTheme>
+  </>
 }

@@ -4,36 +4,49 @@ import Welcome from "./welcome/Welcome";
 import { useFetchUser } from "./utils/hooks/useFetchUser";
 import { UserContext } from "./utils/contexts/UserContext";
 import CircularProgress from "@mui/material/CircularProgress";
-import AppTheme from "./sharedTheme/AppTheme";
-import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
+import { useFetchPokemons } from "./utils/hooks/useFetchPokemons";
+import { Typography } from "@mui/material";
  
 function App() {
-  const { user, error, loading } = useFetchUser();
+  const { user, userError, userLoading } = useFetchUser();
+  const { pokemons, pokemonsError, pokemonsLoading } = useFetchPokemons();
 
-  if (loading) {
-    return <AppTheme>
-      <CssBaseline enableColorScheme />
-        <Box
-          display='flex'
-          justifyContent='center'
-          alignItems='center'
-          position='fixed'
-          top={0}
-          right={0}
-          bottom={0}
-          left={0}
-        >
-          <CircularProgress />
-        </Box>
-    </AppTheme>
+  if (userLoading || pokemonsLoading) {
+    return <Box
+      display='flex'
+      justifyContent='center'
+      alignItems='center'
+      position='fixed'
+      top={0}
+      right={0}
+      bottom={0}
+      left={0}
+    >
+      <CircularProgress />
+    </Box>
+  }
+
+  if (!pokemons || pokemonsError) {
+    return <Box
+      display='flex'
+      justifyContent='center'
+      alignItems='center'
+      position='fixed'
+      top={0}
+      right={0}
+      bottom={0}
+      left={0}
+    >
+      <Typography variant="h3">There is an issue. Try again later.</Typography>
+    </Box>
   }
 
   return <UserContext.Provider value={{ user }}>
-    { user && !error ?
+    { user && !userError ?
       <Routes>
         <Route path="/" element={<LogIn />} />
-        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/welcome" element={<Welcome pokemons={pokemons!} />} />
       </Routes> :
       <Routes>
         <Route path="/" element={<LogIn />} />
