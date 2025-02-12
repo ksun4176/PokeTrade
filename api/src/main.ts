@@ -42,7 +42,7 @@ async function bootstrap() {
     console.log(`Running on port ${port}`);
   }
   catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 bootstrap();

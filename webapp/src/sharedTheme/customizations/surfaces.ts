@@ -1,3 +1,4 @@
+import type {} from '@mui/material/themeCssVarsAugmentation';
 import { alpha, Theme, Components } from '@mui/material/styles';
 import { gray } from '../themePrimitives';
 
@@ -12,9 +13,9 @@ export const surfacesCustomizations: Components<Theme> = {
       root: ({ theme }) => ({
         padding: 4,
         overflow: 'clip',
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: (theme.vars || theme).palette.background.default,
         border: '1px solid',
-        borderColor: theme.palette.divider,
+        borderColor: (theme.vars || theme).palette.divider,
         ':before': {
           backgroundColor: 'transparent',
         },
@@ -22,12 +23,12 @@ export const surfacesCustomizations: Components<Theme> = {
           borderBottom: 'none',
         },
         '&:first-of-type': {
-          borderTopLeftRadius: theme.shape.borderRadius,
-          borderTopRightRadius: theme.shape.borderRadius,
+          borderTopLeftRadius: (theme.vars || theme).shape.borderRadius,
+          borderTopRightRadius: (theme.vars || theme).shape.borderRadius,
         },
         '&:last-of-type': {
-          borderBottomLeftRadius: theme.shape.borderRadius,
-          borderBottomRightRadius: theme.shape.borderRadius,
+          borderBottomLeftRadius: (theme.vars || theme).shape.borderRadius,
+          borderBottomRightRadius: (theme.vars || theme).shape.borderRadius,
         },
       }),
     },
@@ -63,8 +64,8 @@ export const surfacesCustomizations: Components<Theme> = {
           gap: 16,
           transition: 'all 100ms ease',
           backgroundColor: gray[50],
-          borderRadius: theme.shape.borderRadius,
-          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: (theme.vars || theme).shape.borderRadius,
+          border: `1px solid ${(theme.vars || theme).palette.divider}`,
           boxShadow: 'none',
           ...theme.applyStyles('dark', {
             backgroundColor: gray[800],
@@ -75,7 +76,7 @@ export const surfacesCustomizations: Components<Theme> = {
                 variant: 'outlined',
               },
               style: {
-                border: `1px solid ${theme.palette.divider}`,
+                border: `1px solid ${(theme.vars || theme).palette.divider}`,
                 boxShadow: 'none',
                 background: 'hsl(0, 0%, 100%)',
                 ...theme.applyStyles('dark', {

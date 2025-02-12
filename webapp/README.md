@@ -2,15 +2,21 @@
 The web app to manage trade requests/offers.
 
 ## Table of Contents
+- [First Access](#first-access)
 - [FAQs](#faqs)
 - [File Structure](#file-structure)
 - [Contributing](#contributing)
+
+## First Access
+When a user first accesses the web app, they will be asked to complete a couple of steps.
+1. Users will select the Pokémons they are looking for to their Wishlist
+2. Users will select the Pokémons they are looking to trade away to their List for Trading
+3. After completing this will they then be able to search for available trades
 
 ## FAQs
 
 
 ## File Structure
-- `.env.example`: Example .env file to be filled in
 - `package.json` and `tsconfig.json`: These files are used to configure React
 - `src/`: This is where your bot code would live
    - `./index.tsx`: Entrypoint of your app
@@ -29,8 +35,11 @@ Learn more about React in [Create React App documentation](https://facebook.gith
 
 
 To run app in development mode:
-1. Run script `npm start`.
-2. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. Copy over `../api/prisma/schema.prisma` to `webapp/` so the Prisma Client can build out correctly
+2. Install node dependencies using `npm install`
+3. Make sure your prisma client is up to date by running `npx prisma generate`.
+4. Run script `npm start`.
+5. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.
 You will also see any lint errors in the console.
 

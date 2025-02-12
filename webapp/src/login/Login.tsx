@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
@@ -51,9 +50,12 @@ const LogInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function LogIn() {
+  const login = () => {
+    window.location.href = 'http://localhost:9000/api/auth/login';
+  }
+
   return (
     <AppTheme>
-      <CssBaseline enableColorScheme />
       <LogInContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
@@ -68,6 +70,7 @@ export default function LogIn() {
               fullWidth
               variant="outlined"
               startIcon={<FaDiscord color="5865F2" />}
+              onClick={login}
             >
               Log in with Discord
             </Button>
@@ -75,6 +78,8 @@ export default function LogIn() {
               fullWidth
               variant="outlined"
               startIcon={<FaQuestionCircle />}
+              href='https://discord.gg/eTJR8VfXPw'
+              target='_blank'
             >
               Go to Support Server
             </Button>
