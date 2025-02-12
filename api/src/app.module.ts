@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
+import { AuthModule } from './auth/auth.module';
+import { PokemonModule } from './pokemon/pokemon.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { PassportModule } from '@nestjs/passport';
     }),
     PassportModule.register({ session: true }),
     AuthModule,
+    PokemonModule,
   ],
   controllers: [],
   providers: [],
