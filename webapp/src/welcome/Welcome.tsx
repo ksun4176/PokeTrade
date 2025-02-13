@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React, { JSX } from 'react';
+import React, { JSX, useCallback, useContext } from 'react';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import { Pokemon } from '../utils/types';
 import { EditPokemonList } from './components/EditPokemonList';
 import { EditAccount } from './components/EditAccount';
+import { AccountContext } from '../utils/contexts/AccountContext';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -32,12 +33,13 @@ type StepInfo = {
 type WelcomeProps = {
   pokemons: Map<number, Pokemon>;
 }
-export default function Welcome(props: WelcomeProps) {  
-  const [ign, setIgn] = React.useState('');
+export default function Welcome(props: WelcomeProps) {
+  const { account } = useContext(AccountContext);
+  const [ign, setIgn] = React.useState(account?.in_game_name ?? '');
   const [ignError, setIgnError] = React.useState('');
-  const [friendCode, setFriendCode] = React.useState('');
+  const [friendCode, setFriendCode] = React.useState(account?.friend_code ?? '');
   const [friendCodeError, setFriendCodeError] = React.useState('');
-  const updateIgn = (newIgn: string) => {
+  const updateIgn = useCallback((newIgn: string) => {
     setIgn(newIgn);
     if (newIgn.length === 0) {
       setIgnError('In Game Name is required');
@@ -45,8 +47,8 @@ export default function Welcome(props: WelcomeProps) {
     else {
       setIgnError('');
     }
-  }
-  const updateFriendCode = (newFriendCode: string) => {
+  },[]);
+  const updateFriendCode = useCallback((newFriendCode: string) => {
     setFriendCode(newFriendCode);
     if (newFriendCode.length === 0) {
       setFriendCodeError('Friend Code is required');
@@ -57,19 +59,26 @@ export default function Welcome(props: WelcomeProps) {
     else {
       setFriendCodeError('');
     }
-  }
+  },[]);
 
   const { pokemons } = props;
   const [pokemonToSwap, setPokemonToSwap] = React.useState(-1);
   const [wishlist, setWishlist] = React.useState(new Set<number>());
   const [listToTrade, setListToTrade] = React.useState(new Set<number>());
   const [modalOpen, setModalOpen] = React.useState(false);
-  const updateList = (pokemonList: Set<number>, pokemonId: number, isAdd: boolean) => {
+  const openModal = useCallback((pokemonId: number) => {
+    setPokemonToSwap(pokemonId);
+    setModalOpen(true);
+  },[]);
+  const closeModal = useCallback(() => {
+    setModalOpen(false);
+  },[]);
+  const updateList = useCallback((pokemonList: Set<number>, pokemonId: number, isAdd: boolean) => {
     const newList = new Set(pokemonList);
     if (isAdd) { newList.add(pokemonId); }
     else { newList.delete(pokemonId); }
     return newList;
-  }
+  },[]);
   const updateWishlist = (pokemonId: number, isAdd: boolean) => {
     if (!listToTrade.has(pokemonId)) {
       setWishlist((wishlist) => updateList(wishlist, pokemonId, isAdd));
@@ -77,7 +86,7 @@ export default function Welcome(props: WelcomeProps) {
     else {
       openModal(pokemonId);
     }
-  }
+  };
   const updateListToTrade = (pokemonId: number, isAdd: boolean) => {
     if (!wishlist.has(pokemonId)) {
       setListToTrade((listToTrade) => updateList(listToTrade, pokemonId, isAdd));
@@ -85,16 +94,7 @@ export default function Welcome(props: WelcomeProps) {
     else {
       openModal(pokemonId);
     }
-  }
-
-  const openModal = (pokemonId: number) => {
-    setPokemonToSwap(pokemonId);
-    setModalOpen(true);
-  }
-  const closeModal = () => {
-    setPokemonToSwap(-1);
-    setModalOpen(false);
-  }
+  };
   const swapPokemon = () => {
     if (listToTrade.has(pokemonToSwap)) {
       setListToTrade((listToTrade) => updateList(listToTrade, pokemonToSwap, false));
@@ -105,7 +105,7 @@ export default function Welcome(props: WelcomeProps) {
       setListToTrade((listToTrade) => updateList(listToTrade, pokemonToSwap, true));
     }
     closeModal();
-  }
+  };
 
   const [activeStep, setActiveStep] = React.useState(0);
   const handleSteps = (isNext: boolean) => {
@@ -127,7 +127,7 @@ export default function Welcome(props: WelcomeProps) {
         }
       }
     }
-  }
+  };
 
   const steps: StepInfo[] = [
     {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAccounts, getAuthStatus } from "../apis";
+import { getAccounts } from "../apis";
 import { Account } from "../types";
 
 export function useFetchAccount() {
@@ -8,19 +8,11 @@ export function useFetchAccount() {
   const [accountLoading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
-    getAuthStatus()
+    getAccounts()
       .then(({ data }) => {
-        const userId = data.id;
-        getAccounts(userId)
-          .then(({ data }) => {
-            if (data.length > 0) {
-              setAccount(data[0]);
-            }
-          })
-          .catch(error => {
-            console.error(error);
-            setError(error);
-          })
+        if (data.length > 0) {
+          setAccount(data[0]);
+        }
       })
       .catch(error => {
         console.error(error);

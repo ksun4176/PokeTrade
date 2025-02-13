@@ -3,28 +3,16 @@ import LogIn from "./login/Login";
 import Welcome from "./welcome/Welcome";
 import { useFetchAccount } from "./utils/hooks/useFetchAccount";
 import { AccountContext } from "./utils/contexts/AccountContext";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import { useFetchPokemons } from "./utils/hooks/useFetchPokemons";
 import { Account } from "./utils/types";
+import { LoadingOverlay } from "./sharedComponents/LoadingOverlay";
  
 function App() {
   const { account, setAccount, accountError, accountLoading } = useFetchAccount();
   const { pokemons, pokemonsError, pokemonsLoading } = useFetchPokemons();
 
   if (accountLoading || pokemonsLoading) {
-    return <Box
-      display='flex'
-      justifyContent='center'
-      alignItems='center'
-      position='fixed'
-      top={0}
-      right={0}
-      bottom={0}
-      left={0}
-    >
-      <CircularProgress />
-    </Box>
+    return <LoadingOverlay />
   }
 
   const updateAccount = (account: Account) => setAccount(account);

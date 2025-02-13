@@ -2,11 +2,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
+import Card from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import { FaDiscord, FaQuestionCircle } from "react-icons/fa";
 
-const Card = styled(MuiCard)(({ theme }) => ({
+const LoginCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignSelf: 'center',
@@ -55,7 +55,7 @@ export default function LogIn() {
 
   return (
     <LogInContainer direction="column" justifyContent="space-between">
-      <Card variant="outlined">
+      <LoginCard variant="outlined">
         <Typography
           component="h1"
           variant="h4"
@@ -81,7 +81,7 @@ export default function LogIn() {
             Go to Support Server
           </Button>
           </Box>
-      </Card>
+      </LoginCard>
     </LogInContainer>
   );
 }
