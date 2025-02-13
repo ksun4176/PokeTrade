@@ -4,19 +4,27 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
-import AppTheme from './sharedTheme/AppTheme';
+import createTheme from '@mui/material/styles/createTheme';
+import ThemeProvider from '@mui/material/styles/ThemeProvider';
+
+const defaultTheme = createTheme({
+  cssVariables: {
+    colorSchemeSelector: 'data-mui-color-scheme',
+  },
+  colorSchemes: { light: true, dark: true },
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <AppTheme>
+    <ThemeProvider theme={defaultTheme} disableTransitionOnChange>
       <CssBaseline enableColorScheme/>
       <Router>
         <App />
       </Router>
-    </AppTheme>
+    </ThemeProvider>
   </React.StrictMode>
 );
 

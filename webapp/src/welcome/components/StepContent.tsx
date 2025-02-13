@@ -1,27 +1,20 @@
 import React from "react";
-import { EditPokemonList } from "./EditPokemonList";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { Pokemon } from "../../utils/types";
 
 export interface IStepContentProps {
-  pokemons: Map<number, Pokemon>;
-  selectedPokemons: Set<number>;
-  updateList: (id: number, isAdd: boolean) => void;
+  children: React.ReactNode;
   handleSteps: (isNext: boolean) => void;
   isFirstStep?: boolean;
   isLastStep?: boolean;
+  nextStepDisabled?: boolean;
 }
 export class StepContent extends React.Component<IStepContentProps> {
   override render() {
-    const { pokemons, selectedPokemons, updateList, handleSteps, isFirstStep, isLastStep } = this.props;
+    const { children, handleSteps, isFirstStep, isLastStep, nextStepDisabled } = this.props;
 
     return <>
-      <EditPokemonList
-        pokemons={pokemons}
-        selectedPokemons={selectedPokemons}
-        updatePokemonIds={updateList}
-      />
+      {children}
       <Box sx={{ display: 'flex', flexDirection: 'row', p: 1 }}>
         <Button
           color="inherit"
@@ -35,7 +28,7 @@ export class StepContent extends React.Component<IStepContentProps> {
         <Button
           variant='contained'
           color='success'
-          disabled={selectedPokemons.size === 0}
+          disabled={nextStepDisabled}
           onClick={() => handleSteps(true)}
         >
           {isLastStep ? `Finish` : `Next`}

@@ -6,7 +6,6 @@ import { AccountContext } from "./utils/contexts/AccountContext";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useFetchPokemons } from "./utils/hooks/useFetchPokemons";
-import { Typography } from "@mui/material";
 import { Account } from "./utils/types";
  
 function App() {
@@ -28,24 +27,9 @@ function App() {
     </Box>
   }
 
-  if (!pokemons || pokemonsError) {
-    return <Box
-      display='flex'
-      justifyContent='center'
-      alignItems='center'
-      position='fixed'
-      top={0}
-      right={0}
-      bottom={0}
-      left={0}
-    >
-      <Typography variant="h3">There is an issue. Try again later.</Typography>
-    </Box>
-  }
-
   const updateAccount = (account: Account) => setAccount(account);
   return <AccountContext.Provider value={{ account, updateAccount }}>
-    { account && !accountError ?
+    { account && !accountError && pokemons && !pokemonsError ?
       <Routes>
         <Route path="/" element={<LogIn />} />
         <Route path="/welcome" element={<Welcome pokemons={pokemons!} />} />
