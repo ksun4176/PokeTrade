@@ -3,6 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { AuthModule } from './auth/auth.module';
 import { PokemonModule } from './pokemon/pokemon.module';
+import { TradeModule } from './trade/trade.module';
+import { AccountModule } from './account/account.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -11,7 +14,10 @@ import { PokemonModule } from './pokemon/pokemon.module';
     }),
     PassportModule.register({ session: true }),
     AuthModule,
+    UserModule,
     PokemonModule,
+    TradeModule,
+    AccountModule,
   ],
   controllers: [],
   providers: [],
