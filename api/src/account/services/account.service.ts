@@ -1,10 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { accounts, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/services/prisma.service";
 import { Services } from "src/utils/constants";
+import { Account, accountInclude } from "src/utils/types";
 
 export interface IAccountService {
-  getAccounts(filter?: Prisma.accountsWhereInput): Promise<accounts[]>;
+  getAccounts(filter?: Prisma.accountsWhereInput): Promise<Account[]>;
 }
 
 @Injectable()
@@ -14,6 +15,9 @@ export class AccountService implements IAccountService {
   ) { }
   
   getAccounts(filter?: Prisma.accountsWhereInput) {
-    return this.prisma.accounts.findMany({ where: filter });
+    return this.prisma.accounts.findMany({ 
+      where: filter,
+      include: accountInclude
+    });
   }
 }

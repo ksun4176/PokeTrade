@@ -1,5 +1,12 @@
 import { Prisma } from "@prisma/client";
 
+const accountInclude = Prisma.validator<Prisma.accountsInclude>()({
+  players: true
+});
+export type Account  = Prisma.accountsGetPayload<{
+  include: typeof accountInclude;
+}>;
+
 const pokemonInclude = Prisma.validator<Prisma.pokemon_card_dexInclude>()({
   pokemon_postfixes: true,
   expansions: true,

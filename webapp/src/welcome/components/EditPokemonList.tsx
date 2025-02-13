@@ -28,6 +28,7 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
       }}>
         {Array.from(selectedPokemons).map((id) =>
           <PokemonCard 
+            key={id}
             pokemon={pokemons.get(id)!}
             height={150}
             onClick={() => updatePokemonIds(id, false)} />
@@ -36,6 +37,7 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
       <Box p={1} display='flex' flexWrap='wrap' gap={1} overflow='auto' sx={{ flex: '1 1 auto' }}>
         {Array.from(pokemons.values()).map(p =>
           <PokemonCard 
+            key={p.id}
             pokemon={p}
             height={200}
             disabled={selectedPokemons.has(p.id)}

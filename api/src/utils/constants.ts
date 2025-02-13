@@ -1,9 +1,9 @@
 export enum Routes {
   AUTH = 'auth',
-  USER = 'user',
-  POKEMON = 'pokemon',
-  TRADE = 'trade',
-  ACCOUNT = 'account',
+  USER = 'users',
+  POKEMON = 'pokemons',
+  TRADE = 'trades',
+  ACCOUNT = 'accounts',
 }
 
 export enum Services {

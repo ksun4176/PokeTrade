@@ -8,7 +8,7 @@ export class PokemonController {
     @Inject(Services.POKEMON) private readonly pokemonService: IPokemonService
   ) { }
 
-  @Get('pokemons')
+  @Get()
   getPokemons() {
     return this.pokemonService.getPokemons();
   }

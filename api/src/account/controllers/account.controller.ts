@@ -8,7 +8,7 @@ export class AccountController {
     @Inject(Services.TRADE) private readonly tradeService: ITradeService,
   ) { }
 
-  @Get('accounts/:accountId/wishlist')
+  @Get(':accountId/wishlist')
   getWishlistPokemons(@Param('accountId') accountId: string) {
     const accountIdInt = parseInt(accountId);
     if (!accountIdInt) return [];
@@ -18,7 +18,7 @@ export class AccountController {
     });
   }
 
-  @Get('accounts/:accountId/listfortrading')
+  @Get(':accountId/listfortrading')
   getListForTradingPokemons(@Param('accountId') accountId: string) {
     const accountIdInt = parseInt(accountId);
     if (!accountIdInt) return [];

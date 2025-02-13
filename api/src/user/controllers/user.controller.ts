@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, UseGuards } from "@nestjs/common";
+import { Controller, Get, HttpException, HttpStatus, Inject, Param, UseGuards } from "@nestjs/common";
 import { Routes, Services } from "src/utils/constants";
 import { IAccountService } from "src/account/services/account.service";
 import { AuthUser } from "src/utils/decorators";
@@ -11,9 +11,11 @@ export class UserController {
     @Inject(Services.ACCOUNT) private readonly accountService: IAccountService,
   ) { }
 
-  @Get('users/accounts')
+  @Get(':userId/accounts')
   @UseGuards(AuthenticatedGuard)
-  getAccounts(@AuthUser() user: players) {
+  getAccounts(@AuthUser() user: players, @Param('userId') userId: string) {
+    const userIdInt = parseInt(userId);
+    if (user.id !== userIdInt) throw new HttpException('Do not have access', HttpStatus.FORBIDDEN);
     return this.accountService.getAccounts({
       player_id: user.id,
     });

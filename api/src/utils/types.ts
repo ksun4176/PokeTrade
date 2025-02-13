@@ -9,7 +9,14 @@ export type UserDetails = {
 
 export type SerializerDone = (error: Error | null, user: players | null) => void;
 
-const pokemonInclude = Prisma.validator<Prisma.pokemon_card_dexInclude>()({
+export const accountInclude = Prisma.validator<Prisma.accountsInclude>()({
+  players: true
+});
+export type Account  = Prisma.accountsGetPayload<{
+  include: typeof accountInclude;
+}>;
+
+export const pokemonInclude = Prisma.validator<Prisma.pokemon_card_dexInclude>()({
   pokemon_postfixes: true,
   expansions: true,
   pokemon_card_rarities: true,

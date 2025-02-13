@@ -8,7 +8,7 @@ export class TradeController {
     @Inject(Services.TRADE) private readonly tradeService: ITradeService
   ) { }
 
-  @Get('trades')
+  @Get()
   getTrades() {
     return this.tradeService.getTrades();
   }

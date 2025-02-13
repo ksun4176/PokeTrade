@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React, { JSX } from 'react';
+import React, { JSX, useContext } from 'react';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -10,6 +10,7 @@ import { styled } from '@mui/material/styles';
 import { gray } from '../sharedTheme/themePrimitives';
 import Button from '@mui/material/Button';
 import { Pokemon } from '../utils/types';
+import { AccountContext } from '../utils/contexts/AccountContext';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -36,6 +37,8 @@ type WelcomeProps = {
   pokemons: Map<number, Pokemon>;
 }
 export default function Welcome(props: WelcomeProps) {
+  const { account } = useContext(AccountContext);
+
   const [activeStep, setActiveStep] = React.useState(0);
 
   const [modalOpen, setModalOpen] = React.useState(false);

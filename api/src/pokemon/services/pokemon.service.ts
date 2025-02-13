@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/services/prisma.service";
 import { Services } from "src/utils/constants";
-import { Pokemon } from "src/utils/types";
+import { Pokemon, pokemonInclude } from "src/utils/types";
 
 export interface IPokemonService {
   getPokemons(): Promise<Pokemon[]>;
@@ -14,10 +14,8 @@ export class PokemonService implements IPokemonService {
   ) { }
   
   getPokemons() {
-    return this.prisma.pokemon_card_dex.findMany({ include: {
-      pokemon_postfixes: true,
-      expansions: true,
-      pokemon_card_rarities: true
-    }});
+    return this.prisma.pokemon_card_dex.findMany({ 
+      include: pokemonInclude
+    });
   }
 }

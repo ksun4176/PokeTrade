@@ -1,18 +1,19 @@
 import { Route, Routes } from "react-router-dom";
 import LogIn from "./login/Login";
 import Welcome from "./welcome/Welcome";
-import { useFetchUser } from "./utils/hooks/useFetchUser";
-import { UserContext } from "./utils/contexts/UserContext";
+import { useFetchAccount } from "./utils/hooks/useFetchAccount";
+import { AccountContext } from "./utils/contexts/AccountContext";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useFetchPokemons } from "./utils/hooks/useFetchPokemons";
 import { Typography } from "@mui/material";
+import { Account } from "./utils/types";
  
 function App() {
-  const { user, userError, userLoading } = useFetchUser();
+  const { account, setAccount, accountError, accountLoading } = useFetchAccount();
   const { pokemons, pokemonsError, pokemonsLoading } = useFetchPokemons();
 
-  if (userLoading || pokemonsLoading) {
+  if (accountLoading || pokemonsLoading) {
     return <Box
       display='flex'
       justifyContent='center'
@@ -42,8 +43,9 @@ function App() {
     </Box>
   }
 
-  return <UserContext.Provider value={{ user }}>
-    { user && !userError ?
+  const updateAccount = (account: Account) => setAccount(account);
+  return <AccountContext.Provider value={{ account, updateAccount }}>
+    { account && !accountError ?
       <Routes>
         <Route path="/" element={<LogIn />} />
         <Route path="/welcome" element={<Welcome pokemons={pokemons!} />} />
@@ -52,7 +54,7 @@ function App() {
         <Route path="/" element={<LogIn />} />
       </Routes>
     }
-  </UserContext.Provider>
+  </AccountContext.Provider>
 }
 
 export default App;
