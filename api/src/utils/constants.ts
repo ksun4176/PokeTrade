@@ -14,3 +14,8 @@ export enum Services {
   TRADE = 'TRADE_SERVICE',
   ACCOUNT = 'ACCOUNT_SERVICE'
 }
+
+export enum TradeTypes {
+  Request = 1,
+  Offer = 2,
+}

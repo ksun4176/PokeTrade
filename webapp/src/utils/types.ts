@@ -1,4 +1,10 @@
 import { Prisma } from "@prisma/client";
+import { TradeTypes } from "./constants";
+
+export type AccountTradeDetails = {
+  tradeType: TradeTypes;
+  pokemon: number;
+}
 
 const accountInclude = Prisma.validator<Prisma.accountsInclude>()({
   players: true

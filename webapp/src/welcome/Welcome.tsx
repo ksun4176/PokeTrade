@@ -12,6 +12,7 @@ import { Pokemon } from '../utils/types';
 import { EditPokemonList } from './components/EditPokemonList';
 import { EditAccount } from './components/EditAccount';
 import { AccountContext } from '../utils/contexts/AccountContext';
+import { updateAccountInfo, updateAccountTrades } from '../utils/apis';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -34,7 +35,22 @@ type WelcomeProps = {
   pokemons: Map<number, Pokemon>;
 }
 export default function Welcome(props: WelcomeProps) {
-  const { account } = useContext(AccountContext);
+  const { account, updateAccount } = useContext(AccountContext);
+  const addAccountInfo = useCallback(async (
+    wishlist: Set<number>,
+    listForTrade: Set<number>,
+    ign?: string,
+    friendCode?: string
+  ) => {
+    if (account) {
+      const newIgn = ign !== account.in_game_name ? ign : undefined;
+      const newFriendCode = friendCode !== account.friend_code ? friendCode : undefined; 
+      const updateAccountInfoResponse = await updateAccountInfo(account.id, newIgn, newFriendCode);
+      updateAccount(updateAccountInfoResponse.data);
+      updateAccountTrades(account.id, wishlist, listForTrade);
+    }
+  }, [account, updateAccount]);
+
   const [ign, setIgn] = React.useState(account?.in_game_name ?? '');
   const [ignError, setIgnError] = React.useState('');
   const [friendCode, setFriendCode] = React.useState(account?.friend_code ?? '');
@@ -53,7 +69,8 @@ export default function Welcome(props: WelcomeProps) {
     if (newFriendCode.length === 0) {
       setFriendCodeError('Friend Code is required');
     }
-    else if (!parseInt(newFriendCode)) {
+    const friendCodeInt = parseInt(newFriendCode);
+    if (isNaN(friendCodeInt)) {
       setFriendCodeError('Friend Code needs to format [0-9]+')
     }
     else {
@@ -123,7 +140,7 @@ export default function Welcome(props: WelcomeProps) {
           setActiveStep(0);
         }
         else {
-          console.log(`Finished!`);
+          addAccountInfo(wishlist, listToTrade, ign, friendCode);
         }
       }
     }

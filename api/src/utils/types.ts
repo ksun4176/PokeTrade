@@ -1,4 +1,6 @@
 import { players, Prisma } from "@prisma/client";
+import { TradeTypes } from "./constants";
+import { z } from "zod";
 
 export type UserDetails = {
   username: string;
@@ -6,6 +8,15 @@ export type UserDetails = {
   accessToken: string;
   refreshToken: string;
 }
+
+export const AccountTradesSchema = z.array(
+  z.object({
+    tradeType: z.nativeEnum(TradeTypes),
+    pokemon: z.number(),
+  })
+  .required()
+)
+export type AccountTradesDto = z.infer<typeof AccountTradesSchema>;
 
 export type SerializerDone = (error: Error | null, user: players | null) => void;
 

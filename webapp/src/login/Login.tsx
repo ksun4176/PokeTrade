@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import { FaDiscord, FaQuestionCircle } from "react-icons/fa";
+import { API_URL } from '../utils/constants';
 
 const LoginCard = styled(Card)(({ theme }) => ({
   display: 'flex',
@@ -50,7 +51,7 @@ const LogInContainer = styled(Stack)(({ theme }) => ({
 
 export default function LogIn() {
   const login = () => {
-    window.location.href = 'http://localhost:9000/api/auth/login';
+    window.location.href = `${API_URL}/auth/login`;
   }
 
   return (

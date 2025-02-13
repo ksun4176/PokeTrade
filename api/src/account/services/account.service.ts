@@ -6,7 +6,8 @@ import { Account, accountInclude } from "src/utils/types";
 
 export interface IAccountService {
   getAccounts(filter?: Prisma.accountsWhereInput): Promise<Account[]>;
-}
+  updateAccount(accountId: number, accountDetails: Prisma.accountsUpdateInput): Promise<Account>;
+} 
 
 @Injectable()
 export class AccountService implements IAccountService {
@@ -19,5 +20,20 @@ export class AccountService implements IAccountService {
       where: filter,
       include: accountInclude
     });
+  }
+
+  async updateAccount(accountId: number, accountDetails: Prisma.accountsUpdateInput) {
+    const account = await this.prisma.accounts.update({
+      where: {
+        id: accountId
+      },
+      data: {
+        in_game_name: accountDetails.in_game_name,
+        friend_code: accountDetails.friend_code
+      },
+      include: accountInclude
+    });
+    console.log(`Account [${accountId}] was updated.`)
+    return account;
   }
 }

@@ -1,11 +1,37 @@
-import { players } from "@prisma/client";
+import { players, pokemon_trades } from "@prisma/client";
 import axios, { AxiosRequestConfig } from "axios";
-import { Account, Pokemon } from "./types";
+import { Account, AccountTradeDetails, Pokemon } from "./types";
+import { API_URL, TradeTypes } from "./constants";
 
 const CONFIG: AxiosRequestConfig = {
   withCredentials: true
 };
 
-export const getAuthStatus = () => axios.get<players>('http://localhost:9000/api/auth/status', CONFIG);
-export const getAccounts = () => axios.get<Account[]>(`http://localhost:9000/api/users/@me/accounts`, CONFIG);
-export const getPokemons = () => axios.get<Pokemon[]>('http://localhost:9000/api/pokemons', CONFIG);
+export const getAuthStatus = () => axios.get<players>(`${API_URL}/auth/status`, CONFIG);
+export const getAccounts = () => axios.get<Account[]>(`${API_URL}/users/@me/accounts`, CONFIG);
+export const getPokemons = () => axios.get<Pokemon[]>(`${API_URL}/pokemons`, CONFIG);
+export const getAccountTrades = (accountId: number) => axios.get<pokemon_trades[]>(`${API_URL}/accounts/${accountId}/trades`, CONFIG);
+
+export const updateAccountInfo = (accountId: number, inGameName?: string, friendCode?: string) => axios.put<Account>(
+  `${API_URL}/accounts/${accountId}`,
+  {
+    inGameName,
+    friendCode
+  },
+  CONFIG
+);
+
+export const updateAccountTrades = (accountId: number, wishlist: Set<number>, listForTrade: Set<number>) => {
+  const trades: AccountTradeDetails[] = [
+    ...Array.from(wishlist).map(id => ({tradeType: TradeTypes.Request, pokemon: id})),
+    ...Array.from(listForTrade).map(id => ({tradeType: TradeTypes.Offer, pokemon: id})),
+  ];
+
+  axios.post<number>(
+    `${API_URL}/accounts/${accountId}/trades`,
+    {
+      trades,
+    },
+    CONFIG
+  );
+}
