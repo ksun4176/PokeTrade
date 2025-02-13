@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { getPokemons } from "../apis";
-import { pokemon_card_dex } from "@prisma/client";
+import { Pokemon } from "../types";
 
 export function useFetchPokemons() {
-  const [pokemons, setPokemons] = useState<Map<number, pokemon_card_dex>>();
+  const [pokemons, setPokemons] = useState<Map<number, Pokemon>>();
   const [pokemonsError, setError] = useState();
   const [pokemonsLoading, setLoading] = useState(false);
   useEffect(() => {

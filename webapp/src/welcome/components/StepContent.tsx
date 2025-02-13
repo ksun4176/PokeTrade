@@ -2,10 +2,10 @@ import React from "react";
 import { EditPokemonList } from "./EditPokemonList";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { pokemon_card_dex } from "@prisma/client";
+import { Pokemon } from "../../utils/types";
 
 export interface IStepContentProps {
-  pokemons: Map<number, pokemon_card_dex>;
+  pokemons: Map<number, Pokemon>;
   selectedPokemons: Set<number>;
   updateList: (id: number, isAdd: boolean) => void;
   handleSteps: (isNext: boolean) => void;

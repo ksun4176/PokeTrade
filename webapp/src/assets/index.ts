@@ -1,45 +1,43 @@
-import pokemon1001 from './pokemons/1001.png';
-import pokemon1002 from './pokemons/1002.png';
-import pokemon1003 from './pokemons/1003.png';
-import pokemon1004 from './pokemons/1004.png';
-import pokemon1005 from './pokemons/1005.png';
-import pokemon1006 from './pokemons/1006.png';
-import pokemon1007 from './pokemons/1007.png';
-import pokemon1008 from './pokemons/1008.png';
-import pokemon1009 from './pokemons/1009.png';
-import pokemon1010 from './pokemons/1010.png';
-import pokemon1011 from './pokemons/1011.png';
-import pokemon1012 from './pokemons/1012.png';
-import pokemon1013 from './pokemons/1013.png';
-import pokemon1014 from './pokemons/1014.png';
-import pokemon1015 from './pokemons/1015.png';
-import pokemon1016 from './pokemons/1016.png';
-import pokemon1017 from './pokemons/1017.png';
-import pokemon1018 from './pokemons/1018.png';
-import pokemon1019 from './pokemons/1019.png';
-import pokemon2012 from './pokemons/2012.png';
+import a1_bulbasaur from './pokemons/a1_1_bulbasaur.png';
+import a1_ivysaur from './pokemons/a1_2_ivysaur.png';
+import a1_venusaur from './pokemons/a1_3_venusaur.png';
+import a1_venusaur_ex from './pokemons/a1_4_venusaur_ex.png';
+import a1_caterpie from './pokemons/a1_5_caterpie.png';
+import a1_metapod from './pokemons/a1_6_metapod.png';
+import a1_butterfree from './pokemons/a1_7_butterfree.png';
+import a1_weedle from './pokemons/a1_8_weedle.png';
+import a1_kakuna from './pokemons/a1_9_kakuna.png';
+import a1_beedrill from './pokemons/a1_10_beedrill.png';
+import a1_oddish from './pokemons/a1_11_oddish.png';
+import a1_gloom from './pokemons/a1_12_gloom.png';
+import a1_vileplume from './pokemons/a1_13_vileplume.png';
+import a1_paras from './pokemons/a1_14_paras.png';
+import a1_parasect from './pokemons/a1_15_parasect.png';
+import a1_venonat from './pokemons/a1_16_venonat.png';
+import a1_venomoth from './pokemons/a1_17_venomoth.png';
+import a1_bellsprout from './pokemons/a1_18_bellsprout.png';
+import a1_weepinbell from './pokemons/a1_19_weepinbell.png';
+import a1a_magmar from './pokemons/a1a_12_magmar.png';
 
-const imagesMap = new Map([
-  [1001, pokemon1001],
-  [1002, pokemon1002],
-  [1003, pokemon1003],
-  [1004, pokemon1004],
-  [1005, pokemon1005],
-  [1006, pokemon1006],
-  [1007, pokemon1007],
-  [1008, pokemon1008],
-  [1009, pokemon1009],
-  [1010, pokemon1010],
-  [1011, pokemon1011],
-  [1012, pokemon1012],
-  [1013, pokemon1013],
-  [1014, pokemon1014],
-  [1015, pokemon1015],
-  [1016, pokemon1016],
-  [1017, pokemon1017],
-  [1018, pokemon1018],
-  [1019, pokemon1019],
-  [2012, pokemon2012],
+export const pokemonImagesMap = new Map([
+  [28, a1_bulbasaur],
+  [29, a1_ivysaur],
+  [30, a1_venusaur],
+  [31, a1_venusaur_ex],
+  [32, a1_caterpie],
+  [33, a1_metapod],
+  [34, a1_butterfree],
+  [35, a1_weedle],
+  [36, a1_kakuna],
+  [37, a1_beedrill],
+  [38, a1_oddish],
+  [39, a1_gloom],
+  [40, a1_vileplume],
+  [41, a1_paras],
+  [42, a1_parasect],
+  [43, a1_venonat],
+  [44, a1_venomoth],
+  [45, a1_bellsprout],
+  [46, a1_weepinbell],
+  [409, a1a_magmar],
 ]);
-
-export default imagesMap;

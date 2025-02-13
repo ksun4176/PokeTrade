@@ -9,7 +9,7 @@ import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import { gray } from '../sharedTheme/themePrimitives';
 import Button from '@mui/material/Button';
-import { pokemon_card_dex } from '@prisma/client';
+import { Pokemon } from '../utils/types';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -33,7 +33,7 @@ type StepInfo = {
 }
 
 type WelcomeProps = {
-  pokemons: Map<number, pokemon_card_dex>;
+  pokemons: Map<number, Pokemon>;
 }
 export default function Welcome(props: WelcomeProps) {
   const [activeStep, setActiveStep] = React.useState(0);

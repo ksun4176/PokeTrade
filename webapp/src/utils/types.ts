@@ -1,13 +1,4 @@
-import { players, Prisma } from "@prisma/client";
-
-export type UserDetails = {
-  username: string;
-  discordId: string;
-  accessToken: string;
-  refreshToken: string;
-}
-
-export type SerializerDone = (error: Error | null, user: players | null) => void;
+import { Prisma } from "@prisma/client";
 
 const pokemonInclude = Prisma.validator<Prisma.pokemon_card_dexInclude>()({
   pokemon_postfixes: true,
