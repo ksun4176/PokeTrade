@@ -6,6 +6,7 @@ import { AccountContext } from "./utils/contexts/AccountContext";
 import { useFetchPokemons } from "./utils/hooks/useFetchPokemons";
 import { Account } from "./utils/types";
 import { LoadingOverlay } from "./sharedComponents/LoadingOverlay";
+import Home from "./home/Home";
  
 function App() {
   const { account, setAccount, accountError, accountLoading } = useFetchAccount();
@@ -21,6 +22,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LogIn />} />
         <Route path="/welcome" element={<Welcome pokemons={pokemons!} />} />
+        <Route path="/home" element={<Home />} />
       </Routes> :
       <Routes>
         <Route path="/" element={<LogIn />} />

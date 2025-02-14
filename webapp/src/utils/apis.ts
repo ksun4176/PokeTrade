@@ -27,7 +27,7 @@ export const updateAccountTrades = (accountId: number, wishlist: Set<number>, li
     ...Array.from(listForTrade).map(id => ({tradeType: TradeTypes.Offer, pokemon: id})),
   ];
 
-  axios.post<number>(
+  return axios.post<number>(
     `${API_URL}/accounts/${accountId}/trades`,
     {
       trades,

@@ -13,6 +13,8 @@ import { EditPokemonList } from './components/EditPokemonList';
 import { EditAccount } from './components/EditAccount';
 import { AccountContext } from '../utils/contexts/AccountContext';
 import { updateAccountInfo, updateAccountTrades } from '../utils/apis';
+import { CenterGradientContainer } from '../sharedComponents/CenterGradientContainer';
+import { useNavigate } from 'react-router-dom';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -35,6 +37,7 @@ type WelcomeProps = {
   pokemons: Map<number, Pokemon>;
 }
 export default function Welcome(props: WelcomeProps) {
+  const navigate = useNavigate();
   const { account, updateAccount } = useContext(AccountContext);
   const addAccountInfo = useCallback(async (
     wishlist: Set<number>,
@@ -44,12 +47,13 @@ export default function Welcome(props: WelcomeProps) {
   ) => {
     if (account) {
       const newIgn = ign !== account.in_game_name ? ign : undefined;
-      const newFriendCode = friendCode !== account.friend_code ? friendCode : undefined; 
+      const newFriendCode = friendCode !== account.friend_code ? friendCode : undefined;
       const updateAccountInfoResponse = await updateAccountInfo(account.id, newIgn, newFriendCode);
       updateAccount(updateAccountInfoResponse.data);
-      updateAccountTrades(account.id, wishlist, listForTrade);
+      await updateAccountTrades(account.id, wishlist, listForTrade);
+      navigate('/home');
     }
-  }, [account, updateAccount]);
+  }, [account, updateAccount, navigate]);
 
   const [ign, setIgn] = React.useState(account?.in_game_name ?? '');
   const [ignError, setIgnError] = React.useState('');
@@ -193,16 +197,7 @@ export default function Welcome(props: WelcomeProps) {
   ];
 
   return <>
-    <Box
-      display='flex'
-      flexDirection='column'
-      justifyContent='flex-start'
-      position='fixed'
-      top={0}
-      right={0}
-      bottom={0}
-      left={0}
-    >
+    <CenterGradientContainer flexDirection='column'>
       <Typography
         variant='h6'
         component="h2"
@@ -227,7 +222,7 @@ export default function Welcome(props: WelcomeProps) {
         )}
       </Stepper>
       { steps[activeStep].content }
-    </Box>
+    </CenterGradientContainer>
     <Modal
       open={modalOpen}
       onClose={closeModal}
