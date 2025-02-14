@@ -2,9 +2,59 @@
 The back end server to manage trade requests/offers.
 
 ## Table of Contents
+- [Endpoints](#endpoints)
 - [FAQs](#faqs)
 - [File Structure](#file-structure)
 - [Contributing](#contributing)
+
+## Endpoints
+All APIs start with /api
+### `/login`
+**GET**: Log in using Discord
+
+### `/redirect`
+**GET**: Redirect to the web app
+
+### `/status`
+**GET**: Get the authenticated user
+
+### `/logout`
+**GET**: Remove access from API
+
+### `/pokemons`
+**GET**: Get all available Pokémons
+
+### `/users/@me/accounts`
+**GET**: Get all accounts linked to the login user
+
+**POST**: Link a new account to the login user
+Body:
+- inGameName: The name of the account
+- friendCode: The friend code to add the account
+
+### `/accounts/:accountId`
+Params:
+- accountId: In Game Account
+
+**PUT**: Update the account properties
+Body:
+- inGameName: The name of the account
+- friendCode: The friend code to add the account
+
+### `/accounts/:accountId/trades`
+Params: 
+- accountId: In Game Account
+
+**GET**: Get all trades linked to an account
+
+**POST**: Update all the trades linked to an account. Any trades not included in this list will be removed.
+Body:
+- trades: array of trades to link to account
+   - tradeType: Whether a trade is Request/Offer
+   - pokemon: Which Pokémon to trade
+
+### `/trades`
+**GET**: Get all trades in the system
 
 ## FAQs
 

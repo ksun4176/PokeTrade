@@ -9,9 +9,10 @@ The web app to manage trade requests/offers.
 
 ## First Access
 When a user first accesses the web app, they will be asked to complete a couple of steps.
-1. Users will select the Pokémons they are looking for to their Wishlist
-2. Users will select the Pokémons they are looking to trade away to their List for Trading
-3. After completing this will they then be able to search for available trades
+1. User needs to link an account
+2. User will select the Pokémons they are looking for to their Wishlist
+3. User will select the Pokémons they are looking to trade away to their List for Trading
+4. After completing this will they then be able to search for available trades
 
 ## FAQs
 
