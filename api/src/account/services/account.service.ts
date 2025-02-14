@@ -5,8 +5,9 @@ import { Services } from "src/utils/constants";
 import { Account, accountInclude } from "src/utils/types";
 
 export interface IAccountService {
-  getAccounts(filter?: Prisma.accountsWhereInput): Promise<Account[]>;
-  updateAccount(accountId: number, accountDetails: Prisma.accountsUpdateInput): Promise<Account>;
+  getAccounts(filter?: Prisma.AccountWhereInput): Promise<Account[]>;
+  updateAccount(accountId: number, accountDetails: Prisma.AccountUpdateInput): Promise<Account>;
+  createAccount(userId: number, accountDetails: Prisma.AccountUncheckedCreateInput): Promise<Account>;
 } 
 
 @Injectable()
@@ -15,25 +16,42 @@ export class AccountService implements IAccountService {
     @Inject(Services.PRISMA) private readonly prisma: PrismaService
   ) { }
   
-  getAccounts(filter?: Prisma.accountsWhereInput) {
-    return this.prisma.accounts.findMany({ 
+  async getAccounts(filter?: Prisma.AccountWhereInput) {
+    const accounts = await this.prisma.account.findMany({ 
       where: filter,
       include: accountInclude
     });
+    console.log(`${accounts.length} accounts found.`);
+    return accounts;
   }
 
-  async updateAccount(accountId: number, accountDetails: Prisma.accountsUpdateInput) {
-    const account = await this.prisma.accounts.update({
+  async updateAccount(accountId: number, accountDetails: Prisma.AccountUpdateInput) {
+    const { inGameName, friendCode } = accountDetails;
+    const account = await this.prisma.account.update({
       where: {
         id: accountId
       },
       data: {
-        in_game_name: accountDetails.in_game_name,
-        friend_code: accountDetails.friend_code
+        inGameName,
+        friendCode
       },
       include: accountInclude
     });
     console.log(`Account [${accountId}] was updated.`)
+    return account;
+  }
+
+  async createAccount(userId: number, accountDetails: Prisma.AccountUncheckedCreateInput) {
+    const { inGameName, friendCode } = accountDetails;
+    const account = await this.prisma.account.create({ 
+      data: {
+        userId: userId,
+        inGameName,
+        friendCode
+      },
+      include: accountInclude
+    });
+    console.log(`Account [${account.id}] was created.`)
     return account;
   }
 }

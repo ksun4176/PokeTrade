@@ -32,9 +32,9 @@ export class PokemonCard extends React.Component<ICardProps> {
         alignContent: 'center',
         justifyContent: 'center'
       }}>
-        <Typography variant="h6" textAlign='center'>{pokemon.name}{pokemon.pokemon_postfixes ? ` ${pokemon.pokemon_postfixes.name}` : ``}</Typography>
-        <Typography variant="caption" textAlign='center'>{pokemon.expansions.name} #{pokemon.dex_id}</Typography>
-        <Typography variant="caption" textAlign='center'>{pokemon.pokemon_card_rarities.name}</Typography>
+        <Typography variant="h6" textAlign='center'>{pokemon.name}{pokemon.pokemonPostfix ? ` ${pokemon.pokemonPostfix.name}` : ``}</Typography>
+        <Typography variant="caption" textAlign='center'>{pokemon.expansion.name} #{pokemon.dexId}</Typography>
+        <Typography variant="caption" textAlign='center'>{pokemon.pokemonCardRarity.name}</Typography>
       </CardContent>
 
     return <Card sx={{ p: 0 }}>

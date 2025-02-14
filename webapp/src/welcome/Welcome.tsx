@@ -4,17 +4,16 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Typography from '@mui/material/Typography';
-import { StepContent } from './components/StepContent';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { Pokemon } from '../utils/types';
-import { EditPokemonList } from './components/EditPokemonList';
-import { EditAccount } from './components/EditAccount';
 import { AccountContext } from '../utils/contexts/AccountContext';
-import { updateAccountInfo, updateAccountTrades } from '../utils/apis';
+import { updateAccountTrades } from '../utils/apis';
 import { CenterGradientContainer } from '../sharedComponents/CenterGradientContainer';
 import { useNavigate } from 'react-router-dom';
+import { AccountStepContent } from './components/AccountStepContent';
+import { PokemonStepContent } from './components/PokemonStepContent';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -37,50 +36,15 @@ type WelcomeProps = {
   pokemons: Map<number, Pokemon>;
 }
 export default function Welcome(props: WelcomeProps) {
-  const navigate = useNavigate();
-  const { account, updateAccount } = useContext(AccountContext);
-  const addAccountInfo = useCallback(async (
-    wishlist: Set<number>,
-    listForTrade: Set<number>,
-    ign?: string,
-    friendCode?: string
-  ) => {
-    if (account) {
-      const newIgn = ign !== account.in_game_name ? ign : undefined;
-      const newFriendCode = friendCode !== account.friend_code ? friendCode : undefined;
-      const updateAccountInfoResponse = await updateAccountInfo(account.id, newIgn, newFriendCode);
-      updateAccount(updateAccountInfoResponse.data);
-      await updateAccountTrades(account.id, wishlist, listForTrade);
-      navigate('/home');
-    }
-  }, [account, updateAccount, navigate]);
+  const { account } = useContext(AccountContext);
 
-  const [ign, setIgn] = React.useState(account?.in_game_name ?? '');
-  const [ignError, setIgnError] = React.useState('');
-  const [friendCode, setFriendCode] = React.useState(account?.friend_code ?? '');
-  const [friendCodeError, setFriendCodeError] = React.useState('');
-  const updateIgn = useCallback((newIgn: string) => {
-    setIgn(newIgn);
-    if (newIgn.length === 0) {
-      setIgnError('In Game Name is required');
-    }
-    else {
-      setIgnError('');
-    }
-  },[]);
-  const updateFriendCode = useCallback((newFriendCode: string) => {
-    setFriendCode(newFriendCode);
-    if (newFriendCode.length === 0) {
-      setFriendCodeError('Friend Code is required');
-    }
-    const friendCodeInt = parseInt(newFriendCode);
-    if (isNaN(friendCodeInt)) {
-      setFriendCodeError('Friend Code needs to format [0-9]+')
-    }
-    else {
-      setFriendCodeError('');
-    }
-  },[]);
+  const navigate = useNavigate();
+  
+  const addAccountTrades = async () => {
+    if (!account) { return; }
+    await updateAccountTrades(account.id, wishlist, listToTrade);
+    navigate('/home');
+  };
 
   const { pokemons } = props;
   const [pokemonToSwap, setPokemonToSwap] = React.useState(-1);
@@ -141,10 +105,10 @@ export default function Welcome(props: WelcomeProps) {
       }
       else if (activeStep === steps.length-1) {
         if (wishlist.size === 0) {
-          setActiveStep(0);
+          setActiveStep(1);
         }
         else {
-          addAccountInfo(wishlist, listToTrade, ign, friendCode);
+          addAccountTrades();
         }
       }
     }
@@ -153,46 +117,25 @@ export default function Welcome(props: WelcomeProps) {
   const steps: StepInfo[] = [
     {
       label: 'Link Account',
-      content: <StepContent
-        handleSteps={handleSteps}
-        nextStepDisabled={!ign || !friendCode || !!ignError || !!friendCodeError}
-        isFirstStep
-      >
-        <EditAccount
-          ign={ign}
-          ignError={ignError}
-          updateIgn={updateIgn}
-          friendCode={friendCode}
-          friendCodeError={friendCodeError}
-          updateFriendCode={updateFriendCode} />
-      </StepContent>
+      content: <AccountStepContent handleSteps={handleSteps} isFirstStep />
     },
     {
       label: 'Add to Wishlist',
-      content: <StepContent 
+      content: <PokemonStepContent
+        pokemons={pokemons}
+        pokemonList={wishlist}
+        updatePokemonIds={updateWishlist}
         handleSteps={handleSteps}
-        nextStepDisabled={wishlist.size === 0}
-      >
-        <EditPokemonList
-          pokemons={pokemons}
-          selectedPokemons={wishlist}
-          updatePokemonIds={updateWishlist}
-        />
-      </StepContent>
+      />
     },
     {
       label: 'List for Trading',
-      content: <StepContent 
+      content: <PokemonStepContent
+        pokemons={pokemons}
+        pokemonList={listToTrade}
+        updatePokemonIds={updateListToTrade}
         handleSteps={handleSteps}
-        nextStepDisabled={listToTrade.size === 0}
-        isLastStep
-      >
-        <EditPokemonList
-          pokemons={pokemons}
-          selectedPokemons={listToTrade}
-          updatePokemonIds={updateListToTrade}
-        />
-      </StepContent>
+      />
     }
   ];
 

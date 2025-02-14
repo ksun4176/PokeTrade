@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { players } from '@prisma/client';
+import { User } from '@prisma/client';
 import { IUserService } from 'src/user/services/user.service';
 import { Services } from 'src/utils/constants';
 import { UserDetails } from 'src/utils/types';
 
 export interface IAuthService {
-  login(details: UserDetails): Promise<players>;
+  login(details: UserDetails): Promise<User>;
 }
 
 @Injectable()
@@ -14,9 +14,9 @@ export class AuthService implements IAuthService {
     @Inject(Services.USER) private readonly userService: IUserService,
   ) {}
 
-  async login(details: UserDetails): Promise<players> {
+  async login(details: UserDetails): Promise<User> {
     const user = await this.userService.upsertUser(details);
-    console.log(`${user.username} [${user.discord_id}] logged in`);
+    console.log(`${user.username} [${user.discordId}] logged in`);
     return user;
   }
 }

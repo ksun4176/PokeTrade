@@ -6,18 +6,18 @@ export type AccountTradeDetails = {
   pokemon: number;
 }
 
-const accountInclude = Prisma.validator<Prisma.accountsInclude>()({
-  players: true
+const accountInclude = Prisma.validator<Prisma.AccountInclude>()({
+  user: true
 });
-export type Account  = Prisma.accountsGetPayload<{
+export type Account  = Prisma.AccountGetPayload<{
   include: typeof accountInclude;
 }>;
 
-const pokemonInclude = Prisma.validator<Prisma.pokemon_card_dexInclude>()({
-  pokemon_postfixes: true,
-  expansions: true,
-  pokemon_card_rarities: true,
+const pokemonInclude = Prisma.validator<Prisma.PokemonCardDexInclude>()({
+  pokemonPostfix: true,
+  expansion: true,
+  pokemonCardRarity: true,
 });
-export type Pokemon  = Prisma.pokemon_card_dexGetPayload<{
+export type Pokemon  = Prisma.PokemonCardDexGetPayload<{
   include: typeof pokemonInclude;
 }>;

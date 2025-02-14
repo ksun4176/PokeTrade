@@ -1,4 +1,4 @@
-import { players, Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { TradeTypes } from "./constants";
 import { z } from "zod";
 
@@ -18,20 +18,20 @@ export const AccountTradesSchema = z.array(
 )
 export type AccountTradesDto = z.infer<typeof AccountTradesSchema>;
 
-export type SerializerDone = (error: Error | null, user: players | null) => void;
+export type SerializerDone = (error: Error | null, user: User | null) => void;
 
-export const accountInclude = Prisma.validator<Prisma.accountsInclude>()({
-  players: true
+export const accountInclude = Prisma.validator<Prisma.AccountInclude>()({
+  user: true
 });
-export type Account  = Prisma.accountsGetPayload<{
+export type Account  = Prisma.AccountGetPayload<{
   include: typeof accountInclude;
 }>;
 
-export const pokemonInclude = Prisma.validator<Prisma.pokemon_card_dexInclude>()({
-  pokemon_postfixes: true,
-  expansions: true,
-  pokemon_card_rarities: true,
+export const pokemonInclude = Prisma.validator<Prisma.PokemonCardDexInclude>()({
+  pokemonPostfix: true,
+  expansion: true,
+  pokemonCardRarity: true,
 });
-export type Pokemon  = Prisma.pokemon_card_dexGetPayload<{
+export type Pokemon  = Prisma.PokemonCardDexGetPayload<{
   include: typeof pokemonInclude;
 }>;

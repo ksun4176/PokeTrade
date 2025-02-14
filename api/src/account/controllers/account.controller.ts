@@ -4,7 +4,7 @@ import { ITradeService } from "src/trade/services/trade.service";
 import { IAccountService } from "../services/account.service";
 import { AuthenticatedGuard } from "src/utils/Guards";
 import { AuthUser } from "src/utils/decorators";
-import { players, Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { AccountTradesDto, AccountTradesSchema } from "src/utils/types";
 import { ZodValidationPipe } from "src/utils/Pipes";
 
@@ -18,49 +18,49 @@ export class AccountController {
   @Get(':accountId/trades')
   getAccountTrades(@Param('accountId', ParseIntPipe) accountId: number) {
     return this.tradeService.getTrades({
-      account_id: accountId,
+      accountId: accountId,
     });
   }
 
   @Put(':accountId')
   @UseGuards(AuthenticatedGuard)
   async updateAccount(
-    @AuthUser() user: players,
+    @AuthUser() user: User,
     @Param('accountId', ParseIntPipe) accountId: number,
-    @Body('inGameName') ign?: string,
+    @Body('inGameName') inGameName?: string,
     @Body('friendCode') friendCode?: string
   ) {
     const accounts = await this.accountService.getAccounts({
       id: accountId,
-      player_id: user.id,
+      userId: user.id,
     });
     if (accounts.length === 0) {
       throw new ForbiddenException('Cannot modify this account');
     }
     return this.accountService.updateAccount(accountId, {
-      in_game_name: ign,
-      friend_code: friendCode
+      inGameName,
+      friendCode,
     });
   }
 
   @Post(':accountId/trades')
   @UseGuards(AuthenticatedGuard)
   async updateAccountTrades(
-    @AuthUser() user: players,
+    @AuthUser() user: User,
     @Param('accountId', ParseIntPipe) accountId: number,
     @Body('trades', new ZodValidationPipe(AccountTradesSchema)) trades: AccountTradesDto
   ) {
     const accounts = await this.accountService.getAccounts({
       id: accountId,
-      player_id: user.id,
+      userId: user.id,
     });
     if (accounts.length === 0) {
       throw new ForbiddenException('Cannot modify this account');
     }
-    const data: Prisma.pokemon_tradesCreateManyInput[] = trades.map(t => ({ 
-      card_id: t.pokemon,
-      account_id: accountId,
-      trade_type_id: t.tradeType
+    const data: Prisma.PokemonTradeCreateManyInput[] = trades.map(t => ({ 
+      pokemonId: t.pokemon,
+      accountId: accountId,
+      tradeTypeId: t.tradeType
     }));
     const affectedRows = await this.tradeService.updateAccountTrades(accountId, data);
     return { affectedRows };

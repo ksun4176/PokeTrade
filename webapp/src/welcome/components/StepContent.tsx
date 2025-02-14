@@ -8,11 +8,16 @@ export interface IStepContentProps {
   isFirstStep?: boolean;
   isLastStep?: boolean;
   nextStepDisabled?: boolean;
+  handleNext?: () => void;
 }
 export class StepContent extends React.Component<IStepContentProps> {
   override render() {
-    const { children, handleSteps, isFirstStep, isLastStep, nextStepDisabled } = this.props;
+    const { children, handleSteps, isFirstStep, isLastStep, nextStepDisabled, handleNext } = this.props;
 
+    const handleNextClick = () => {
+      if (handleNext) handleNext();
+      handleSteps(true);
+    }
     return <>
       {children}
       <Box sx={{ display: 'flex', flexDirection: 'row', p: 1 }}>
@@ -29,7 +34,7 @@ export class StepContent extends React.Component<IStepContentProps> {
           variant='contained'
           color='success'
           disabled={nextStepDisabled}
-          onClick={() => handleSteps(true)}
+          onClick={handleNextClick}
         >
           {isLastStep ? `Finish` : `Next`}
         </Button>

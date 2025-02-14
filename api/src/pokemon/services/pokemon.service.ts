@@ -13,9 +13,11 @@ export class PokemonService implements IPokemonService {
     @Inject(Services.PRISMA) private readonly prisma: PrismaService
   ) { }
   
-  getPokemons() {
-    return this.prisma.pokemon_card_dex.findMany({ 
+  async getPokemons() {
+    const pokemons = await this.prisma.pokemonCardDex.findMany({ 
       include: pokemonInclude
     });
+    console.log(`${pokemons.length} pokemons found.`)
+    return pokemons;
   }
 }

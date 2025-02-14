@@ -1,18 +1,28 @@
 import { useEffect, useState } from "react";
-import { getAccounts } from "../apis";
+import { getAccounts, getAuthStatus } from "../apis";
 import { Account } from "../types";
+import { User } from "@prisma/client";
 
 export function useFetchAccount() {
+  const [user, setUser] = useState<User | null>(null);
   const [account, setAccount] = useState<Account | null>(null);
   const [accountError, setError] = useState();
   const [accountLoading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
-    getAccounts()
+    getAuthStatus()
       .then(({ data }) => {
-        if (data.length > 0) {
-          setAccount(data[0]);
-        }
+        setUser(data);
+        getAccounts()
+          .then(({ data }) => {
+            if (data.length > 0) {
+              setAccount(data[0]);
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            setError(error);
+          })
       })
       .catch(error => {
         console.error(error);
@@ -21,5 +31,5 @@ export function useFetchAccount() {
       .finally(() => setLoading(false));
   }, []);
 
-  return { account, setAccount, accountError, accountLoading };
+  return { user, account, setAccount, accountError, accountLoading };
 }

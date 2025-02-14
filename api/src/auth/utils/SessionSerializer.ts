@@ -1,5 +1,5 @@
 import { PassportSerializer } from '@nestjs/passport';
-import { players } from '@prisma/client';
+import { User } from '@prisma/client';
 import { SerializerDone } from '../../utils/types';
 import { Inject } from '@nestjs/common';
 import { Services } from '../../utils/constants';
@@ -12,13 +12,13 @@ export class SessionSerializer extends PassportSerializer {
     super();
   }
 
-  serializeUser(user: players, done: SerializerDone) {
+  serializeUser(user: User, done: SerializerDone) {
     done(null, user);
   }
 
-  async deserializeUser(user: players, done: SerializerDone) {
+  async deserializeUser(user: User, done: SerializerDone) {
     try {
-      const userDb = await this.userService.findUser(user.discord_id);
+      const userDb = await this.userService.findUser(user.discordId);
       userDb ? done(null, userDb) : done(null, null);
     }
     catch (error) {

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { getAccountTrades } from "../apis";
 import { AccountContext } from "../contexts/AccountContext";
-import { pokemon_trades } from "@prisma/client";
+import { PokemonTrade } from "@prisma/client";
 
 export function useFetchAccountTrades() {
   const { account } = useContext(AccountContext);
-  const [trades, setTrades] = useState<pokemon_trades[]>([]);
+  const [trades, setTrades] = useState<PokemonTrade[]>([]);
   const [tradesError, setError] = useState();
   const [tradesLoading, setLoading] = useState(false);
   useEffect(() => {

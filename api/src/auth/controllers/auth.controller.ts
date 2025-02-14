@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
-import { players } from '@prisma/client';
+import { User } from '@prisma/client';
 import { Response } from 'express';
 import { Routes } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decorators';
@@ -19,7 +19,7 @@ export class AuthController {
 
   @Get('status')
   @UseGuards(AuthenticatedGuard)
-  status(@AuthUser() user: players) {
+  status(@AuthUser() user: User) {
     return user;
   }
 

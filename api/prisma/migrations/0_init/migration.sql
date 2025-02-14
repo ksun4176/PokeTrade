@@ -1,44 +1,4 @@
 -- CreateTable
-CREATE TABLE `account_cards` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `dex_id` INTEGER NOT NULL,
-    `favorite` BOOLEAN NOT NULL,
-    `added` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `account_decks` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `account_id` INTEGER NOT NULL,
-    `card_id` INTEGER NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `account_dex` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `dex_id` INTEGER NOT NULL,
-    `account_id` INTEGER NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `accounts` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `in_game_name` VARCHAR(32) NOT NULL,
-    `friend_code` VARCHAR(32) NOT NULL,
-    `player_id` INTEGER NOT NULL,
-
-    UNIQUE INDEX `friend_code`(`friend_code`),
-    INDEX `player_id`(`player_id`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `discord_channels` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `guild_id` VARCHAR(32) NOT NULL,
@@ -80,9 +40,12 @@ CREATE TABLE `permissions` (
 -- CreateTable
 CREATE TABLE `players` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `display_name` VARCHAR(16) NOT NULL,
     `discord_id` VARCHAR(32) NOT NULL,
     `username` VARCHAR(32) NOT NULL,
+    `friend_code` VARCHAR(20) NOT NULL,
     `permission_id` INTEGER NOT NULL DEFAULT 8,
+    `main_id` INTEGER NULL,
 
     UNIQUE INDEX `discord_id`(`discord_id`),
     INDEX `permission_id`(`permission_id`),
@@ -173,13 +136,13 @@ CREATE TABLE `pokémon_stage` (
 -- CreateTable
 CREATE TABLE `pokémon_trades` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `card_id` INTEGER NOT NULL,
-    `account_id` INTEGER NOT NULL,
+    `pokemon_id` INTEGER NOT NULL,
+    `player_id` INTEGER NOT NULL,
     `trade_type_id` INTEGER NOT NULL,
 
-    INDEX `account_id`(`account_id`),
     INDEX `trade_type_id`(`trade_type_id`),
-    UNIQUE INDEX `card_id`(`card_id`, `account_id`),
+    INDEX `player_id`(`player_id`),
+    UNIQUE INDEX `pokemon_id`(`pokemon_id`, `player_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -200,8 +163,42 @@ CREATE TABLE `trade_types` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- AddForeignKey
-ALTER TABLE `accounts` ADD CONSTRAINT `Accounts_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+-- CreateTable
+CREATE TABLE `player_alts` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `player_id` INTEGER NOT NULL,
+    `alt_id` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `player_cards` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `dex_id` INTEGER NOT NULL,
+    `favorite` BOOLEAN NOT NULL,
+    `added` DATETIME(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `player_decks` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `player_id` INTEGER NOT NULL,
+    `player_card` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `player_dex` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `dex_id` INTEGER NOT NULL,
+    `player_id` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
 ALTER TABLE `expansion_boosters` ADD CONSTRAINT `Expansion_Boosters_ibfk_1` FOREIGN KEY (`expansion_id`) REFERENCES `expansions`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -228,10 +225,10 @@ ALTER TABLE `pokémon_card_dex` ADD CONSTRAINT `Pokémon_Card_Dex_ibfk_5` FOREIG
 ALTER TABLE `pokémon_card_dex` ADD CONSTRAINT `Pokémon_Card_Dex_ibfk_6` FOREIGN KEY (`booster_id`) REFERENCES `expansion_boosters`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `pokémon_trades` ADD CONSTRAINT `Pokémon_Trades_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE `pokémon_trades` ADD CONSTRAINT `Pokémon_Trades_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `pokémon_trades` ADD CONSTRAINT `Pokémon_Trades_ibfk_2` FOREIGN KEY (`card_id`) REFERENCES `pokémon_card_dex`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE `pokémon_trades` ADD CONSTRAINT `Pokémon_Trades_ibfk_2` FOREIGN KEY (`pokemon_id`) REFERENCES `pokémon_card_dex`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `pokémon_trades` ADD CONSTRAINT `Pokémon_Trades_ibfk_3` FOREIGN KEY (`trade_type_id`) REFERENCES `trade_types`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;
