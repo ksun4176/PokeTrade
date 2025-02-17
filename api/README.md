@@ -9,16 +9,16 @@ The back end server to manage trade requests/offers.
 
 ## Endpoints
 All APIs start with /api
-### `/login`
+### `/auth/login`
 **GET**: Log in using Discord
 
-### `/redirect`
+### `/auth/redirect`
 **GET**: Redirect to the web app
 
-### `/status`
+### `/auth/status`
 **GET**: Get the authenticated user
 
-### `/logout`
+### `/auth/logout`
 **GET**: Remove access from API
 
 ### `/pokemons`
@@ -34,7 +34,7 @@ Body:
 
 ### `/accounts/:accountId`
 Params:
-- accountId: In Game Account
+- accountId: ID of account
 
 **PUT**: Update the account properties
 Body:
@@ -43,7 +43,7 @@ Body:
 
 ### `/accounts/:accountId/trades`
 Params: 
-- accountId: In Game Account
+- accountId: ID of account
 
 **GET**: Get all trades linked to an account
 
@@ -52,6 +52,80 @@ Body:
 - trades: array of trades to link to account
    - tradeType: Whether a trade is Request/Offer
    - pokemon: Which Pokémon to trade
+
+### `/accounts/:accountId/tradematches`
+Params:
+- accountId: ID of account
+
+**GET**: Get information relevant to trades that match the account's wishlist/list for trading.
+Response:
+{
+   cardToAccount: Map of cards in account's wishlist TO other accounts that have offered said card. These accounts are further broken into 2 buckets.
+   - matchingTrades: Trades with the accounts that the requester DID offer a pokemon that can be traded
+   - otherTrades: Trades with the accounts that the requester DID NOT offer a pokemon that can be traded
+   accountToPokemon: Map of accounts that have offered a requested card TO all cards that those accounts have requested. These cards are further broken into 2 buckets.
+   - matchingTrades: ID of cards that the requester DID offer
+   - otherTrades: ID of cards that the requester DID NOT offer
+}
+```
+{
+  "cardToAccount": [
+    [736, {
+        "matchingTrades": [
+          {
+            "id": 316,
+            "pokemonId": 736,
+            "accountId": 66,
+            "tradeTypeId": 2,
+            "updated": "2025-02-16T18:02:57.000Z",
+            "account": {
+              "id": 66,
+              "inGameName": "User 1",
+              "friendCode": "123456789012341",
+              "userId": 72,
+              "user": {
+                "discordId": "1",
+                "username": "User 1"
+              }
+            }
+          }
+        ],
+        "otherTrades": [
+          {
+            "id": 334,
+            "pokemonId": 736,
+            "accountId": 69,
+            "tradeTypeId": 2,
+            "updated": "2025-02-16T18:02:57.000Z",
+            "account": {
+              "id": 69,
+              "inGameName": "User 4",
+              "friendCode": "123456789012344",
+              "userId": 75,
+              "user": {
+                "discordId": "4",
+                "username": "User 4"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  ]
+  "accountToPokemon": [
+    [66, {
+        "matchingTrades": [121, 173],
+        "otherTrades": [28, 409]
+      }
+    ],
+    [69, {
+        "matchingTrades": [143],
+        "otherTrades": [409]
+      }
+    ]
+  ]
+}
+```
 
 ### `/trades`
 **GET**: Get all trades in the system
@@ -66,7 +140,7 @@ Body:
    - `./app.module.ts`: your base level module
    - `./utils/*`: TypeScript types, functions, classes, etc. used throughout the project
    - `./{dirName}/`: different modules that take care of individual aspects of the server
-- `prisma/`: This is where your database schema and migrations live
+- `prisma/`: This is where your database schema, migrations, seeds live
 - `test/`: This is where your unit tests live
 
 - All other files are auto generated so they do not need to be touched.
@@ -74,6 +148,13 @@ Body:
 ## Contributing
 This server is built in Nextjs.
 The languages we are using are TypeScript.
+
+To make updates to database schema:
+1. Make changes to `/prisma/schema.prisma/`
+2. Run script `npx prisma migrate dev --name {name_your_update}`
+3. Verify that the generated migration.sql has the changes you expect
+4. If you need to populate a testing database with new data, verify that the data set in `/prisma/seed/seed.ts` meet your needs. If not, make updates
+5. Run script `npx prisma db seed` to populate with test data.
 
 To run app in development mode:
 1. Run script `npm run start:dev`.

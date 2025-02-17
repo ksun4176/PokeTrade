@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { StepContent } from "./StepContent";
 import { EditAccount } from "./EditAccount";
 import { AccountContext } from "../../utils/contexts/AccountContext";
 import { createAccount, updateAccountInfo } from "../../utils/apis";
-import { Account } from "../../utils/types";
+import { Account } from "@prisma/client";
 
 export interface AccountStepContentProps {
   handleSteps: (isNext: boolean) => void;
@@ -14,14 +14,19 @@ export function AccountStepContent(props: AccountStepContentProps) {
   const { handleSteps, isFirstStep, isLastStep } = props;
   
   const { account, updateAccount } = useContext(AccountContext);
-  const ignState = React.useState(account?.inGameName ?? '');
+  const ignState = React.useState('');
   const ignErrorState = React.useState('');
-  const friendCodeState = React.useState(account?.friendCode ?? '');
+  const friendCodeState = React.useState('');
   const friendCodeErrorState = React.useState('');
-  const [ign] = ignState;
+  const [ign, setIgn] = ignState;
   const [ignError] = ignErrorState;
-  const [friendCode] = friendCodeState;
+  const [friendCode, setFriendCode] = friendCodeState;
   const [friendCodeError] = friendCodeErrorState;
+
+  useEffect(() => {
+    setIgn(account?.inGameName ?? '');
+    setFriendCode(account?.friendCode ?? '');
+  },[account, setIgn, setFriendCode])
   
   const addAccountInfo = async () => {
     let newAccount: Account;

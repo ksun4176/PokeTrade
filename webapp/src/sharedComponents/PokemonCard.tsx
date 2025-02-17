@@ -1,12 +1,12 @@
 import React from "react";
-import { pokemonImagesMap } from "../../assets";
+import { pokemonImagesMap } from "../assets";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Pokemon } from "../../utils/types";
+import { Pokemon } from "../utils/types";
 
 export interface ICardProps {
   pokemon: Pokemon;
@@ -28,12 +28,11 @@ export class PokemonCard extends React.Component<ICardProps> {
         width: height / 683 * 490,
         display: 'flex',
         flexDirection: 'column',
-        flexWrap: 'wrap',
         alignContent: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
       }}>
-        <Typography variant="h6" textAlign='center'>{pokemon.name}{pokemon.pokemonPostfix ? ` ${pokemon.pokemonPostfix.name}` : ``}</Typography>
-        <Typography variant="caption" textAlign='center'>{pokemon.expansion.name} #{pokemon.dexId}</Typography>
+        <Typography variant="subtitle1" textAlign='center'>{pokemon.name}{pokemon.pokemonPostfix ? ` ${pokemon.pokemonPostfix.name}` : ``}</Typography>
+        <Typography variant="caption" textAlign='center'>{pokemon.expansion.code} #{pokemon.dexId}</Typography>
         <Typography variant="caption" textAlign='center'>{pokemon.pokemonCardRarity.name}</Typography>
       </CardContent>
 

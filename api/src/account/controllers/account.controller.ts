@@ -15,13 +15,6 @@ export class AccountController {
     @Inject(Services.TRADE) private readonly tradeService: ITradeService,
   ) { }
 
-  @Get(':accountId/trades')
-  getAccountTrades(@Param('accountId', ParseIntPipe) accountId: number) {
-    return this.tradeService.getTrades({
-      accountId: accountId,
-    });
-  }
-
   @Put(':accountId')
   @UseGuards(AuthenticatedGuard)
   async updateAccount(
@@ -40,6 +33,15 @@ export class AccountController {
     return this.accountService.updateAccount(accountId, {
       inGameName,
       friendCode,
+    });
+  }
+
+  @Get(':accountId/trades')
+  getAccountTrades(
+    @Param('accountId', ParseIntPipe) accountId: number
+  ) {
+    return this.tradeService.getTrades({
+      accountId: accountId
     });
   }
 
@@ -64,5 +66,12 @@ export class AccountController {
     }));
     const affectedRows = await this.tradeService.updateAccountTrades(accountId, data);
     return { affectedRows };
+  }
+
+  @Get(':accountId/tradematches')
+  getAccountTradeMatches(
+    @Param('accountId', ParseIntPipe) accountId: number
+  ) {
+    return this.tradeService.getAccountTradeMatches(accountId);
   }
 }

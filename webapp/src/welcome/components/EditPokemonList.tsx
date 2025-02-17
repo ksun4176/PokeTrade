@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import React, { JSX } from "react";
-import { PokemonCard } from "./PokemonCard";
+import { PokemonCard } from "../../sharedComponents/PokemonCard";
 import { Pokemon } from "../../utils/types";
 import { FixedSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -22,7 +22,7 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
 
     return <Box flex='1 1 auto' display='flex' flexDirection='column' overflow='auto'>
       <Paper elevation={24} sx={{
-        height: {xs: 180, sm: 330 },
+        height: {xs: 185, sm: 340 },
         p: 1,
         flexShrink: 0,
         display: 'flex',
@@ -33,7 +33,7 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
         gap: '4px',
         overflowX: 'auto'
       }}>
-        {Array.from(selectedPokemons).map((id) =>
+        {Array.from(selectedPokemons).map(id =>
           <PokemonCard 
             key={id}
             pokemon={pokemons.get(id)!}
@@ -76,7 +76,10 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
                       display='flex'
                       justifyContent='flex-start'
                       gap={`${pokemonsGap}px`}
-                      sx={{ ...style }}
+                      sx={{
+                        ...style,
+                        height: pokemonsHeight
+                      }}
                     >
                       {items}
                     </Box>

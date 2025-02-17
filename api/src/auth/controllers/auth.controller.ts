@@ -24,6 +24,5 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(AuthenticatedGuard)
   logout() { }
 }

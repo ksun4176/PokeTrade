@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React, { JSX, useCallback, useContext } from 'react';
+import React, { JSX, useCallback, useContext, useEffect } from 'react';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -9,8 +9,8 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { Pokemon } from '../utils/types';
 import { AccountContext } from '../utils/contexts/AccountContext';
-import { updateAccountTrades } from '../utils/apis';
-import { CenterGradientContainer } from '../sharedComponents/CenterGradientContainer';
+import { getAccountTrades, updateAccountTrades } from '../utils/apis';
+import { TopGradientContainer } from '../sharedComponents/TopGradientContainer';
 import { useNavigate } from 'react-router-dom';
 import { AccountStepContent } from './components/AccountStepContent';
 import { PokemonStepContent } from './components/PokemonStepContent';
@@ -114,6 +114,20 @@ export default function Welcome(props: WelcomeProps) {
     }
   };
 
+  useEffect(() =>{
+    if (account) {
+      getAccountTrades(account.id)
+        .then(({ data }) => {
+          if (data.length > 0) {
+            navigate('/home');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        })
+    }
+  }, [account, navigate]);
+
   const steps: StepInfo[] = [
     {
       label: 'Link Account',
@@ -140,7 +154,7 @@ export default function Welcome(props: WelcomeProps) {
   ];
 
   return <>
-    <CenterGradientContainer flexDirection='column'>
+    <TopGradientContainer flexDirection='column'>
       <Typography
         variant='h6'
         component="h2"
@@ -165,7 +179,7 @@ export default function Welcome(props: WelcomeProps) {
         )}
       </Stepper>
       { steps[activeStep].content }
-    </CenterGradientContainer>
+    </TopGradientContainer>
     <Modal
       open={modalOpen}
       onClose={closeModal}

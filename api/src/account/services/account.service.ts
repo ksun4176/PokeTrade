@@ -1,8 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Prisma } from "@prisma/client";
+import { Account, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/services/prisma.service";
 import { Services } from "src/utils/constants";
-import { Account, accountInclude } from "src/utils/types";
 
 export interface IAccountService {
   getAccounts(filter?: Prisma.AccountWhereInput): Promise<Account[]>;
@@ -17,10 +16,7 @@ export class AccountService implements IAccountService {
   ) { }
   
   async getAccounts(filter?: Prisma.AccountWhereInput) {
-    const accounts = await this.prisma.account.findMany({ 
-      where: filter,
-      include: accountInclude
-    });
+    const accounts = await this.prisma.account.findMany({ where: filter });
     console.log(`${accounts.length} accounts found.`);
     return accounts;
   }
@@ -34,8 +30,7 @@ export class AccountService implements IAccountService {
       data: {
         inGameName,
         friendCode
-      },
-      include: accountInclude
+      }
     });
     console.log(`Account [${accountId}] was updated.`)
     return account;
@@ -48,8 +43,7 @@ export class AccountService implements IAccountService {
         userId: userId,
         inGameName,
         friendCode
-      },
-      include: accountInclude
+      }
     });
     console.log(`Account [${account.id}] was created.`)
     return account;

@@ -3,6 +3,7 @@ The web app to manage trade requests/offers.
 
 ## Table of Contents
 - [First Access](#first-access)
+- [Home](#home)
 - [FAQs](#faqs)
 - [File Structure](#file-structure)
 - [Contributing](#contributing)
@@ -12,7 +13,13 @@ When a user first accesses the web app, they will be asked to complete a couple 
 1. User needs to link an account
 2. User will select the Pokémons they are looking for to their Wishlist
 3. User will select the Pokémons they are looking to trade away to their List for Trading
-4. After completing this will they then be able to search for available trades
+4. After completing this they will then be able to search for available trades
+
+## Home
+This is where users will be able to see what trades are available out there and then reach out to those folks to initiate a trade.
+1. User selects Pokémons from their wishlist
+2. They will then be able to see all offers for that Pokémon
+3. Copy the `@mention` and head over to discord to message that person in the server!
 
 ## FAQs
 
