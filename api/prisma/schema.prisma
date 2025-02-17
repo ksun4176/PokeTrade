@@ -17,27 +17,27 @@ model AccountCard {
 }
 
 model AccountDeck {
-  id         Int @id @default(autoincrement())
-  accountId  Int @map("account_id")
-  cardId     Int @map("card_id")
+  id        Int @id @default(autoincrement())
+  accountId Int @map("account_id")
+  cardId    Int @map("card_id")
 
   @@map("account_decks")
 }
 
 model AccountDex {
-  id         Int @id @default(autoincrement())
-  dexId      Int @map("dex_id")
-  accountId  Int @map("account_id")
+  id        Int @id @default(autoincrement())
+  dexId     Int @map("dex_id")
+  accountId Int @map("account_id")
 
   @@map("account_dex")
 }
 
 model Account {
-  id            Int            @id @default(autoincrement())
-  inGameName    String         @db.VarChar(32) @map("in_game_name")
-  friendCode    String         @unique(map: "friend_code") @db.VarChar(32) @map("friend_code")
-  userId        Int            @map("player_id")
-  user          User           @relation(fields: [userId], references: [id], onDelete: NoAction, map: "Accounts_ibfk_1")
+  id             Int            @id @default(autoincrement())
+  inGameName     String         @map("in_game_name") @db.VarChar(32)
+  friendCode     String         @unique(map: "friend_code") @map("friend_code") @db.VarChar(32)
+  userId         Int            @map("player_id")
+  user           User           @relation(fields: [userId], references: [id], onDelete: NoAction, map: "Accounts_ibfk_1")
   pokemonTrades PokemonTrade[]
 
   @@index([userId], map: "player_id")
@@ -46,8 +46,8 @@ model Account {
 
 model DiscordChannel {
   id            Int    @id @default(autoincrement())
-  guildId       String @db.VarChar(32) @map("guild_id")
-  channelId     String @db.VarChar(32) @map("channel_id")
+  guildId       String @map("guild_id") @db.VarChar(32)
+  channelId     String @map("channel_id") @db.VarChar(32)
   channelTypeId Int    @map("channel_type_id")
 
   @@map("discord_channels")
@@ -76,9 +76,9 @@ model Expansion {
 }
 
 model Permission {
-  id             Int      @id @default(autoincrement())
-  name           String   @db.VarChar(32)
-  hierarchyLevel Int      @map("hierarchy_level")
+  id             Int    @id @default(autoincrement())
+  name           String @db.VarChar(32)
+  hierarchyLevel Int    @map("hierarchy_level")
   users          User[]
 
   @@map("permissions")
@@ -169,15 +169,15 @@ model PokemonStage {
 }
 
 model PokemonTrade {
-  id             Int            @id @default(autoincrement())
-  pokemonId      Int            @map("pokemon_id")
-  accountId      Int            @map("account_id")
-  tradeTypeId    Int            @map("trade_type_id")
-  doNotUsePlayer Int?           @map("do_not_use_player") //player_id
-  account        Account        @relation(fields: [accountId], references: [id], onDelete: NoAction, map: "Pokémon_Trades_ibfk_1")
-  pokemonCardDex PokemonCardDex @relation(fields: [pokemonId], references: [id], onDelete: NoAction, map: "Pokémon_Trades_ibfk_2")
-  tradeType      TradeType      @relation(fields: [tradeTypeId], references: [id], onDelete: NoAction, map: "Pokémon_Trades_ibfk_3")
-  updated        DateTime       @default(now()) @db.DateTime(0)
+  id               Int            @id @default(autoincrement())
+  pokemonId        Int            @map("pokemon_id")
+  doNotUsePlayer   Int?           @map("do_not_use_player")
+  tradeTypeId      Int            @map("trade_type_id")
+  accountId        Int            @map("account_id")
+  updated          DateTime       @default(now()) @db.DateTime(0)
+  account          Account        @relation(fields: [accountId], references: [id], onDelete: NoAction, map: "Pokémon_Trades_ibfk_1")
+  pokemonCardDex   PokemonCardDex @relation(fields: [pokemonId], references: [id], onDelete: NoAction, map: "Pokémon_Trades_ibfk_2")
+  tradeType        TradeType      @relation(fields: [tradeTypeId], references: [id], onDelete: NoAction, map: "Pokémon_Trades_ibfk_3")
 
   @@unique([pokemonId, accountId], map: "pokemon_account_id")
   @@index([accountId], map: "account_id")
@@ -195,18 +195,18 @@ model PokemonType {
 }
 
 model Session {
-  id          String   @id @db.VarChar(255)
-  sid         String   @unique
-  data        String   @db.MediumText
-  expiresAt   DateTime @db.Timestamp(6)
+  id        String   @id @db.VarChar(255)
+  sid       String   @unique
+  data      String   @db.MediumText
+  expiresAt DateTime @db.Timestamp(6)
 
   @@index([expiresAt], map: "expiresAt")
   @@map("session")
 }
 
 model TradeType {
-  id            Int             @id @default(autoincrement())
-  name          String          @db.VarChar(8)
+  id            Int            @id @default(autoincrement())
+  name          String         @db.VarChar(8)
   pokemonTrades PokemonTrade[]
 
   @@map("trade_types")
@@ -214,14 +214,13 @@ model TradeType {
 
 model User {
   id            Int        @id @default(autoincrement())
-  discordId     String     @unique(map: "discord_id") @db.VarChar(32) @map("discord_id")
+  doNotUseDName String?    @map("do_not_use_dname") @db.VarChar(16)
+  discordId     String     @unique(map: "discord_id") @map("discord_id") @db.VarChar(32)
   username      String     @db.VarChar(32)
+  doNotUseFC    String?    @map("do_not_use_fc") @db.VarChar(20)
   permissionId  Int        @default(8) @map("permission_id")
   accessToken   String?    @map("access_token")
   refreshToken  String?    @map("refresh_token")
-  doNotUseDName String?    @map("do_not_use_dname") //display_name
-  doNotUseFC    String?    @map("do_not_use_fc") //friend_code
-  doNotUseMain  String?    @map("do_not_use_main") //main_id
   accounts      Account[]
   permission    Permission @relation(fields: [permissionId], references: [id], onDelete: NoAction, map: "Players_ibfk_1")
 

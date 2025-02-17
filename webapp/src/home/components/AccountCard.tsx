@@ -19,7 +19,7 @@ export default function AccountCard(props: AccountCardProps) {
   }}>
     <Avatar sx={{ ml: 1, mr: 1 }}>{account.user.username[0]}</Avatar>
     <Box display='flex' flexDirection='column' gap={1}>
-      <Typography>{account.user.username} [{account.user.discordId}]</Typography>
+      <Typography>{account.user.username}</Typography>
       <Button
         size='small'
         variant='outlined'

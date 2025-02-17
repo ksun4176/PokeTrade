@@ -31,8 +31,7 @@ export function EditAccount(props: EditAccountProps) {
     if (newFriendCode.length === 0) {
       setFriendCodeError('Friend Code is required');
     }
-    const friendCodeInt = parseInt(newFriendCode);
-    if (isNaN(friendCodeInt)) {
+    else if (!newFriendCode.match(/^[0-9]+$/)) {
       setFriendCodeError('Friend Code needs to format [0-9]+')
     }
     else {

@@ -33,7 +33,7 @@ ALTER TABLE `players`
 ALTER TABLE `players`
     RENAME COLUMN `display_name` TO `do_not_use_dname`,
     RENAME COLUMN `friend_code` TO `do_not_use_fc`,
-    RENAME COLUMN `main_id` TO `do_not_use_main`,
+    DROP COLUMN `main_id`,
     ADD COLUMN `access_token` VARCHAR(191) NULL,
     ADD COLUMN `refresh_token` VARCHAR(191) NULL;
 
