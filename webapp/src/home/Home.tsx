@@ -13,6 +13,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import AccountCard from './components/AccountCard';
 import Button from '@mui/material/Button';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 type HomeProps = {
   pokemons: Map<number, Pokemon>;
@@ -58,14 +59,15 @@ export default function Home(props: HomeProps) {
   return (
     <TopGradientContainer direction="column">
       {/* <AppBar /> */}
-      <Box display='flex'>
+      <Box display='flex' m={1}>
         <Typography variant='h6'>Wishlist</Typography>
         <Box flex='1 1 auto' />
         <Button variant='contained'>Update Wishlist</Button>
       </Box>
       <Paper elevation={24} sx={{
-        height: 235,
+        height: 245,
         p: 1,
+        pt: 2,
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
@@ -75,14 +77,18 @@ export default function Home(props: HomeProps) {
         gap: '4px',
         overflowX: 'auto',
       }}>
-        {wishlist.map(id =>
-          <PokemonCard
+        {wishlist.map(id => {
+          const tradeInfo = cardToAccount.get(id)!;
+          return <PokemonCard
             key={id}
             pokemon={pokemons.get(id)!}
             height={200}
             onClick={() => setSelectedPokemonId(id)} 
-            disabled={id === selectedPokemonId}/>
-        )}
+            disabled={id === selectedPokemonId} 
+            overlayIcon={<CheckCircleIcon fontSize="large" color="success"/>}
+            badgeContent={tradeInfo.matchingTrades.length+tradeInfo.otherTrades.length}
+          />
+        })}
       </Paper>
       {!selectedPokemon ? null :
         <Typography variant='h6' width='100%'>Offers for {selectedPokemon.name}</Typography>
@@ -114,22 +120,24 @@ export default function Home(props: HomeProps) {
                       p: 1,
                     }}>
                       <AccountCard account={selectedAccount} cardSx={{
-                        width:'250px',
-                        mr: 1
+                        flex: '0 0 250px',
+                        mr: 1,
                       }} />
-                      <Box height='100%' display='flex' gap={1} flexWrap='wrap'>
+                      <Box height='100%' display='flex' flexWrap='wrap' alignContent='flex-start' gap={1} overflow='hidden'>
                         {
                           requestedPokemons.length === 0 ? 
                           <Typography>No Pokémon listed for trade</Typography> :
                           requestedPokemons.map(pokemon => (
                             <Card key={pokemon.id}
                               sx={{
-                                height: '50%',
+                                height: '30%',
                                 display: 'flex',
                                 alignItems: 'center'
                             }}>
                               <CardContent>
-                                <Typography>{pokemon.expansion.name} {pokemon.name}{pokemon.pokemonPostfix?.name ?? ''}</Typography>
+                                <Typography>
+                                  {pokemon.expansion.name} {pokemon.name}{pokemon.pokemonPostfix ? ` ${pokemon.pokemonPostfix.name}` : ``}
+                                </Typography>
                               </CardContent>
                             </Card>
                           ))
