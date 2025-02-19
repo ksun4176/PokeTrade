@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import LogIn from "./login/Login";
 import Edit from "./edit/Edit";
 import { useFetchAccount } from "./utils/hooks/useFetchAccount";
@@ -17,8 +17,6 @@ function App() {
   const [pokemons, setPokemons] = useState<Map<number, Pokemon>>();
   const updateAccount = (account: Account) => setAccount(account);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     let ignore = false
     getPokemons()
@@ -36,12 +34,6 @@ function App() {
       ignore = true;
     };
   }, []);
-
-  useEffect(() => {
-    if (user) {
-      navigate('/home');
-    }
-  }, [user, navigate]);
 
   if (accountLoading) {
     return <LoadingOverlay />
@@ -77,7 +69,7 @@ function App() {
     </Routes> 
   }
 
-  return <AccountContext.Provider value={{ account, updateAccount }}>
+  return <AccountContext.Provider value={{ user, account, updateAccount }}>
     { routes }
   </AccountContext.Provider>
 }

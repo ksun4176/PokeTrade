@@ -15,6 +15,7 @@ import AccountCard from './components/AccountCard';
 import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
+import { MyAppBar } from '../sharedComponents/MyAppBar';
 
 type HomeProps = {
   pokemons: Map<number, Pokemon>;
@@ -78,7 +79,7 @@ export default function Home(props: HomeProps) {
   
   return (
     <TopGradientContainer direction="column">
-      {/* <AppBar /> */}
+      <MyAppBar />
       <Box display='flex' m={1}>
         <Typography variant='h6'>Wishlist</Typography>
         <Box flex='1 1 auto' />

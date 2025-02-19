@@ -20,6 +20,14 @@ This is where users will be able to see what trades are available out there and 
 1. User selects Pokémons from their wishlist
 2. They will then be able to see all offers for that Pokémon
 3. Copy the `@mention` and head over to discord to message that person in the server!
+4. Make updates to your wishlist to search for more Pokémons
+
+## MyAccount
+This is where you can see all information about your account.
+1. View linked account
+2. View wishlist and list for trading Pokémons
+3. Use the available buttons to edit information
+4. Log out if needed
 
 ## FAQs
 

@@ -31,7 +31,8 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
         alignItems: 'flex-start',
         alignContent: 'flex-start',
         gap: '4px',
-        overflowX: 'auto'
+        overflowX: 'auto',
+        mx: 2
       }}>
         {Array.from(selectedPokemons).map(id =>
           <PokemonCard 
@@ -42,7 +43,7 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
           />
         )}
       </Paper>
-      <Box m={1} sx={{ flex: '1 1 auto' }}>
+      <Box m={1} sx={{ flex: '1 1 auto', mx: 2 }}>
         <AutoSizer>
           {({ height, width }: { height: number, width: number }) => {
             const itemsPerRow = Math.floor(width / pokemonsWidth);

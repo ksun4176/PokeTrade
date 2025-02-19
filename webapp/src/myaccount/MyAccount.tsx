@@ -6,6 +6,8 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import AccountInfo from './components/AccountInfo';
 import MyList from './components/MyLists';
+import Button from '@mui/material/Button';
+import { MyAppBar } from '../sharedComponents/MyAppBar';
 
 type MyAccountProps = {
   pokemons: Map<number, Pokemon>;
@@ -15,6 +17,7 @@ export default function MyAccount(props: MyAccountProps) {
 
   return <>
     <TopGradientContainer flexDirection='column'>
+      <MyAppBar />
       <Grid
         container
         sx={{
@@ -47,11 +50,14 @@ export default function MyAccount(props: MyAccountProps) {
               flexDirection: 'column',
               flexGrow: 1,
               width: '100%',
+              pb: 2
             }}
           >
-            {
-              <AccountInfo />
-            }
+            <AccountInfo />
+            <Box flex='1 1 auto' />
+            <Button variant='contained' color='error'>
+              Logout
+            </Button>
           </Box>
         </Grid>
         <Grid

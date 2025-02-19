@@ -5,11 +5,22 @@ import { FaDiscord, FaQuestionCircle } from "react-icons/fa";
 import { API_URL } from '../utils/constants';
 import { CenterGradientContainer } from '../sharedComponents/CenterGradientContainer';
 import { StandaloneCard } from '../sharedComponents/StandaloneCard';
+import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect } from 'react';
+import { AccountContext } from '../utils/contexts/AccountContext';
 
 export default function LogIn() {
+  const { user } = useContext(AccountContext)
   const login = () => {
     window.location.href = `${API_URL}/auth/login`;
   }
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user) {
+      navigate('/home');
+    }
+  },[user, navigate]);
 
   return (
     <CenterGradientContainer direction="column" justifyContent="space-between">
