@@ -16,6 +16,9 @@ import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
 import { MyAppBar } from '../sharedComponents/MyAppBar';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import IconButton from '@mui/material/IconButton';
+import Popover from '@mui/material/Popover';
 
 type HomeProps = {
   pokemons: Map<number, Pokemon>;
@@ -46,6 +49,14 @@ export default function Home(props: HomeProps) {
     ...trades.otherTrades.sort(sortTrades)
   ] : [];
   
+  const [wishlistHelpAnchorEl, setWishlistHelpAnchorEl] = useState<HTMLElement | null>(null);
+  const handleWishlistHelpOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setWishlistHelpAnchorEl(event.currentTarget);
+  };
+  const handleWishlistHelpClose = () => {
+    setWishlistHelpAnchorEl(null);
+  };
+
   const editWishlist = () => {
     navigate('/edit', { state: { activeStep: 1 } });
   }
@@ -80,9 +91,34 @@ export default function Home(props: HomeProps) {
   return (
     <TopGradientContainer direction="column">
       <MyAppBar />
-      <Box display='flex' m={1}>
-        <Typography variant='h6'>Wishlist</Typography>
-        <Box flex='1 1 auto' />
+      <Box display='flex' mx ={1} mt={1}>
+        <Box flex='1 1 auto' display='flex' alignItems='center'>
+          <Typography variant='h6'>Your Wishlist</Typography>
+          <IconButton
+            color='info' 
+            aria-owns={!!wishlistHelpAnchorEl ? 'wishlist-popover' : undefined}
+            aria-haspopup="true"
+            onMouseEnter={handleWishlistHelpOpen}
+            onMouseLeave={handleWishlistHelpClose}
+          >
+            <HelpOutlineIcon />
+          </IconButton>
+          <Popover
+            id="wishlist-popover"
+            sx={{ pointerEvents: 'none' }}
+            open={!!wishlistHelpAnchorEl}
+            anchorEl={wishlistHelpAnchorEl}
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'center',
+            }}
+            onClose={handleWishlistHelpClose}
+          >
+            <Typography component='pre' sx={{ p: 1 }}>
+              {`Select the Pokémon in your wishlist you would like to search for offers.\nIf you do not see a Pokémon here, go and update your wishlist.`}
+            </Typography>
+          </Popover>
+        </Box>
         <Button
           variant='contained'
           onClick={editWishlist}
@@ -91,6 +127,7 @@ export default function Home(props: HomeProps) {
         </Button>
       </Box>
       <Paper elevation={24} sx={{
+        mx: 1,
         height: 245,
         p: 1,
         pt: 2,
@@ -119,7 +156,12 @@ export default function Home(props: HomeProps) {
       { !!selectedPokemon &&
         <Typography variant='h6' width='100%' p={1}>Offers for {selectedPokemon.name}</Typography>
       }
-      <Box sx={{ flex: '1 1 auto' }}>
+      <Box sx={{
+        flex: '1 1 auto',
+        mx: 1,
+        mb: 2,
+        minHeight: 200
+      }}>
         <AutoSizer>
           {({ height, width }: { height: number, width: number }) => {
             if (!selectedPokemon) {

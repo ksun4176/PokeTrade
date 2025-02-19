@@ -16,6 +16,7 @@ import { AccountStepContent } from './components/AccountStepContent';
 import { PokemonStepContent } from './components/PokemonStepContent';
 import { useFetchAccountTrades } from '../utils/hooks/useFetchAccountTrades';
 import { TradeTypes } from '../utils/constants';
+import { LoadingOverlay } from '../sharedComponents/LoadingOverlay';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -117,7 +118,7 @@ export default function Edit(props: EditProps) {
     }
   };
 
-  const { accountTrades } = useFetchAccountTrades(account?.id);
+  const { accountTrades, accountTradesLoading } = useFetchAccountTrades(account?.id);
   useEffect(() =>{
     setWishlist(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Request).map(t => t.pokemonId)));
     setListToTrade(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Offer).map(t => t.pokemonId)));
@@ -125,6 +126,10 @@ export default function Edit(props: EditProps) {
       setActiveStep(location.state.activeStep);
     }
   },[accountTrades, location.state])
+
+  if (accountTradesLoading) {
+    return <LoadingOverlay />
+  }
 
   const steps: StepInfo[] = [
     {
