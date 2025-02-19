@@ -21,12 +21,12 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 24* 60 * 60 * 1_000 //ms
+        maxAge: 7 * 24 * 60 * 60 * 1_000 //ms
       },
       store: new PrismaSessionStore(
         new PrismaClient(),
         {
-          checkPeriod: 2 * 60 * 1000,  //ms
+          checkPeriod: 2 * 60 * 1_000,  //ms
           dbRecordIdIsSessionId: true,
           dbRecordIdFunction: undefined,
         }

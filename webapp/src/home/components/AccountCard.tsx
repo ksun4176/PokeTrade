@@ -17,7 +17,7 @@ export default function AccountCard(props: AccountCardProps) {
     pt: 4,
     ...cardSx
   }}>
-    <Avatar sx={{ ml: 1, mr: 1 }}>{account.user.username[0]}</Avatar>
+    <Avatar sx={{ mx: 1 }}>{account.user.username[0]}</Avatar>
     <Box display='flex' flexDirection='column' gap={1}>
       <Typography>{account.user.username}</Typography>
       <Button

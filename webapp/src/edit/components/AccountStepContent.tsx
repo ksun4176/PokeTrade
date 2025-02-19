@@ -54,7 +54,7 @@ export function AccountStepContent(props: AccountStepContentProps) {
       ignState={ignState}
       ignErrorState={ignErrorState}
       friendCodeState={friendCodeState}
-      friendCodeErrorState={friendCodeErrorState} 
+      friendCodeErrorState={friendCodeErrorState}
     />
   </StepContent>
 }

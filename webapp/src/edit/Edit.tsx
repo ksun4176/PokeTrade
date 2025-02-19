@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React, { JSX, useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -9,11 +9,13 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { Pokemon } from '../utils/types';
 import { AccountContext } from '../utils/contexts/AccountContext';
-import { getAccountTrades, updateAccountTrades } from '../utils/apis';
+import { updateAccountTrades } from '../utils/apis';
 import { TopGradientContainer } from '../sharedComponents/TopGradientContainer';
 import { useNavigate } from 'react-router-dom';
 import { AccountStepContent } from './components/AccountStepContent';
 import { PokemonStepContent } from './components/PokemonStepContent';
+import { useFetchAccountTrades } from '../utils/hooks/useFetchAccountTrades';
+import { TradeTypes } from '../utils/constants';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -29,13 +31,13 @@ const ModalContent = styled(Box)(({ theme }) => ({
 
 type StepInfo = {
   label: string,
-  content: JSX.Element,
+  content: React.ReactNode,
 }
 
-type WelcomeProps = {
+type EditProps = {
   pokemons: Map<number, Pokemon>;
 }
-export default function Welcome(props: WelcomeProps) {
+export default function Edit(props: EditProps) {
   const { account } = useContext(AccountContext);
 
   const navigate = useNavigate();
@@ -114,19 +116,11 @@ export default function Welcome(props: WelcomeProps) {
     }
   };
 
+  const { accountTrades } = useFetchAccountTrades(account?.id);
   useEffect(() =>{
-    if (account) {
-      getAccountTrades(account.id)
-        .then(({ data }) => {
-          if (data.length > 0) {
-            navigate('/home');
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        })
-    }
-  }, [account, navigate]);
+    setWishlist(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Request).map(t => t.pokemonId)));
+    setListToTrade(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Offer).map(t => t.pokemonId)));
+  },[accountTrades])
 
   const steps: StepInfo[] = [
     {
@@ -149,27 +143,20 @@ export default function Welcome(props: WelcomeProps) {
         pokemonList={listToTrade}
         updatePokemonIds={updateListToTrade}
         handleSteps={handleSteps}
+        isLastStep
       />
     }
   ];
 
   return <>
     <TopGradientContainer flexDirection='column'>
-      <Typography
-        variant='h6'
-        component="h2"
-        textAlign='center'
-        paddingTop={1}
-        paddingBottom={1}
-      >
-        Welcome to the PokéTrade!
-      </Typography>
       <Stepper 
         activeStep={activeStep}
         sx={{
           alignSelf: 'center',
           width: {xs: '100%', sm: '90%', md: '65%'},
           mb: 2,
+          pt: 4
         }}
       >
         {steps.map((step, index) => 

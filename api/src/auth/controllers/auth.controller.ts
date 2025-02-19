@@ -14,7 +14,7 @@ export class AuthController {
   @Get('redirect')
   @UseGuards(DiscordAuthGuard)
   redirect(@Res() res: Response) {
-    res.redirect(`${process.env.APP_URL!}/welcome`);
+    res.redirect(`${process.env.APP_URL!}/home`);
   }
 
   @Get('status')

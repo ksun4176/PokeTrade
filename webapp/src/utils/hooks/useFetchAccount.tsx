@@ -8,13 +8,16 @@ export function useFetchAccount() {
   const [accountError, setError] = useState();
   const [accountLoading, setLoading] = useState(false);
   useEffect(() => {
+    let ignore = false;
     setLoading(true);
     getAuthStatus()
       .then(({ data }) => {
-        setUser(data);
+        if (!ignore) {
+          setUser(data);
+        }
         getAccounts()
           .then(({ data }) => {
-            if (data.length > 0) {
+            if (!ignore && data.length > 0) {
               setAccount(data[0]);
             }
           })
@@ -28,6 +31,10 @@ export function useFetchAccount() {
         setError(error);
       })
       .finally(() => setLoading(false));
+      
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   return { user, account, setAccount, accountError, accountLoading };

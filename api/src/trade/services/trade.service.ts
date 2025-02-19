@@ -113,17 +113,19 @@ export class TradeService implements ITradeService {
     // Split up the offerers into whether there is a matching trade or there is not a matching trade
     // cardToAccount: Matches AccountTradeMatches structure
     const cardToAccount: CardToAccount = new Map();
-    for (const trade of matchingTrades) {
-      const accountId = trade.accountId;
-      const accountRarity = accountMatchingRarityMap.get(accountId);
-      const pokemon = trade.pokemonCardDex;
-      const pokemonId = pokemon.id;
+    for (const pokemonId of wishlist) {
       if (!cardToAccount.has(pokemonId)) {
         cardToAccount.set(pokemonId, {
           matchingTrades: [],
           otherTrades: []
         });
       }
+    }
+    for (const trade of matchingTrades) {
+      const accountId = trade.accountId;
+      const accountRarity = accountMatchingRarityMap.get(accountId);
+      const pokemon = trade.pokemonCardDex;
+      const pokemonId = pokemon.id;
       const cardAccounts = cardToAccount.get(pokemonId)!;
       const { pokemonCardDex: _, ...outputTrade } = trade;
       if (accountRarity && (accountRarity&1<<pokemon.rarityId) > 0) {

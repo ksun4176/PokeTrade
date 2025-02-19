@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import LogIn from "./login/Login";
-import Welcome from "./welcome/Welcome";
+import Edit from "./edit/Edit";
 import { useFetchAccount } from "./utils/hooks/useFetchAccount";
 import { AccountContext } from "./utils/contexts/AccountContext";
 import { Pokemon } from "./utils/types";
@@ -10,19 +10,27 @@ import Downtime from "./downtime/Downtime";
 import { useEffect, useState } from "react";
 import { getPokemons } from "./utils/apis";
 import { Account } from "@prisma/client";
+import MyAccount from "./myaccount/MyAccount";
  
 function App() {
   const { user, account, setAccount, accountError, accountLoading } = useFetchAccount();
   const [pokemons, setPokemons] = useState<Map<number, Pokemon>>();
   useEffect(() => {
+    let ignore = false
     getPokemons()
       .then(({ data }) => {
-        const pokemonMap = new Map(data.map(p => [p.id, p]));
-        setPokemons(pokemonMap);
+        if (!ignore) {
+          const pokemonMap = new Map(data.map(p => [p.id, p]));
+          setPokemons(pokemonMap);
+        }
       })
       .catch((error) => {
         console.error(error);
       })
+    
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   if (accountLoading) {
@@ -35,28 +43,29 @@ function App() {
   if (!pokemons || pokemons.size === 0) {
     // can't load pokemons (likely connection issue)
     routes = <Routes>
-      <Route path="/" element={<Downtime />} />
+      <Route path="*" element={<Downtime />} />
     </Routes>
   }
   else if (!user || accountError) {
     // not logged in
     routes = <Routes>
-      <Route path="/" element={<LogIn />} />
+      <Route path="*" element={<LogIn />} />
     </Routes>
   }
   else if (!account) {
     // no account set up
     routes = <Routes>
       <Route path="/" element={<LogIn />} />
-      <Route path="/welcome" element={<Welcome pokemons={pokemons} />} />
-    </Routes> 
+      <Route path="/home" element={<Home pokemons={pokemons} />} />
+      <Route path="/edit" element={<Edit pokemons={pokemons} />} />
+    </Routes>
   }
   else {
-    // all accessible
     routes = <Routes>
       <Route path="/" element={<LogIn />} />
-      <Route path="/welcome" element={<Welcome pokemons={pokemons} />} />
       <Route path="/home" element={<Home pokemons={pokemons} />} />
+      <Route path="/edit" element={<Edit pokemons={pokemons} />} />
+      <Route path="/myaccount" element={<MyAccount pokemons={pokemons} />} />
     </Routes> 
   }
 

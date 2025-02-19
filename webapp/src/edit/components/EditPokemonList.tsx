@@ -22,7 +22,7 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
 
     return <Box flex='1 1 auto' display='flex' flexDirection='column' overflow='auto'>
       <Paper elevation={24} sx={{
-        height: {xs: 185, sm: 340 },
+        height: {xs: 185, sm: 345 },
         p: 1,
         flexShrink: 0,
         display: 'flex',
@@ -38,7 +38,8 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
             key={id}
             pokemon={pokemons.get(id)!}
             height={150}
-            onClick={() => updatePokemonIds(id, false)} />
+            onClick={() => updatePokemonIds(id, false)}
+          />
         )}
       </Paper>
       <Box m={1} sx={{ flex: '1 1 auto' }}>
@@ -64,9 +65,11 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
                       <PokemonCard
                         key={pokemonsArray[i].id}
                         pokemon={pokemonsArray[i]}
-                        disabled={selectedPokemons.has(pokemonsArray[i].id)}
+                        height={pokemonsHeight} 
                         onClick={() => updatePokemonIds(pokemonsArray[i].id, true)} 
-                        height={pokemonsHeight} />
+                        disabled={selectedPokemons.has(pokemonsArray[i].id)}
+                        showOverlay={selectedPokemons.has(pokemonsArray[i].id)}
+                      />
                     )
                   }
 

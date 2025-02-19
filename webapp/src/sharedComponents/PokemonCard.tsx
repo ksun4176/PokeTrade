@@ -13,13 +13,14 @@ export interface ICardProps {
   height: number;
   onClick?: () => void;
   disabled?: boolean;
+  showOverlay?: boolean;
   overlayIcon?: JSX.Element,
   badgeContent?: string|number
 }
 
 export class PokemonCard extends React.Component<ICardProps> {
   override render() {
-    const { pokemon, height, disabled, onClick, overlayIcon, badgeContent } = this.props;
+    const { pokemon, height, onClick,  disabled, showOverlay, overlayIcon, badgeContent } = this.props;
 
     const imageSource = pokemonImagesMap.get(pokemon.id);
 
@@ -41,7 +42,7 @@ export class PokemonCard extends React.Component<ICardProps> {
     const card = <Card sx={{ p: 0 }}>
       <CardActionArea disabled={disabled} onClick={onClick}>
         {cardContent}
-        { !disabled ? null :
+        { showOverlay &&
           <>
             <Box sx={{
               overflow: 'hidden',
@@ -54,7 +55,7 @@ export class PokemonCard extends React.Component<ICardProps> {
               opacity: .5,
               backgroundColor: '#000',
             }} />
-            { !overlayIcon ? null :
+            { !!overlayIcon &&
               <Box sx={{
                 overflow: 'hidden',
                 position: 'absolute',
@@ -76,7 +77,7 @@ export class PokemonCard extends React.Component<ICardProps> {
     </Card>;
 
     if (badgeContent !== undefined) {
-      return <Badge badgeContent={badgeContent} color='primary'>
+      return <Badge badgeContent={badgeContent} showZero color='primary'>
         {card}
       </Badge>
     }

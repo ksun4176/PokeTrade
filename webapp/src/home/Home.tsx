@@ -14,12 +14,14 @@ import CardContent from '@mui/material/CardContent';
 import AccountCard from './components/AccountCard';
 import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useNavigate } from 'react-router-dom';
 
 type HomeProps = {
   pokemons: Map<number, Pokemon>;
 }
 export default function Home(props: HomeProps) {
   const { account } = useContext(AccountContext);
+  const navigate = useNavigate();
   const { pokemons } = props;
   const [cardToAccount, setCardToAccount] = useState<CardToAccount>(new Map());
   const [accountToPokemon, setAccountToPokemon] = useState<AccountToPokemon>(new Map());
@@ -44,17 +46,31 @@ export default function Home(props: HomeProps) {
   ] : [];
 
   useEffect(() => {
-    if (account) {
+    let ignore = false;
+    if (!account) {
+      navigate('/edit');
+    }
+    else {
       getAccountTradeMatches(account.id)
         .then(({ cardToAccount, accountToPokemon }) => {
-          setCardToAccount(cardToAccount);
-          setAccountToPokemon(accountToPokemon);
+          if (!ignore) {
+            if (cardToAccount.size === 0) {
+              navigate('/edit');
+            }
+            else {
+              setCardToAccount(cardToAccount);
+              setAccountToPokemon(accountToPokemon);
+            }
+          }
         })
         .catch(error => {
           console.error(error);
         })
     }
-  },[account]);
+    return () => {
+      ignore = true;
+    };
+  },[account, navigate]);
   
   return (
     <TopGradientContainer direction="column">
@@ -70,30 +86,30 @@ export default function Home(props: HomeProps) {
         pt: 2,
         flexShrink: 0,
         display: 'flex',
-        flexDirection: 'column',
-        flexWrap: 'wrap',
         alignItems: 'flex-start',
-        alignContent: 'flex-start',
-        gap: '4px',
+        gap: 2,
         overflowX: 'auto',
       }}>
         {wishlist.map(id => {
+          const selected = id === selectedPokemonId;
           const tradeInfo = cardToAccount.get(id)!;
+          const numTrades = tradeInfo.matchingTrades.length+tradeInfo.otherTrades.length;
           return <PokemonCard
             key={id}
             pokemon={pokemons.get(id)!}
             height={200}
             onClick={() => setSelectedPokemonId(id)} 
-            disabled={id === selectedPokemonId} 
-            overlayIcon={<CheckCircleIcon fontSize="large" color="success"/>}
-            badgeContent={tradeInfo.matchingTrades.length+tradeInfo.otherTrades.length}
+            disabled={selected || numTrades === 0}
+            showOverlay={selected || numTrades === 0}
+            overlayIcon={numTrades > 0 ? <CheckCircleIcon fontSize="large" color="success"/> : undefined}
+            badgeContent={numTrades}
           />
         })}
       </Paper>
-      {!selectedPokemon ? null :
-        <Typography variant='h6' width='100%'>Offers for {selectedPokemon.name}</Typography>
+      { !!selectedPokemon &&
+        <Typography variant='h6' width='100%' p={1}>Offers for {selectedPokemon.name}</Typography>
       }
-      <Box mt={1} sx={{ flex: '1 1 auto' }}>
+      <Box sx={{ flex: '1 1 auto' }}>
         <AutoSizer>
           {({ height, width }: { height: number, width: number }) => {
             if (!selectedPokemon) {
@@ -134,7 +150,12 @@ export default function Home(props: HomeProps) {
                                 display: 'flex',
                                 alignItems: 'center'
                             }}>
-                              <CardContent>
+                              <CardContent sx={{
+                                p: 1,
+                                ':last-child': {
+                                  p: 1
+                                }
+                              }}>
                                 <Typography>
                                   {pokemon.expansion.name} {pokemon.name}{pokemon.pokemonPostfix ? ` ${pokemon.pokemonPostfix.name}` : ``}
                                 </Typography>

@@ -11,7 +11,7 @@ export class DiscordStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       clientID: process.env.CLIENT_ID!,
-      clientSecret: process.env.CLIENT_TOKEN!,
+      clientSecret: process.env.CLIENT_SECRET!,
       callbackURL: process.env.CLIENT_REDIRECT_URL,
       scope: ['identify', 'guilds']
     });
