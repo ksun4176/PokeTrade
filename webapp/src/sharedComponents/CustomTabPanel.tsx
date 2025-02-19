@@ -3,21 +3,18 @@ import Box from "@mui/material/Box";
 type TabPanelProps = {
   children: React.ReactNode;
   prefix: string;
-  value: number;
   index: number;
 }
 export function CustomTabPanel(props: TabPanelProps) {
-  const { children, prefix, value, index } = props;
-  return <div
+  const { children, prefix, index } = props;
+  return <Box 
     role="tabpanel"
-    hidden={value !== index}
     id={`${prefix}-${index}`}
     aria-labelledby={`${prefix}-${index}`}
+    sx={{ pt: 2 }}
   >
-    { value === index && 
-      <Box sx={{ pt: 2 }}>{children}</Box>
-    }
-  </div>
+    {children}
+  </Box>
 }
 export function TabA11yProps(prefix: string, index: number) {
   return {

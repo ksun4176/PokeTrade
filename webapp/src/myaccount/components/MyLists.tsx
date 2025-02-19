@@ -11,23 +11,50 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import { CustomTabPanel, TabA11yProps } from '../../sharedComponents/CustomTabPanel';
+import { useNavigate } from 'react-router-dom';
+
+type TabInfo = {
+  label: string,
+  content: React.ReactNode,
+}
 
 type MyListsProps = {
   pokemons: Map<number, Pokemon>;
 }
 export default function MyLists(props: MyListsProps) {
   const { account } = useContext(AccountContext);
+  const navigate = useNavigate();
+
+  const editList = () => {
+    navigate('/edit', { state: { activeStep: tabIndex+1 } });
+  }
+
+  const { pokemons } = props;
+  const { accountTrades } = useFetchAccountTrades(account?.id);
+  const wishlist = accountTrades.filter(t => t.tradeTypeId === TradeTypes.Request).map(t => t.pokemonId);
+  const listForTrade = accountTrades.filter(t => t.tradeTypeId === TradeTypes.Offer).map(t => t.pokemonId);
 
   const tabPrefix = `pokemonlist-tab`;
   const [tabIndex, setTabIndex] = useState(0);
   const switchTab = (_event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
-
-  const { pokemons } = props;
-  const { accountTrades } = useFetchAccountTrades(account?.id);
-  const wishlist = accountTrades.filter(t => t.tradeTypeId === TradeTypes.Request).map(t => t.pokemonId);
-  const listForTrade = accountTrades.filter(t => t.tradeTypeId === TradeTypes.Offer).map(t => t.pokemonId);
+  const tabs: TabInfo[] = [
+    {
+      label: 'Wishlist',
+      content: <PokemonList
+        pokemons={pokemons}
+        selectedList={wishlist}
+      />
+    },
+    {
+      label: 'List for Trading',
+      content: <PokemonList
+        pokemons={pokemons}
+        selectedList={listForTrade}
+      />
+    }
+  ];
 
   return <Card variant='outlined' sx={{
     flexGrow: 1,
@@ -47,22 +74,17 @@ export default function MyLists(props: MyListsProps) {
           <Tab label='List for Trading' {...TabA11yProps(tabPrefix, 1)} />
         </Tabs>
         <Box flex='1 1 auto' />
-        <Button variant='contained' color='primary'>
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={editList}
+        >
           Edit List
         </Button>
       </Box>
       <Box>
-        <CustomTabPanel prefix={tabPrefix} value={tabIndex} index={0}>
-          <PokemonList
-            pokemons={pokemons}
-            selectedList={wishlist}
-          />
-        </CustomTabPanel>
-        <CustomTabPanel prefix={tabPrefix} value={tabIndex} index={1}>
-          <PokemonList
-            pokemons={pokemons}
-            selectedList={listForTrade}
-          />
+        <CustomTabPanel prefix={tabPrefix} index={tabIndex}>
+          {tabs[tabIndex].content}
         </CustomTabPanel>
       </Box>
     </CardContent>

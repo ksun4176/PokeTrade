@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import LogIn from "./login/Login";
 import Edit from "./edit/Edit";
 import { useFetchAccount } from "./utils/hooks/useFetchAccount";
@@ -15,6 +15,10 @@ import MyAccount from "./myaccount/MyAccount";
 function App() {
   const { user, account, setAccount, accountError, accountLoading } = useFetchAccount();
   const [pokemons, setPokemons] = useState<Map<number, Pokemon>>();
+  const updateAccount = (account: Account) => setAccount(account);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     let ignore = false
     getPokemons()
@@ -22,7 +26,7 @@ function App() {
         if (!ignore) {
           const pokemonMap = new Map(data.map(p => [p.id, p]));
           setPokemons(pokemonMap);
-        }
+         }
       })
       .catch((error) => {
         console.error(error);
@@ -33,14 +37,18 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      navigate('/home');
+    }
+  }, [user, navigate]);
+
   if (accountLoading) {
     return <LoadingOverlay />
   }
 
-  const updateAccount = (account: Account) => setAccount(account);
-
   let routes = <Routes></Routes>
-  if (!pokemons || pokemons.size === 0) {
+  if (!pokemons) {
     // can't load pokemons (likely connection issue)
     routes = <Routes>
       <Route path="*" element={<Downtime />} />

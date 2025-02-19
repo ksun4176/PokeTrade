@@ -44,6 +44,10 @@ export default function Home(props: HomeProps) {
     ...trades.matchingTrades.sort(sortTrades),
     ...trades.otherTrades.sort(sortTrades)
   ] : [];
+  
+  const editWishlist = () => {
+    navigate('/edit', { state: { activeStep: 1 } });
+  }
 
   useEffect(() => {
     let ignore = false;
@@ -78,7 +82,12 @@ export default function Home(props: HomeProps) {
       <Box display='flex' m={1}>
         <Typography variant='h6'>Wishlist</Typography>
         <Box flex='1 1 auto' />
-        <Button variant='contained'>Update Wishlist</Button>
+        <Button
+          variant='contained'
+          onClick={editWishlist}
+        >
+          Update Wishlist
+        </Button>
       </Box>
       <Paper elevation={24} sx={{
         height: 245,

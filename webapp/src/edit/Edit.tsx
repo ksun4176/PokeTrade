@@ -11,7 +11,7 @@ import { Pokemon } from '../utils/types';
 import { AccountContext } from '../utils/contexts/AccountContext';
 import { updateAccountTrades } from '../utils/apis';
 import { TopGradientContainer } from '../sharedComponents/TopGradientContainer';
-import { useNavigate } from 'react-router-dom';
+import { Location, useLocation, useNavigate } from 'react-router-dom';
 import { AccountStepContent } from './components/AccountStepContent';
 import { PokemonStepContent } from './components/PokemonStepContent';
 import { useFetchAccountTrades } from '../utils/hooks/useFetchAccountTrades';
@@ -41,11 +41,12 @@ export default function Edit(props: EditProps) {
   const { account } = useContext(AccountContext);
 
   const navigate = useNavigate();
+  const location: Location<{activeStep?: number} | undefined> = useLocation();
   
   const addAccountTrades = async () => {
     if (!account) { return; }
     await updateAccountTrades(account.id, wishlist, listToTrade);
-    navigate('/home');
+    navigate(-1);
   };
 
   const { pokemons } = props;
@@ -120,7 +121,10 @@ export default function Edit(props: EditProps) {
   useEffect(() =>{
     setWishlist(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Request).map(t => t.pokemonId)));
     setListToTrade(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Offer).map(t => t.pokemonId)));
-  },[accountTrades])
+    if (location.state?.activeStep !== undefined) {
+      setActiveStep(location.state.activeStep);
+    }
+  },[accountTrades, location.state])
 
   const steps: StepInfo[] = [
     {
