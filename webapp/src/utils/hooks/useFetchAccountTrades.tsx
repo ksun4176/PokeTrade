@@ -7,27 +7,30 @@ export function useFetchAccountTrades(accountId?: number) {
   const [accountTradesError, setError] = useState();
   const [accountTradesLoading, setLoading] = useState(false);
   useEffect(() => {
-    if (!accountId) {
-      return
+    if (!accountId) return;
+    async function startFetching(accountId: number) {
+      const { data } = await getAccountTrades(accountId);
+      if (!ignore) {
+        setAccountTrades(data);
+      }
     }
-    let ignore = false;
     setLoading(true);
-    getAccountTrades(accountId)
-      .then(({ data }) => {
-        if (!ignore) {
-          setAccountTrades(data);
-        }
-      })
+    let ignore = false;
+    startFetching(accountId)
       .catch(error => {
         console.error(error);
         setError(error);
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!ignore) {
+          setLoading(false);
+        }
+      });
     
     return () => {
       ignore = true;
     };
   }, [accountId]);
 
-  return { accountTrades, setAccountTrades, accountTradesError, accountTradesLoading };
+  return { accountTrades, accountTradesError, accountTradesLoading };
 }

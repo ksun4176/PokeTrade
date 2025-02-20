@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { Routes } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decorators';
 import { AuthenticatedGuard, DiscordAuthGuard } from 'src/utils/Guards';
@@ -14,7 +14,7 @@ export class AuthController {
   @Get('redirect')
   @UseGuards(DiscordAuthGuard)
   redirect(@Res() res: Response) {
-    res.redirect(`${process.env.APP_URL!}/home`);
+    res.redirect(`${process.env.APP_URL!}/`);
   }
 
   @Get('status')
@@ -23,6 +23,12 @@ export class AuthController {
     return user;
   }
 
-  @Post('logout')
-  logout() { }
+  @Get('logout')
+  logout(
+    @Req() req: Request,
+    @Res() res: Response
+  ) {
+    req.logout({ keepSessionInfo: false }, () => {});
+    res.redirect(`${process.env.APP_URL!}/`);
+  }
 }

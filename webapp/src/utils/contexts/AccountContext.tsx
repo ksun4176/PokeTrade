@@ -4,10 +4,10 @@ import { createContext } from "react";
 type AccountContextType = {
   user: User | null;
   account: Account | null;
-  updateAccount: (account: Account) => void;
+  setAccount: (account: Account) => void;
 }
 export const AccountContext = createContext<AccountContextType>({
   user: null,
   account: null,
-  updateAccount: () => {}
+  setAccount: () => {}
 })

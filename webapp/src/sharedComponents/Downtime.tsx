@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography';
-import { StandaloneCard } from '../sharedComponents/StandaloneCard';
-import { CenterGradientContainer } from '../sharedComponents/CenterGradientContainer';
+import { StandaloneCard } from './StandaloneCard';
+import { CenterGradientContainer } from './CenterGradientContainer';
 
 export default function Downtime() {
   return (

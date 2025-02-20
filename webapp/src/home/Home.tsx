@@ -2,7 +2,7 @@ import { TopGradientContainer } from '../sharedComponents/TopGradientContainer';
 import { AccountToPokemon, CardToAccount, Pokemon, TradeWithAccount } from '../utils/types';
 import Box from '@mui/material/Box';
 import { useContext, useEffect, useState } from 'react';
-import { getAccountTradeMatches } from '../utils/apis';
+import { useFetchAccountTradeMatches } from '../utils/hooks/useFetchAccountTradeMatches';
 import { AccountContext } from '../utils/contexts/AccountContext';
 import { PokemonCard } from '../sharedComponents/PokemonCard';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -19,6 +19,8 @@ import { MyAppBar } from '../sharedComponents/MyAppBar';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
+import { LoadingOverlay } from '../sharedComponents/LoadingOverlay';
+import Downtime from '../sharedComponents/Downtime';
 
 type HomeProps = {
   pokemons: Map<number, Pokemon>;
@@ -61,37 +63,25 @@ export default function Home(props: HomeProps) {
     navigate('/edit', { state: { activeStep: 1 } });
   }
 
+  const { accountTradeMatches, accountTradeMatchesError, accountTradeMatchesLoading } = useFetchAccountTradeMatches(account?.id);
   useEffect(() => {
-    let ignore = false;
-    if (!account) {
-      navigate('/edit');
+    if (accountTradeMatches) {
+      setCardToAccount(accountTradeMatches.cardToAccount);
+      setAccountToPokemon(accountTradeMatches.accountToPokemon);
     }
-    else {
-      getAccountTradeMatches(account.id)
-        .then(({ cardToAccount, accountToPokemon }) => {
-          if (!ignore) {
-            if (cardToAccount.size === 0) {
-              navigate('/edit');
-            }
-            else {
-              setCardToAccount(cardToAccount);
-              setAccountToPokemon(accountToPokemon);
-            }
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        })
-    }
-    return () => {
-      ignore = true;
-    };
-  },[account, navigate]);
+  },[accountTradeMatches]);
   
+  if (accountTradeMatchesLoading) {
+    return <LoadingOverlay />
+  }
+  else if (accountTradeMatchesError) {
+    return <Downtime />
+  }
+
   return (
     <TopGradientContainer direction="column">
       <MyAppBar />
-      <Box display='flex' mx ={1} mt={1}>
+      <Box display='flex' m={1}>
         <Box flex='1 1 auto' display='flex' alignItems='center'>
           <Typography variant='h6'>Your Wishlist</Typography>
           <IconButton
@@ -137,7 +127,14 @@ export default function Home(props: HomeProps) {
         gap: 2,
         overflowX: 'auto',
       }}>
-        {wishlist.map(id => {
+        {wishlist.length === 0 ? 
+          <Typography variant='h6' color='info' sx={{
+            alignSelf: 'center',
+            mx: 'auto'
+          }}>
+            Your wishlist is empty. If you want to see what offers there are out there, update your wishlist.
+          </Typography> : 
+          wishlist.map(id => {
           const selected = id === selectedPokemonId;
           const tradeInfo = cardToAccount.get(id)!;
           const numTrades = tradeInfo.matchingTrades.length+tradeInfo.otherTrades.length;

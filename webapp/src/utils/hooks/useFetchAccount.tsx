@@ -6,31 +6,32 @@ export function useFetchAccount() {
   const [user, setUser] = useState<User | null>(null);
   const [account, setAccount] = useState<Account | null>(null);
   const [accountError, setError] = useState();
-  const [accountLoading, setLoading] = useState(false);
+  const [accountLoading, setLoading] = useState(true);
   useEffect(() => {
-    let ignore = false;
-    setLoading(true);
-    getAuthStatus()
-      .then(({ data }) => {
-        if (!ignore) {
-          setUser(data);
+    async function startFetching() {
+      let authResponse = await getAuthStatus();
+      const user = authResponse.data;
+      let accountsResponse = await getAccounts();
+      const accounts = accountsResponse.data;
+
+      if (!ignore) {
+        setUser(user);
+        if (accounts.length > 0) {
+          setAccount(accounts[0]);
         }
-        getAccounts()
-          .then(({ data }) => {
-            if (!ignore && data.length > 0) {
-              setAccount(data[0]);
-            }
-          })
-          .catch(error => {
-            console.error(error);
-            setError(error);
-          })
-      })
+      }
+    }
+    let ignore = false;
+    startFetching()
       .catch(error => {
         console.error(error);
         setError(error);
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!ignore) {
+          setLoading(false);
+        }
+      })
       
     return () => {
       ignore = true;

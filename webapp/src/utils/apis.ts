@@ -1,17 +1,18 @@
 import { Account, User } from "@prisma/client";
 import axios, { AxiosRequestConfig } from "axios";
 import { AccountTradeDetails, AccountTradeMatches, Pokemon, TradeWithStringUpdated } from "./types";
-import { API_URL, TradeTypes } from "./constants";
+import { TradeTypes } from "./constants";
 
 const CONFIG: AxiosRequestConfig = {
   withCredentials: true
 };
 
-export const getAuthStatus = () => axios.get<User>(`${API_URL}/auth/status`, CONFIG);
-export const getAccounts = () => axios.get<Account[]>(`${API_URL}/users/@me/accounts`, CONFIG);
-export const getPokemons = () => axios.get<Pokemon[]>(`${API_URL}/pokemons`, CONFIG);
-export const getAccountTrades = (accountId: number) => axios.get<TradeWithStringUpdated[]>(`${API_URL}/accounts/${accountId}/trades`, CONFIG);
-export const getAccountTradeMatches = (accountId: number) => axios.get<AccountTradeMatches>(`${API_URL}/accounts/${accountId}/tradematches`, CONFIG)
+export const logout = () => axios.get(`${process.env.REACT_APP_API_URL}/auth/logout`,CONFIG);
+export const getAuthStatus = () => axios.get<User>(`${process.env.REACT_APP_API_URL}/auth/status`, CONFIG);
+export const getAccounts = () => axios.get<Account[]>(`${process.env.REACT_APP_API_URL}/users/@me/accounts`, CONFIG);
+export const getPokemons = () => axios.get<Pokemon[]>(`${process.env.REACT_APP_API_URL}/pokemons`, CONFIG);
+export const getAccountTrades = (accountId: number) => axios.get<TradeWithStringUpdated[]>(`${process.env.REACT_APP_API_URL}/accounts/${accountId}/trades`, CONFIG);
+export const getAccountTradeMatches = (accountId: number) => axios.get<AccountTradeMatches>(`${process.env.REACT_APP_API_URL}/accounts/${accountId}/tradematches`, CONFIG)
   .then(({ data }) => (
     {
       cardToAccount: new Map(data.cardToAccount),
@@ -20,7 +21,7 @@ export const getAccountTradeMatches = (accountId: number) => axios.get<AccountTr
   ));
 
 export const updateAccountInfo = (accountId: number, inGameName?: string, friendCode?: string) => axios.put<Account>(
-  `${API_URL}/accounts/${accountId}`,
+  `${process.env.REACT_APP_API_URL}/accounts/${accountId}`,
   {
     inGameName,
     friendCode
@@ -35,7 +36,7 @@ export const updateAccountTrades = (accountId: number, wishlist: Set<number>, li
   ];
 
   return axios.post<number>(
-    `${API_URL}/accounts/${accountId}/trades`,
+    `${process.env.REACT_APP_API_URL}/accounts/${accountId}/trades`,
     {
       trades,
     },
@@ -44,7 +45,7 @@ export const updateAccountTrades = (accountId: number, wishlist: Set<number>, li
 }
 
 export const createAccount = (inGameName: string, friendCode: string) => axios.post<Account>(
-  `${API_URL}/users/@me/accounts`,
+  `${process.env.REACT_APP_API_URL}/users/@me/accounts`,
   {
     inGameName,
     friendCode

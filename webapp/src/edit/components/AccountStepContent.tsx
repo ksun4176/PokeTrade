@@ -13,7 +13,7 @@ export interface AccountStepContentProps {
 export function AccountStepContent(props: AccountStepContentProps) {
   const { handleSteps, isFirstStep, isLastStep } = props;
   
-  const { account, updateAccount } = useContext(AccountContext);
+  const { account, setAccount } = useContext(AccountContext);
   const ignState = React.useState('');
   const ignErrorState = React.useState('');
   const friendCodeState = React.useState('');
@@ -40,7 +40,7 @@ export function AccountStepContent(props: AccountStepContentProps) {
       const createAccountResponse = await createAccount(ign, friendCode);
       newAccount = createAccountResponse.data;
     }
-    updateAccount(newAccount);
+    setAccount(newAccount);
   };
 
   return <StepContent
