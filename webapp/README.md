@@ -3,31 +3,35 @@ The web app to manage trade requests/offers.
 
 ## Table of Contents
 - [First Access](#first-access)
-- [Home](#home)
+- [Searching for Trades](#searching-for-trades)
+- [View Account Info](#view-account-info)
+- [Making Changes](#making-changes)
 - [FAQs](#faqs)
 - [File Structure](#file-structure)
 - [Contributing](#contributing)
 
 ## First Access
 When a user first accesses the web app, they will be asked to complete a couple of steps.
-1. User needs to link an account
+1. User will need to log in using discord
+1. User needs to link their Pokémon TCG Pocket account
 2. User will select the Pokémons they are looking for to their Wishlist
 3. User will select the Pokémons they are looking to trade away to their List for Trading
 4. After completing this they will then be able to search for available trades
 
-## Home
-This is where users will be able to see what trades are available out there and then reach out to those folks to initiate a trade.
+## Searching for Trades
+You can see what trades are available out there in the `Home` page. This is where you can also reach out to folks to initiate a trade.
 1. User selects Pokémons from their wishlist
 2. They will then be able to see all offers for that Pokémon
 3. Copy the `@mention` and head over to discord to message that person in the server!
 4. Make updates to your wishlist to search for more Pokémons
 
-## MyAccount
-This is where you can see all information about your account.
-1. View linked account
-2. View wishlist and list for trading Pokémons
-3. Use the available buttons to edit information
-4. Log out if needed
+## View Account Info
+You will see the profile icon on the top right. This will redirect you to the `MyAccount` page where you can view information on your account.
+You can also log out from here. 
+
+## Making Changes
+Making changes will bring you back to the initial edit steps you saw when you first accessed the app. To get here, there are a lot of buttons throughout the app that is hopefully easily recognizable.
+You can edit anything from linked account information to your lists of Pokémons.
 
 ## FAQs
 

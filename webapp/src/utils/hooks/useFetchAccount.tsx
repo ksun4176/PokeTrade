@@ -38,5 +38,5 @@ export function useFetchAccount() {
     };
   }, []);
 
-  return { user, account, setAccount, accountError, accountLoading };
+  return { user, setUser, account, setAccount, accountError, accountLoading };
 }

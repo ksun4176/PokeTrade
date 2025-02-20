@@ -7,7 +7,6 @@ const CONFIG: AxiosRequestConfig = {
   withCredentials: true
 };
 
-export const logout = () => axios.get(`${process.env.REACT_APP_API_URL}/auth/logout`,CONFIG);
 export const getAuthStatus = () => axios.get<User>(`${process.env.REACT_APP_API_URL}/auth/status`, CONFIG);
 export const getAccounts = () => axios.get<Account[]>(`${process.env.REACT_APP_API_URL}/users/@me/accounts`, CONFIG);
 export const getPokemons = () => axios.get<Pokemon[]>(`${process.env.REACT_APP_API_URL}/pokemons`, CONFIG);
@@ -50,5 +49,11 @@ export const createAccount = (inGameName: string, friendCode: string) => axios.p
     inGameName,
     friendCode
   },
+  CONFIG
+);
+
+export const postLogOut = () => axios.post(
+  `${process.env.REACT_APP_API_URL}/auth/logout`,
+  {},
   CONFIG
 );

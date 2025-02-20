@@ -19,7 +19,6 @@ import { MyAppBar } from '../sharedComponents/MyAppBar';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
-import { LoadingOverlay } from '../sharedComponents/LoadingOverlay';
 import Downtime from '../sharedComponents/Downtime';
 
 type HomeProps = {
@@ -63,7 +62,7 @@ export default function Home(props: HomeProps) {
     navigate('/edit', { state: { activeStep: 1 } });
   }
 
-  const { accountTradeMatches, accountTradeMatchesError, accountTradeMatchesLoading } = useFetchAccountTradeMatches(account?.id);
+  const { accountTradeMatches, accountTradeMatchesError } = useFetchAccountTradeMatches(account?.id);
   useEffect(() => {
     if (accountTradeMatches) {
       setCardToAccount(accountTradeMatches.cardToAccount);
@@ -71,10 +70,7 @@ export default function Home(props: HomeProps) {
     }
   },[accountTradeMatches]);
   
-  if (accountTradeMatchesLoading) {
-    return <LoadingOverlay />
-  }
-  else if (accountTradeMatchesError) {
+  if (accountTradeMatchesError) {
     return <Downtime />
   }
 

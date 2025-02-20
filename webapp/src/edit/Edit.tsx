@@ -16,7 +16,6 @@ import { AccountStepContent } from './components/AccountStepContent';
 import { PokemonStepContent } from './components/PokemonStepContent';
 import { useFetchAccountTrades } from '../utils/hooks/useFetchAccountTrades';
 import { TradeTypes } from '../utils/constants';
-import { LoadingOverlay } from '../sharedComponents/LoadingOverlay';
 import Downtime from '../sharedComponents/Downtime';
 
 const ModalContent = styled(Box)(({ theme }) => ({
@@ -119,7 +118,7 @@ export default function Edit(props: EditProps) {
     }
   };
 
-  const { accountTrades, accountTradesError, accountTradesLoading } = useFetchAccountTrades(account?.id);
+  const { accountTrades, accountTradesError } = useFetchAccountTrades(account?.id);
   useEffect(() =>{
     setWishlist(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Request).map(t => t.pokemonId)));
     setListToTrade(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Offer).map(t => t.pokemonId)));
@@ -128,10 +127,7 @@ export default function Edit(props: EditProps) {
     }
   },[accountTrades, location.state])
 
-  if (accountTradesLoading) {
-    return <LoadingOverlay />
-  }
-  else if (accountTradesError) {
+  if (accountTradesError) {
     return <Downtime />
   }
 

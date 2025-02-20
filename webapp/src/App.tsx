@@ -12,7 +12,7 @@ import NotFound from "./sharedComponents/NotFound";
 import RedirectToIndex from "./sharedComponents/RedirectToIndex";
  
 function App() {
-  const { user, account, setAccount, accountError, accountLoading } = useFetchAccount();
+  const { user, setUser, account, setAccount, accountError, accountLoading } = useFetchAccount();
   const { pokemons, pokemonsError, pokemonsLoading } = useFetchPokemons();
 
   let routes = <Routes></Routes>
@@ -49,7 +49,11 @@ function App() {
     </Routes>
   }
 
-  return <AccountContext.Provider value={{ user, account, setAccount }}>
+  const logoutUser = () => {
+    setAccount(null);
+    setUser(null);
+  }
+  return <AccountContext.Provider value={{ user, logoutUser, account, setAccount }}>
     { routes }
   </AccountContext.Provider>
 }

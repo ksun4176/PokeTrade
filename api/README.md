@@ -16,7 +16,8 @@ All APIs start with /api
 **GET**: Redirect to the web app
 
 ### `/auth/status`
-**GET**: Get the authenticated user
+**GET**: Get the authenticated user information such as username + discordId.
+Will throw a 403 error if no user logged in.
 
 ### `/auth/logout`
 **GET**: Remove access from API

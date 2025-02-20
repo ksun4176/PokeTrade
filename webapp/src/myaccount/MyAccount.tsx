@@ -8,12 +8,20 @@ import AccountInfo from './components/AccountInfo';
 import MyList from './components/MyLists';
 import Button from '@mui/material/Button';
 import { MyAppBar } from '../sharedComponents/MyAppBar';
+import { postLogOut } from '../utils/apis';
+import { useContext } from 'react';
+import { AccountContext } from '../utils/contexts/AccountContext';
 
 type MyAccountProps = {
   pokemons: Map<number, Pokemon>;
 }
 export default function MyAccount(props: MyAccountProps) {
+  const { logoutUser } = useContext(AccountContext);
   const { pokemons } = props;
+  const logout = async () => {
+    await postLogOut();
+    logoutUser();
+  }
 
   return <>
     <TopGradientContainer flexDirection='column'>
@@ -55,7 +63,11 @@ export default function MyAccount(props: MyAccountProps) {
           >
             <AccountInfo />
             <Box flex='1 1 auto' />
-            <Button variant='contained' color='error'>
+            <Button
+              variant='contained'
+              color='error'
+              onClick={logout}
+            >
               Logout
             </Button>
           </Box>
