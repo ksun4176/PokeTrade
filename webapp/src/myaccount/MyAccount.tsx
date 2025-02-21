@@ -11,6 +11,7 @@ import { MyAppBar } from '../sharedComponents/MyAppBar';
 import { postLogOut } from '../utils/apis';
 import { useContext } from 'react';
 import { AccountContext } from '../utils/contexts/AccountContext';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 type MyAccountProps = {
   pokemons: Map<number, Pokemon>;
@@ -66,6 +67,7 @@ export default function MyAccount(props: MyAccountProps) {
             <Button
               variant='contained'
               color='error'
+              startIcon={<LogoutIcon />}
               onClick={logout}
             >
               Logout
@@ -101,6 +103,17 @@ export default function MyAccount(props: MyAccountProps) {
             </CardContent>
           </Card>
           <MyList pokemons={pokemons}/>
+          <Button
+            variant='contained'
+            color='error'
+            startIcon={<LogoutIcon />}
+            onClick={logout}
+            sx={{
+              display: { xs: 'flex', md: 'none' },
+            }}
+          >
+            Logout
+          </Button>
         </Grid>
       </Grid>
     </TopGradientContainer>

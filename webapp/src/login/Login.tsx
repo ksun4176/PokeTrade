@@ -1,14 +1,14 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { FaDiscord } from "react-icons/fa";
+import LoginIcon from '@mui/icons-material/Login';
+import HelpIcon from '@mui/icons-material/Help';
 import { CenterGradientContainer } from '../sharedComponents/CenterGradientContainer';
 import { StandaloneCard } from '../sharedComponents/StandaloneCard';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import { AccountContext } from '../utils/contexts/AccountContext';
 import { LoadingOverlay } from '../sharedComponents/LoadingOverlay';
-import HelpIcon from '@mui/icons-material/Help';
 
 export default function LogIn() {
   const { user, account } = useContext(AccountContext)
@@ -43,7 +43,7 @@ export default function LogIn() {
           <Button
             fullWidth
             variant="outlined"
-            startIcon={<FaDiscord color="5865F2" />}
+            startIcon={<LoginIcon />}
             onClick={login}
           >
             Log in with Discord
