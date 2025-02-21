@@ -44,7 +44,7 @@ export class TradeService implements ITradeService {
     const pokemonsToDelete = existingPokemon.filter(id => !pokemonsToUpdate.has(id));
 
     await this.prisma.pokemonTrade.deleteMany({ where: { accountId: accountId } });
-    const addedTrades = await this.prisma.pokemonTrade.createMany({ data: data });
+    const addedTrades = await this.prisma.pokemonTrade.createMany({ data });
     console.log(
       `Account [${accountId}] has:\n`+
       `- ${pokemonsToDelete.length} trades deleted\n`+

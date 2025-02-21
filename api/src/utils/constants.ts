@@ -12,10 +12,13 @@ export enum Services {
   USER = 'USER_SERVICE',
   POKEMON = 'POKEMON_SERVICE',
   TRADE = 'TRADE_SERVICE',
-  ACCOUNT = 'ACCOUNT_SERVICE'
+  ACCOUNT = 'ACCOUNT_SERVICE',
+  DISCORD = 'DISCORD_SERVICE',
 }
 
 export enum TradeTypes {
   Request = 1,
   Offer = 2,
 }
+
+export const DISCORD_BASE_URL = 'https://discord.com/api/v9';

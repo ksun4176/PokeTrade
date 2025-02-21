@@ -26,7 +26,7 @@ async function bootstrap() {
       store: new PrismaSessionStore(
         new PrismaClient(),
         {
-          checkPeriod: 2 * 60 * 1_000,  //ms
+          checkPeriod: 12 * 60 * 60 * 1_000,  //ms
           dbRecordIdIsSessionId: true,
           dbRecordIdFunction: undefined,
         }

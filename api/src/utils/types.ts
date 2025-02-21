@@ -1,6 +1,7 @@
 import { Prisma, User } from "@prisma/client";
 import { TradeTypes } from "./constants";
 import { z } from "zod";
+import { OAuth2Guild } from "discord.js";
 
 export type UserDetails = {
   username: string;
@@ -62,3 +63,6 @@ export type AccountToPokemon = Map<number, {
   matchingTrades: number[],
   otherTrades: number[]
 }>;
+
+export type DiscordPartialServer = Pick<OAuth2Guild, "id" | "name" | "icon" | "owner" | "permissions" | "features"> & 
+  { banner: string | null };
