@@ -13,7 +13,7 @@ model AccountCard {
   favorite Boolean
   added    DateTime @default(now()) @db.DateTime(0)
 
-  @@map("account_card")
+  @@map("Account_card")
 }
 
 model AccountDeck {
@@ -21,7 +21,7 @@ model AccountDeck {
   accountId Int @map("account_id")
   cardId    Int @map("card_id")
 
-  @@map("account_decks")
+  @@map("Account_decks")
 }
 
 model AccountDex {
@@ -29,7 +29,7 @@ model AccountDex {
   dexId     Int @map("dex_id")
   accountId Int @map("account_id")
 
-  @@map("account_dex")
+  @@map("Account_dex")
 }
 
 model Account {
@@ -41,7 +41,7 @@ model Account {
   pokemonTrades PokemonTrade[]
 
   @@index([userId], map: "player_id")
-  @@map("accounts")
+  @@map("Accounts")
 }
 
 model DiscordChannel {
@@ -50,7 +50,7 @@ model DiscordChannel {
   channelId     String @map("channel_id") @db.VarChar(32)
   channelTypeId Int    @map("channel_type_id")
 
-  @@map("discord_channels")
+  @@map("Discord_channels")
 }
 
 model ExpansionBooster {
@@ -61,7 +61,7 @@ model ExpansionBooster {
   pokemonCardDex PokemonCardDex[]
 
   @@index([expansionId], map: "expansion_id")
-  @@map("expansion_boosters")
+  @@map("Expansion_boosters")
 }
 
 model Expansion {
@@ -72,7 +72,7 @@ model Expansion {
   expansionBoosters ExpansionBooster[]
   pokemonCardDex    PokemonCardDex[]
 
-  @@map("expansions")
+  @@map("Expansions")
 }
 
 model Permission {
@@ -81,7 +81,7 @@ model Permission {
   hierarchyLevel Int    @map("hierarchy_level")
   users          User[]
 
-  @@map("permissions")
+  @@map("Permissions")
 }
 
 model PokemonAttack {
@@ -89,7 +89,7 @@ model PokemonAttack {
   name        String @db.VarChar(32)
   description String @db.MediumText
 
-  @@map("pokémon_attack")
+  @@map("Pokémon_attack")
 }
 
 model PokemonCardDex {
@@ -126,7 +126,7 @@ model PokemonCardDex {
   @@index([namePostfixId], map: "name_variation_id")
   @@index([rarityId], map: "rarity_id")
   @@index([typeId], map: "type_id")
-  @@map("pokémon_card_dex")
+  @@map("Pokémon_card_dex")
 }
 
 model PokemonCardLanguage {
@@ -134,7 +134,7 @@ model PokemonCardLanguage {
   name           String           @db.VarChar(16)
   pokemonCardDex PokemonCardDex[]
 
-  @@map("pokémon_card_language")
+  @@map("Pokémon_card_language")
 }
 
 model PokemonCardRarity {
@@ -142,7 +142,7 @@ model PokemonCardRarity {
   name           String           @db.VarChar(32)
   pokemonCardDex PokemonCardDex[]
 
-  @@map("pokémon_card_rarities")
+  @@map("Pokémon_card_rarities")
 }
 
 model PokemonEnergy {
@@ -150,7 +150,7 @@ model PokemonEnergy {
   type   Int
   amount Int
 
-  @@map("pokémon_energy")
+  @@map("Pokémon_energy")
 }
 
 model PokemonPostfix {
@@ -158,14 +158,14 @@ model PokemonPostfix {
   name           String           @db.VarChar(8)
   pokemonCardDex PokemonCardDex[]
 
-  @@map("pokémon_postfixes")
+  @@map("Pokémon_postfixes")
 }
 
 model PokemonStage {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(8)
 
-  @@map("pokémon_stage")
+  @@map("Pokémon_stage")
 }
 
 model PokemonTrade {
@@ -182,7 +182,7 @@ model PokemonTrade {
   @@unique([pokemonId, accountId], map: "pokemon_account_id")
   @@index([accountId], map: "account_id")
   @@index([tradeTypeId], map: "trade_type_id")
-  @@map("pokémon_trades")
+  @@map("Pokémon_trades")
 }
 
 model PokemonType {
@@ -191,7 +191,7 @@ model PokemonType {
   weakness       Int?
   pokemonCardDex PokemonCardDex[]
 
-  @@map("pokémon_types")
+  @@map("Pokémon_types")
 }
 
 model Session {
@@ -201,7 +201,7 @@ model Session {
   expiresAt DateTime @db.Timestamp(6)
 
   @@index([expiresAt], map: "expiresAt")
-  @@map("session")
+  @@map("Session")
 }
 
 model TradeType {
@@ -209,7 +209,7 @@ model TradeType {
   name          String         @db.VarChar(8)
   pokemonTrades PokemonTrade[]
 
-  @@map("trade_types")
+  @@map("Trade_types")
 }
 
 model User {
@@ -225,5 +225,5 @@ model User {
   permission    Permission @relation(fields: [permissionId], references: [id], onDelete: NoAction, map: "Players_ibfk_1")
 
   @@index([permissionId], map: "permission_id")
-  @@map("players")
+  @@map("Players")
 }
