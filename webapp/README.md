@@ -53,13 +53,15 @@ This web app is built in React.
 The languages we are using are TypeScript.
 Learn more about React in [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started) and [React documentation](https://reactjs.org/).
 
+To start:
+1. Fill out `../.env.example` and copy it to `webapp/` as a `.env` file
+2. Copy over `../api/prisma/schema.prisma` to `webapp/` so the Prisma Client can be generated
+3. Run script `npm install` to install dependencies
+4. Run script `npx prisma generate` to build the Prisma Client
 
 To run app in development mode:
-1. Copy over `../api/prisma/schema.prisma` to `webapp/` so the Prisma Client can build out correctly
-2. Install node dependencies using `npm install`
-3. Make sure your prisma client is up to date by running `npx prisma generate`.
-4. Run script `npm start`.
-5. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. Run script `npm start`.
+2. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.
 You will also see any lint errors in the console.
 

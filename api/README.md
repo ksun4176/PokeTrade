@@ -150,6 +150,11 @@ Response:
 This server is built in Nextjs.
 The languages we are using are TypeScript.
 
+To start:
+1. Fill out `../.env.example` and copy it to `api/` as a `.env` file
+2. Run script `npm install` to install dependencies
+3. Run script `npx prisma generate` to build the Prisma Client
+
 To make updates to database schema:
 1. Make changes to `/prisma/schema.prisma/`
 2. Run script `npx prisma migrate dev --name {name_your_update}`
