@@ -6,6 +6,7 @@ import { PokemonModule } from './pokemon/pokemon.module';
 import { TradeModule } from './trade/trade.module';
 import { AccountModule } from './account/account.module';
 import { UserModule } from './user/user.module';
+import { DiscordModule } from './discord/discord.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserModule } from './user/user.module';
     PokemonModule,
     TradeModule,
     AccountModule,
+    DiscordModule,
   ],
   controllers: [],
   providers: [],

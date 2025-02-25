@@ -131,6 +131,24 @@ Response:
 ### `/trades`
 **GET**: Get all trades in the system
 
+
+### `discord/sendtrademessage`
+**POST**: Send a trade message through Discord to link up
+Body:
+- pokemonId: ID of the Pokémon being requested
+- user: The user we want to send message to
+
+```
+{
+  "pokemonId": 28
+  "user": {
+    id: 1
+    username: "User 1"
+    discordId: "4113411498051934013"
+  }
+}
+```
+
 ## FAQs
 
 

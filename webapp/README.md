@@ -22,7 +22,7 @@ When a user first accesses the web app, they will be asked to complete a couple 
 You can see what trades are available out there in the `Home` page. This is where you can also reach out to folks to initiate a trade.
 1. User selects Pokémons from their wishlist
 2. They will then be able to see all offers for that Pokémon
-3. Copy the `@mention` and head over to discord to message that person in the server!
+3. Send a message to that person in a Discord server
 4. Make updates to your wishlist to search for more Pokémons
 
 ## View Account Info

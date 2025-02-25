@@ -41,7 +41,7 @@ export class AuthController {
       console.log(`${username} has logged out.`)
       req.session.destroy(() => {
         res.clearCookie('connect.sid')
-          .status(205).send(null);
+          .status(205).send('Logout success');
       });
     });
   }

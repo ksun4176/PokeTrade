@@ -1,5 +1,6 @@
-import { Account, User } from "@prisma/client";
+import { Account } from "@prisma/client";
 import { createContext } from "react";
+import { User } from "../types";
 
 type AccountContextType = {
   user: User | null;

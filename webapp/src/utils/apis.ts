@@ -1,6 +1,6 @@
-import { Account, User } from "@prisma/client";
+import { Account } from "@prisma/client";
 import axios, { AxiosRequestConfig } from "axios";
-import { AccountTradeDetails, AccountTradeMatches, Pokemon, TradeWithStringUpdated } from "./types";
+import { AccountTradeDetails, AccountTradeMatches, Pokemon, TradeWithStringUpdated, User } from "./types";
 import { TradeTypes } from "./constants";
 
 const CONFIG: AxiosRequestConfig = {
@@ -52,8 +52,17 @@ export const createAccount = (inGameName: string, friendCode: string) => axios.p
   CONFIG
 );
 
-export const postLogOut = () => axios.post(
+export const postLogOut = () => axios.post<string>(
   `${process.env.REACT_APP_API_URL}/auth/logout`,
   {},
+  CONFIG
+);
+
+export const sendTradeMessage = (pokemonId: number, user: User) => axios.post<string>(
+  `${process.env.REACT_APP_API_URL}/discord/sendtrademessage`,
+  {
+    pokemonId: pokemonId,
+    user: user
+  },
   CONFIG
 );

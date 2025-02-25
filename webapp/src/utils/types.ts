@@ -17,12 +17,18 @@ export type Pokemon  = Prisma.PokemonCardDexGetPayload<{
 
 export type TradeWithStringUpdated = Omit<PokemonTrade,'updated'> & { updated: string };
 
+const userSelect = Prisma.validator<Prisma.UserSelect>()({
+  id: true,
+  discordId: true,
+  username: true
+});
+export type User = Prisma.UserGetPayload<{
+  select: typeof userSelect
+}>;
+
 const accountUserInclude = Prisma.validator<Prisma.AccountInclude>()({
   user: {
-    select: {
-      discordId: true,
-      username: true
-    }
+    select: userSelect
   }
 });
 export type AccountWithUser = Prisma.AccountGetPayload<{

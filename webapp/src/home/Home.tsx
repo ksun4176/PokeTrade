@@ -180,10 +180,14 @@ export default function Home(props: HomeProps) {
                       display: 'flex',
                       p: 1,
                     }}>
-                      <AccountCard account={selectedAccount} cardSx={{
-                        flex: '0 0 250px',
-                        mr: 1,
-                      }} />
+                      <AccountCard
+                        account={selectedAccount}
+                        pokemon={selectedPokemon}
+                        cardSx={{
+                          flex: '0 0 250px',
+                          mr: 1,
+                        }}
+                      />
                       <Box height='100%' display='flex' flexWrap='wrap' alignContent='flex-start' gap={1} overflow='hidden'>
                         {
                           requestedPokemons.length === 0 ? 

@@ -4,6 +4,7 @@ export enum Routes {
   POKEMON = 'pokemons',
   TRADE = 'trades',
   ACCOUNT = 'accounts',
+  DISCORD = 'discord',
 }
 
 export enum Services {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAccounts, getAuthStatus } from "../apis";
-import { Account, User } from "@prisma/client";
+import { Account } from "@prisma/client";
+import { User } from "../types";
 
 export function useFetchAccount() {
   const [user, setUser] = useState<User | null>(null);

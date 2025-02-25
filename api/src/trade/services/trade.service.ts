@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { PokemonTrade, Prisma } from "@prisma/client";
+import { PokemonTrade, Prisma, User } from "@prisma/client";
 import { PrismaService } from "src/prisma/services/prisma.service";
 import { Services, TradeTypes } from "src/utils/constants";
-import { AccountToPokemon, AccountTradeMatches, CardToAccount, tradeAccountInclude } from "src/utils/types";
+import { AccountToPokemon, AccountTradeMatches, CardToAccount, Pokemon, pokemonInclude, tradeAccountInclude, TradeWithPokemon } from "src/utils/types";
 
 export interface ITradeService {
   getTrades(filter?: Prisma.PokemonTradeWhereInput): Promise<PokemonTrade[]>;
@@ -20,7 +20,8 @@ export interface ITradeService {
    * - matchingTrades: Cards that the requester DID offer
    * - otherTrades: Cards that the requester DID NOT offer
    */
-  getAccountTradeMatches(requesterId: number): Promise<AccountTradeMatches>
+  getAccountTradeMatches(requesterId: number): Promise<AccountTradeMatches>;
+  getPokemonTradeMatchesForAccount(pokemon: Pokemon, user: User): Promise<TradeWithPokemon[]>;
 }
 
 @Injectable()
@@ -142,5 +143,26 @@ export class TradeService implements ITradeService {
       cardToAccount: [...cardToAccount.entries()],
       accountToPokemon: [...accountToPokemon.entries()]
     };
+  }
+
+  async getPokemonTradeMatchesForAccount(pokemon: Pokemon, user: User) {
+    const accountTrades = await this.prisma.pokemonTrade.findMany({
+      where: {
+        tradeTypeId: TradeTypes.Offer,
+        pokemonCardDex: {
+          rarityId: pokemon.rarityId
+        },
+        account: {
+          userId: user.id
+        },
+      },
+      include: {
+        pokemonCardDex: {
+          include: pokemonInclude
+        }
+      }
+    });
+
+    return accountTrades;
   }
 }

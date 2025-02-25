@@ -12,6 +12,12 @@ import { PrismaModule } from "src/prisma/prisma.module";
       provide: Services.POKEMON,
       useClass: PokemonService
     }
+  ],
+  exports: [
+    {
+      provide: Services.POKEMON,
+      useClass: PokemonService
+    }
   ]
 })
 export class PokemonModule {}

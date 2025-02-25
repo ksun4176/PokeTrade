@@ -3,23 +3,14 @@ import { TradeTypes } from "./constants";
 import { z } from "zod";
 import { OAuth2Guild } from "discord.js";
 
+export type SerializerDone = (error: Error | null, user: User | null) => void;
+
 export type UserDetails = {
   username: string;
   discordId: string;
   accessToken: string;
   refreshToken: string;
 }
-
-export const AccountTradesSchema = z.array(
-  z.object({
-    tradeType: z.nativeEnum(TradeTypes),
-    pokemon: z.number(),
-  })
-  .required()
-)
-export type AccountTradesDto = z.infer<typeof AccountTradesSchema>;
-
-export type SerializerDone = (error: Error | null, user: User | null) => void;
 
 export const pokemonInclude = Prisma.validator<Prisma.PokemonCardDexInclude>()({
   pokemonPostfix: true,
@@ -29,12 +20,21 @@ export const pokemonInclude = Prisma.validator<Prisma.PokemonCardDexInclude>()({
 export type Pokemon  = Prisma.PokemonCardDexGetPayload<{
   include: typeof pokemonInclude;
 }>;
+export const tradePokemonInclude = Prisma.validator<Prisma.PokemonTradeInclude>()({
+  pokemonCardDex: {
+    include: pokemonInclude
+  }
+})
+export type TradeWithPokemon = Prisma.PokemonTradeGetPayload<{
+  include: typeof tradePokemonInclude
+}>;
 
 export const tradeAccountInclude = Prisma.validator<Prisma.PokemonTradeInclude>()({
   account: {
     include: {
       user: {
         select: {
+          id: true,
           discordId: true,
           username: true
         }
@@ -64,5 +64,25 @@ export type AccountToPokemon = Map<number, {
   otherTrades: number[]
 }>;
 
+//#region Discord
 export type DiscordPartialServer = Pick<OAuth2Guild, "id" | "name" | "icon" | "owner" | "permissions" | "features"> & 
   { banner: string | null };
+//#endregion Discord
+
+//#region Pipe Schemas and DTOs
+export const AccountTradesSchema = z.array(
+  z.object({
+    tradeType: z.nativeEnum(TradeTypes),
+    pokemon: z.number(),
+  })
+  .required()
+)
+export type AccountTradesDto = z.infer<typeof AccountTradesSchema>;
+
+export const UserSchema = z.object({
+  id: z.number(),
+  discordId: z.string(),
+  username: z.string(),
+})
+export type UserDto = z.infer<typeof UserSchema>;
+//#endregion Pipe Schemas and DTOs
