@@ -9,7 +9,13 @@ import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 
 type Page = {
+  /**
+   * Caption of page to show in navigation bar
+   */
   caption: string;
+  /**
+   * Relative URL to navigate to
+   */
   toUrl: string;
 }
 const pages: Page[] = [
@@ -30,6 +36,9 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: '0 12px',
 }));
 
+/**
+ * Navigation bar to show over all pages
+ */
 export function MyAppBar() {
   const navigate = useNavigate();
 

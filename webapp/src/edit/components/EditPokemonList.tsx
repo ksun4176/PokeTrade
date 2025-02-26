@@ -7,10 +7,24 @@ import { FixedSizeList} from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
 export interface IEditPokemonListProps {
+  /**
+   * Map of all available pokemons
+   */
   pokemons: Map<number, Pokemon>;
+  /**
+   * The list of pokemons we are editing
+   */
   selectedPokemons: Set<number>;
+  /**
+   * Update the list of selected pokemons
+   * @param id ID of pokemon
+   * @param isAdd Whether this update is adding to list or removing
+   */
   updatePokemonIds: (id: number, isAdd: boolean) => void;
 }
+/**
+ * The input for editing a list of Pokemons
+ */
 export class EditPokemonList extends React.Component<IEditPokemonListProps> {
   override render() {
     const { pokemons, selectedPokemons, updatePokemonIds } = this.props;
@@ -44,6 +58,7 @@ export class EditPokemonList extends React.Component<IEditPokemonListProps> {
         )}
       </Paper>
       <Box m={1} sx={{ flex: '1 1 auto', mx: 2 }}>
+        {/* Data Virtualization around the Pokemon cards */}
         <AutoSizer>
           {({ height, width }: { height: number, width: number }) => {
             const itemsPerRow = Math.floor(width / pokemonsWidth);

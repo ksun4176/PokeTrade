@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { getAccountTrades } from "../apis";
 import { TradeWithStringUpdated } from "../types";
 
+/**
+ * Fetch trades linked to an account
+ * @param accountId account to find trades linked to
+ */
 export function useFetchAccountTrades(accountId?: number) {
   const [accountTrades, setAccountTrades] = useState<TradeWithStringUpdated[]>([]);
   const [accountTradesError, setError] = useState();

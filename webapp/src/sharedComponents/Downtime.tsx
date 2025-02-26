@@ -2,6 +2,9 @@ import Typography from '@mui/material/Typography';
 import { StandaloneCard } from './StandaloneCard';
 import { CenterGradientContainer } from './CenterGradientContainer';
 
+/**
+ * Page to show when API is down
+ */
 export default function Downtime() {
   return (
     <CenterGradientContainer direction="column">

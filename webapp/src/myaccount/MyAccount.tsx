@@ -14,6 +14,9 @@ import { AccountContext } from '../utils/contexts/AccountContext';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 type MyAccountProps = {
+  /**
+   * Map of all available pokemons
+   */
   pokemons: Map<number, Pokemon>;
 }
 export default function MyAccount(props: MyAccountProps) {

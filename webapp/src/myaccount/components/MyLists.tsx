@@ -14,11 +14,16 @@ import { CustomTabPanel, TabA11yProps } from '../../sharedComponents/CustomTabPa
 import { useNavigate } from 'react-router-dom';
 
 type TabInfo = {
+  /** Label to show in tab */
   label: string,
+  /** Content to display when we are on that tab */
   content: React.ReactNode,
 }
 
 type MyListsProps = {
+  /**
+   * Map of all available pokemons
+   */
   pokemons: Map<number, Pokemon>;
 }
 export default function MyLists(props: MyListsProps) {
@@ -29,16 +34,23 @@ export default function MyLists(props: MyListsProps) {
     navigate('/edit', { state: { activeStep: tabIndex+1 } });
   }
 
+  /**
+   * Wishlist and list for trading
+   */
   const { pokemons } = props;
   const { accountTrades } = useFetchAccountTrades(account?.id);
   const wishlist = accountTrades.filter(t => t.tradeTypeId === TradeTypes.Request).map(t => t.pokemonId);
   const listForTrade = accountTrades.filter(t => t.tradeTypeId === TradeTypes.Offer).map(t => t.pokemonId);
 
+  /**
+   * Handle moving between tab content
+   */
   const tabPrefix = `pokemonlist-tab`;
   const [tabIndex, setTabIndex] = useState(0);
   const switchTab = (_event: React.SyntheticEvent, newTabIndex: number) => {
     setTabIndex(newTabIndex);
   };
+  
   const tabs: TabInfo[] = [
     {
       label: 'Wishlist',

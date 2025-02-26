@@ -5,7 +5,17 @@ import { Services } from 'src/utils/constants';
 import { PrismaService } from 'src/prisma/services/prisma.service';
 
 export interface IUserService {
+  /**
+   * Find a user linked to Discord
+   * @param discordId ID of Discord user
+   * @returns User or null if not valid
+   */
   findUser(discordId: string): Promise<User|null>;
+  /**
+   * Update a user if it exists otherwise create a new one
+   * @param details Details of user
+   * @returns User updated or created
+   */
   upsertUser(details: UserDetails): Promise<User>;
 }
 

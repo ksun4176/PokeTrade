@@ -22,24 +22,35 @@ import Popover from '@mui/material/Popover';
 import Downtime from '../sharedComponents/Downtime';
 
 type HomeProps = {
+  /**
+   * Map of all available pokemons
+   */
   pokemons: Map<number, Pokemon>;
 }
 export default function Home(props: HomeProps) {
   const { account } = useContext(AccountContext);
   const navigate = useNavigate();
+
+  /**
+   * Data to show here
+   */
   const { pokemons } = props;
   const [cardToAccount, setCardToAccount] = useState<CardToAccount>(new Map());
   const [accountToPokemon, setAccountToPokemon] = useState<AccountToPokemon>(new Map());
+  // Wishlist will be sorted by numbers of matching trades and if that's the same, order by number of other trades found
   const wishlist = Array.from(cardToAccount.keys()).sort((pokeA, pokeB) => {
     const pokeAVal = cardToAccount.get(pokeA)!;
     const pokeBVal = cardToAccount.get(pokeB)!;
-    // order by number of matching trades found and if that's the same, order by number of other trades found
     const matchingTradesDiff = pokeBVal.matchingTrades.length - pokeAVal.matchingTrades.length;
     return matchingTradesDiff !== 0 ? matchingTradesDiff : pokeBVal.otherTrades.length-pokeAVal.otherTrades.length;
   });
 
+  /**
+   * Selected Pokemon and its trades
+   */
   const [selectedPokemonId, setSelectedPokemonId] = useState<number>(-1);
   const selectedPokemon = pokemons.get(selectedPokemonId);
+  // Selected Pokemon's trades will be sorted by update chronologically
   const sortTrades = (tradeA: TradeWithAccount, tradeB: TradeWithAccount) => {
     if (tradeA.updated === tradeB.updated) return 0;
     return tradeA.updated > tradeB.updated ? 1 : -1;
@@ -193,7 +204,7 @@ export default function Home(props: HomeProps) {
                           requestedPokemons.length === 0 ? 
                           <Typography>No Pokémon listed for trade</Typography> :
                           requestedPokemons.map(pokemon => (
-                            <Card key={pokemon.id}
+                            <Card key={pokemon.id} variant='outlined'
                               sx={{
                                 height: '30%',
                                 display: 'flex',

@@ -5,10 +5,12 @@ import { DiscordController } from './controllers/discord.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { TradeModule } from 'src/trade/trade.module';
 import { PokemonModule } from 'src/pokemon/pokemon.module';
+import { AccountModule } from 'src/account/account.module';
 
 @Module({
   imports: [
     PrismaModule,
+    AccountModule,
     PokemonModule,
     TradeModule,
   ],

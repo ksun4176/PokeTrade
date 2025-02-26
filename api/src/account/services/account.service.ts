@@ -4,8 +4,25 @@ import { PrismaService } from "src/prisma/services/prisma.service";
 import { Services } from "src/utils/constants";
 
 export interface IAccountService {
+  /**
+   * Get accounts
+   * @param filter Filters for accounts
+   * @returns A list of accounts
+   */
   getAccounts(filter?: Prisma.AccountWhereInput): Promise<Account[]>;
+  /**
+   * Update the account
+   * @param accountId Account to update
+   * @param accountDetails Details to update the account with
+   * @returns Updated account
+   */
   updateAccount(accountId: number, accountDetails: Prisma.AccountUpdateInput): Promise<Account>;
+  /**
+   * Create an account linked to a user
+   * @param userId User to link account to
+   * @param accountDetails Details of account
+   * @returns Created account
+   */
   createAccount(userId: number, accountDetails: Prisma.AccountUncheckedCreateInput): Promise<Account>;
 } 
 

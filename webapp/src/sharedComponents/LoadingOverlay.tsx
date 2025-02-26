@@ -1,6 +1,9 @@
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 
+/**
+ * Loading screen while we're fetching data from API
+ */
 export function LoadingOverlay() {
   return <Box
     display='flex'

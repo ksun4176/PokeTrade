@@ -6,6 +6,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Show account information
+ */
 export default function AccountInfo() {
   const { account } = useContext(AccountContext);
   const navigate = useNavigate();

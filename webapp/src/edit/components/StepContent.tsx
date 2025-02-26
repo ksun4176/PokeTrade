@@ -3,21 +3,35 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
 export interface IStepContentProps {
+  /**
+   * Children to put in stepper container
+   */
   children: React.ReactNode;
+  /**
+   * Handle stepping through the stepper
+   * @param isNext Whether we are handling moving to the next step or previous step
+   */
   handleSteps: (isNext: boolean) => void;
+  /**
+   * Whether this is the first step
+   */
   isFirstStep?: boolean;
+  /**
+   * Whether this is the last step
+   */
   isLastStep?: boolean;
+  /**
+   * Whether the next button is disabled
+   */
   nextStepDisabled?: boolean;
-  handleNext?: () => void;
 }
+/**
+ * Container for stepper content
+ */
 export class StepContent extends React.Component<IStepContentProps> {
   override render() {
-    const { children, handleSteps, isFirstStep, isLastStep, nextStepDisabled, handleNext } = this.props;
+    const { children, handleSteps, isFirstStep, isLastStep, nextStepDisabled } = this.props;
 
-    const handleNextClick = () => {
-      if (handleNext) handleNext();
-      handleSteps(true);
-    }
     return <>
       {children}
       <Box sx={{ display: 'flex', flexDirection: 'row', p: 1 }}>
@@ -34,7 +48,7 @@ export class StepContent extends React.Component<IStepContentProps> {
           variant='contained'
           color='success'
           disabled={nextStepDisabled}
-          onClick={handleNextClick}
+          onClick={() => handleSteps(true)}
         >
           {isLastStep ? `Finish` : `Next`}
         </Button>

@@ -1,11 +1,23 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { PokemonTrade, Prisma, User } from "@prisma/client";
+import { Account, PokemonTrade, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/services/prisma.service";
 import { Services, TradeTypes } from "src/utils/constants";
 import { AccountToPokemon, AccountTradeMatches, CardToAccount, Pokemon, pokemonInclude, tradeAccountInclude, TradeWithPokemon } from "src/utils/types";
 
 export interface ITradeService {
+  /**
+   * Get trades
+   * @param filter Filters for trades
+   * @returns A list of trades
+   */
   getTrades(filter?: Prisma.PokemonTradeWhereInput): Promise<PokemonTrade[]>;
+  /**
+   * Update trades linked to an account.
+   * Any old trades will be removed if not included in new list.
+   * @param accountId Account to link trades to
+   * @param data exhaustive list of trades to link to account
+   * @returns number of trades updated
+   */
   updateAccountTrades(accountId: number, data: Prisma.PokemonTradeCreateManyInput[]): Promise<number>;
   /**
    * Get all trades offered that matches what an account has requested.
@@ -21,7 +33,14 @@ export interface ITradeService {
    * - otherTrades: Cards that the requester DID NOT offer
    */
   getAccountTradeMatches(requesterId: number): Promise<AccountTradeMatches>;
-  getPokemonTradeMatchesForAccount(pokemon: Pokemon, user: User): Promise<TradeWithPokemon[]>;
+  /**
+   * Get trade matches to a specific Pokemon belonging to a single account.
+   * These are trades that can be given in return for the requested Pokemon
+   * @param pokemon Pokemon requested that we need to match trades to
+   * @param account Account with trades we are matching
+   * @returns trades matching the Pokemon
+   */
+  getPokemonTradeMatchesForAccount(pokemon: Pokemon, account: Account): Promise<TradeWithPokemon[]>;
 }
 
 @Injectable()
@@ -145,16 +164,14 @@ export class TradeService implements ITradeService {
     };
   }
 
-  async getPokemonTradeMatchesForAccount(pokemon: Pokemon, user: User) {
+  async getPokemonTradeMatchesForAccount(pokemon: Pokemon, account: Account) {
     const accountTrades = await this.prisma.pokemonTrade.findMany({
       where: {
         tradeTypeId: TradeTypes.Offer,
         pokemonCardDex: {
           rarityId: pokemon.rarityId
         },
-        account: {
-          userId: user.id
-        },
+        accountId: account.id,
       },
       include: {
         pokemonCardDex: {

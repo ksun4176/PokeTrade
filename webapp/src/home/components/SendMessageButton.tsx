@@ -12,7 +12,13 @@ const enum SentState {
 }
 
 type SendMessageButtonProps = {
+  /**
+   * Account information
+   */
   account: AccountWithUser;
+  /**
+   * Pokemon information if we want to send an offer for one to the owner of linked account
+   */
   pokemon: Pokemon;
 }
 export default function SendMessageButton(props: SendMessageButtonProps) {

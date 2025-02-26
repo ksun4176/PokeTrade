@@ -8,13 +8,35 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Pokemon } from "../utils/types";
 import Badge from "@mui/material/Badge";
+
 export interface ICardProps {
+  /**
+   * Pokemon toshow
+   */
   pokemon: Pokemon;
+  /**
+   * Height of card. We use this to calculate width to keep proportion
+   */
   height: number;
+  /**
+   * Action to take when card is clicked
+   */
   onClick?: () => void;
+  /**
+   * Whether the action is disabled
+   */
   disabled?: boolean;
+  /**
+   * Whether we should show a dark overlay over the card
+   */
   showOverlay?: boolean;
+  /**
+   * An icon to show in overlay
+   */
   overlayIcon?: JSX.Element,
+  /**
+   * Content to show in a badge. The badge won't show if there is no content
+   */
   badgeContent?: string|number
 }
 

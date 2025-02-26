@@ -5,11 +5,26 @@ import { StandaloneCard } from "../../sharedComponents/StandaloneCard";
 import { useCallback } from "react";
 
 export type EditAccountProps = {
+  /**
+   * In game name
+   */
   ignState: [string, React.Dispatch<React.SetStateAction<string>>];
+  /**
+   * In game name error message
+   */
   ignErrorState: [string, React.Dispatch<React.SetStateAction<string>>];
+  /**
+   * Friend code
+   */
   friendCodeState: [string, React.Dispatch<React.SetStateAction<string>>];
+  /**
+   * Friend code error message
+   */
   friendCodeErrorState: [string, React.Dispatch<React.SetStateAction<string>>];
 }
+/**
+ * The card to enter linked account information
+ */
 export function EditAccount(props: EditAccountProps) {
   const { ignState, ignErrorState, friendCodeState, friendCodeErrorState } = props;
   const [ign, setIgn] = ignState;

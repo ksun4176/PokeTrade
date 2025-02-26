@@ -31,37 +31,43 @@ const ModalContent = styled(Box)(({ theme }) => ({
 }));
 
 type StepInfo = {
+  /** Label to show in stepper */
   label: string,
+  /** Content to display when we are on that step */
   content: React.ReactNode,
 }
 
 type EditProps = {
+  /**
+   * Map of all available pokemons
+   */
   pokemons: Map<number, Pokemon>;
 }
 export default function Edit(props: EditProps) {
   const { account } = useContext(AccountContext);
 
-  const navigate = useNavigate();
+  /**
+   * Used to start at a specific step
+   */
   const location: Location<{activeStep?: number} | undefined> = useLocation();
-  
+
+  const navigate = useNavigate();
+  /**
+   * Add trades linked to an account
+   */
   const addAccountTrades = async () => {
     if (!account) { return; }
     await updateAccountTrades(account.id, wishlist, listToTrade);
     navigate(-1);
   };
 
+  /**
+   * Handle updating wishlist and list for trading
+   */
   const { pokemons } = props;
   const [pokemonToSwap, setPokemonToSwap] = React.useState(-1);
   const [wishlist, setWishlist] = React.useState(new Set<number>());
   const [listToTrade, setListToTrade] = React.useState(new Set<number>());
-  const [modalOpen, setModalOpen] = React.useState(false);
-  const openModal = useCallback((pokemonId: number) => {
-    setPokemonToSwap(pokemonId);
-    setModalOpen(true);
-  },[]);
-  const closeModal = useCallback(() => {
-    setModalOpen(false);
-  },[]);
   const updateList = useCallback((pokemonList: Set<number>, pokemonId: number, isAdd: boolean) => {
     const newList = new Set(pokemonList);
     if (isAdd) { newList.add(pokemonId); }
@@ -84,6 +90,18 @@ export default function Edit(props: EditProps) {
       openModal(pokemonId);
     }
   };
+
+  /**
+   * Handle confirmation of swapping a Pokemon between wishlist and list for trading
+   */
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const openModal = useCallback((pokemonId: number) => {
+    setPokemonToSwap(pokemonId);
+    setModalOpen(true);
+  },[]);
+  const closeModal = useCallback(() => {
+    setModalOpen(false);
+  },[]);
   const swapPokemon = () => {
     if (listToTrade.has(pokemonToSwap)) {
       setListToTrade((listToTrade) => updateList(listToTrade, pokemonToSwap, false));
@@ -96,6 +114,9 @@ export default function Edit(props: EditProps) {
     closeModal();
   };
 
+  /**
+   * Handle moving between stepper content
+   */
   const [activeStep, setActiveStep] = React.useState(0);
   const handleSteps = (isNext: boolean) => {
     if (!isNext) {

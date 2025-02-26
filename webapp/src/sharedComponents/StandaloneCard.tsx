@@ -1,6 +1,9 @@
 import Card from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
 
+/**
+ * Small card to show information
+ */
 export const StandaloneCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',

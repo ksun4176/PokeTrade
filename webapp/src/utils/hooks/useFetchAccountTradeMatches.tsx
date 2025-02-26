@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { getAccountTradeMatches } from "../apis";
 
+/**
+ * Fetch matches for trades an account is looking for
+ * @param accountId account to find trades linked to
+ */
 export function useFetchAccountTradeMatches(accountId?: number) {
   const [accountTradeMatches, setAccountTradeMatches] = useState<Awaited<ReturnType<typeof getAccountTradeMatches>> | null>(null);
   const [accountTradeMatchesError, setError] = useState();

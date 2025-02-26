@@ -4,7 +4,16 @@ import { Services } from "src/utils/constants";
 import { Pokemon, pokemonInclude } from "src/utils/types";
 
 export interface IPokemonService {
+  /**
+   * Get information on a single Pokemon
+   * @param pokemonId ID of Pokemon
+   * @returns Pokemon
+   */
   getPokemon(pokemonId: number): Promise<Pokemon>;
+  /**
+   * Get information on all the Pokemons
+   * @returns a list of Pokemon
+   */
   getPokemons(): Promise<Pokemon[]>;
 }
 

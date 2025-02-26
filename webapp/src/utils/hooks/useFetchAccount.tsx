@@ -3,6 +3,9 @@ import { getAccounts, getAuthStatus } from "../apis";
 import { Account } from "@prisma/client";
 import { User } from "../types";
 
+/**
+ * Fetch user and account information
+ */
 export function useFetchAccount() {
   const [user, setUser] = useState<User | null>(null);
   const [account, setAccount] = useState<Account | null>(null);

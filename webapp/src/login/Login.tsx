@@ -27,7 +27,6 @@ export default function LogIn() {
   },[account, user, navigate]);
 
   if (user) {
-    // will be navigating to '/home'
     return <LoadingOverlay />;
   }
   return (

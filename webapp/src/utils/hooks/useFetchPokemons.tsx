@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { getPokemons } from "../apis";
 import { Pokemon } from "../types";
 
+/**
+ * Fetch all available Pokemons
+ */
 export function useFetchPokemons() {
   const [pokemons, setPokemons] = useState<Map<number, Pokemon>>(new Map());
   const [pokemonsError, setError] = useState();

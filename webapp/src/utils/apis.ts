@@ -7,10 +7,32 @@ const CONFIG: AxiosRequestConfig = {
   withCredentials: true
 };
 
+/**
+ * Get authenticated user information
+ * @returns user information
+ */
 export const getAuthStatus = () => axios.get<User>(`${process.env.REACT_APP_API_URL}/auth/status`, CONFIG);
+/**
+ * Get accounts linked to user
+ * @returns list of accounts
+ */
 export const getAccounts = () => axios.get<Account[]>(`${process.env.REACT_APP_API_URL}/users/@me/accounts`, CONFIG);
+/**
+ * Get all available Pokemons
+ * @returns list of pokemons
+ */
 export const getPokemons = () => axios.get<Pokemon[]>(`${process.env.REACT_APP_API_URL}/pokemons`, CONFIG);
+/**
+ * Get trades linked to an account
+ * @param accountId account to find trades linked to
+ * @returns list of trades
+ */
 export const getAccountTrades = (accountId: number) => axios.get<TradeWithStringUpdated[]>(`${process.env.REACT_APP_API_URL}/accounts/${accountId}/trades`, CONFIG);
+/**
+ * Get matches for trades an account is looking for
+ * @param accountId account to find trades linked to
+ * @returns matches for trades
+ */
 export const getAccountTradeMatches = (accountId: number) => axios.get<AccountTradeMatches>(`${process.env.REACT_APP_API_URL}/accounts/${accountId}/tradematches`, CONFIG)
   .then(({ data }) => (
     {
@@ -19,6 +41,13 @@ export const getAccountTradeMatches = (accountId: number) => axios.get<AccountTr
     }
   ));
 
+/**
+ * Update account
+ * @param accountId account to update
+ * @param inGameName new in game name
+ * @param friendCode new friend code
+ * @returns new updated account
+ */
 export const updateAccountInfo = (accountId: number, inGameName?: string, friendCode?: string) => axios.put<Account>(
   `${process.env.REACT_APP_API_URL}/accounts/${accountId}`,
   {
@@ -28,6 +57,13 @@ export const updateAccountInfo = (accountId: number, inGameName?: string, friend
   CONFIG
 );
 
+/**
+ * Update trades linked to an account
+ * @param accountId account to update
+ * @param wishlist exhaustive wishlist of pokemons
+ * @param listForTrade exhaustive list for trading of pokemons
+ * @returns number of trades updated
+ */
 export const updateAccountTrades = (accountId: number, wishlist: Set<number>, listForTrade: Set<number>) => {
   const trades: AccountTradeDetails[] = [
     ...Array.from(wishlist).map(id => ({tradeType: TradeTypes.Request, pokemon: id})),
@@ -43,6 +79,12 @@ export const updateAccountTrades = (accountId: number, wishlist: Set<number>, li
   );
 }
 
+/**
+ * create a new account
+ * @param inGameName new in game name
+ * @param friendCode new friend code
+ * @returns newly created account
+ */
 export const createAccount = (inGameName: string, friendCode: string) => axios.post<Account>(
   `${process.env.REACT_APP_API_URL}/users/@me/accounts`,
   {
@@ -52,12 +94,22 @@ export const createAccount = (inGameName: string, friendCode: string) => axios.p
   CONFIG
 );
 
+/**
+ * Log out user
+ * @returns "Logout success"
+ */
 export const postLogOut = () => axios.post<string>(
   `${process.env.REACT_APP_API_URL}/auth/logout`,
   {},
   CONFIG
 );
 
+/**
+ * Send a message to initiate a trade between two users
+ * @param pokemonId Pokemon to send trade message about
+ * @param user user to send message to
+ * @returns toast message to show when this message is sent
+ */
 export const sendTradeMessage = (pokemonId: number, user: User) => axios.post<string>(
   `${process.env.REACT_APP_API_URL}/discord/sendtrademessage`,
   {

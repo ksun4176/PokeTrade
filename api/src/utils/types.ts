@@ -5,13 +5,7 @@ import { OAuth2Guild } from "discord.js";
 
 export type SerializerDone = (error: Error | null, user: User | null) => void;
 
-export type UserDetails = {
-  username: string;
-  discordId: string;
-  accessToken: string;
-  refreshToken: string;
-}
-
+//#region Prisma
 export const pokemonInclude = Prisma.validator<Prisma.PokemonCardDexInclude>()({
   pokemonPostfix: true,
   expansion: true,
@@ -63,13 +57,21 @@ export type AccountToPokemon = Map<number, {
   matchingTrades: number[],
   otherTrades: number[]
 }>;
+//#endregion Prisma
 
 //#region Discord
 export type DiscordPartialServer = Pick<OAuth2Guild, "id" | "name" | "icon" | "owner" | "permissions" | "features"> & 
   { banner: string | null };
 //#endregion Discord
 
-//#region Pipe Schemas and DTOs
+//#region Inputs, Pipe Schemas and DTOs
+export type UserDetails = {
+  username: string;
+  discordId: string;
+  accessToken: string;
+  refreshToken: string;
+}
+
 export const AccountTradesSchema = z.array(
   z.object({
     tradeType: z.nativeEnum(TradeTypes),
@@ -85,4 +87,4 @@ export const UserSchema = z.object({
   username: z.string(),
 })
 export type UserDto = z.infer<typeof UserSchema>;
-//#endregion Pipe Schemas and DTOs
+//#endregion Inputs, Pipe Schemas and DTOs

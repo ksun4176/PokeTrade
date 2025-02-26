@@ -2,6 +2,9 @@ import Typography from '@mui/material/Typography';
 import { StandaloneCard } from './StandaloneCard';
 import { CenterGradientContainer } from './CenterGradientContainer';
 
+/**
+ * Page to show if invalid route
+ */
 export default function NotFound() {
   return (
     <CenterGradientContainer direction="column">

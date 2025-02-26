@@ -7,13 +7,25 @@ import { SxProps } from "@mui/material/styles";
 import SendMessageButton from "./SendMessageButton";
 
 type AccountCardProps = {
+  /**
+   * Account information
+   */
   account: AccountWithUser;
+  /**
+   * Pokemon information if we want to send an offer for one to the owner of linked account
+   */
   pokemon?: Pokemon;
+  /**
+   * CSS styling for containing card
+   */
   cardSx?: SxProps;
 }
+/**
+ * The card holding account information
+ */
 export default function AccountCard(props: AccountCardProps) {
   const { account, pokemon, cardSx } = props;
-  return <Card sx={{
+  return <Card variant="outlined" sx={{
     display: 'flex',
     pt: 4,
     ...cardSx
