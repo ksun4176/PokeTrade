@@ -22,4 +22,8 @@ export enum TradeTypes {
   Offer = 2,
 }
 
+export enum ChannelTypes {
+  TradeMessage = 1,
+}
+
 export const DISCORD_BASE_URL = 'https://discord.com/api/v9';

@@ -6,7 +6,7 @@ import { IAccountService } from 'src/account/services/account.service';
 import { IPokemonService } from 'src/pokemon/services/pokemon.service';
 import { PrismaService } from 'src/prisma/services/prisma.service';
 import { ITradeService } from 'src/trade/services/trade.service';
-import { DISCORD_BASE_URL, Services, TradeTypes } from 'src/utils/constants';
+import { ChannelTypes, DISCORD_BASE_URL, Services, TradeTypes } from 'src/utils/constants';
 import { DiscordPartialServer, TradeWithPokemon, UserDto } from 'src/utils/types';
 import { getPokemonName } from 'src/utils/utils';
 
@@ -99,7 +99,7 @@ export class DiscordService implements IDiscordService {
     return await this.prisma.discordChannel.findMany({
       where: {
         serverId: { in: servers.map(s => s.id) },
-        channelTypeId: 1 //Type for Trade Request
+        channelTypeId: ChannelTypes.TradeMessage
       },
       orderBy: {
         id: 'asc'
