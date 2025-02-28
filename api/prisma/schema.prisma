@@ -13,7 +13,7 @@ model AccountCard {
   favorite Boolean
   added    DateTime @default(now()) @db.DateTime(0)
 
-  @@map("Account_card")
+  @@map("Account_Card")
 }
 
 model AccountDeck {
@@ -21,7 +21,7 @@ model AccountDeck {
   accountId Int @map("account_id")
   cardId    Int @map("card_id")
 
-  @@map("Account_decks")
+  @@map("Account_Decks")
 }
 
 model AccountDex {
@@ -29,7 +29,7 @@ model AccountDex {
   dexId     Int @map("dex_id")
   accountId Int @map("account_id")
 
-  @@map("Account_dex")
+  @@map("Account_Dex")
 }
 
 model Account {
@@ -50,7 +50,7 @@ model DiscordChannel {
   channelId     String @map("channel_id") @db.VarChar(32)
   channelTypeId Int    @map("channel_type_id")
 
-  @@map("Discord_channels")
+  @@map("Discord_Channels")
 }
 
 model ExpansionBooster {
@@ -61,7 +61,7 @@ model ExpansionBooster {
   pokemonCardDex PokemonCardDex[]
 
   @@index([expansionId], map: "expansion_id")
-  @@map("Expansion_boosters")
+  @@map("Expansion_Boosters")
 }
 
 model Expansion {
@@ -89,7 +89,7 @@ model PokemonAttack {
   name        String @db.VarChar(32)
   description String @db.MediumText
 
-  @@map("Pokémon_attack")
+  @@map("Pokémon_Attack")
 }
 
 model PokemonCardDex {
@@ -126,7 +126,7 @@ model PokemonCardDex {
   @@index([namePostfixId], map: "name_variation_id")
   @@index([rarityId], map: "rarity_id")
   @@index([typeId], map: "type_id")
-  @@map("Pokémon_card_dex")
+  @@map("Pokémon_Card_Dex")
 }
 
 model PokemonCardLanguage {
@@ -134,7 +134,7 @@ model PokemonCardLanguage {
   name           String           @db.VarChar(16)
   pokemonCardDex PokemonCardDex[]
 
-  @@map("Pokémon_card_language")
+  @@map("Pokémon_Card_Language")
 }
 
 model PokemonCardRarity {
@@ -142,7 +142,7 @@ model PokemonCardRarity {
   name           String           @db.VarChar(32)
   pokemonCardDex PokemonCardDex[]
 
-  @@map("Pokémon_card_rarities")
+  @@map("Pokémon_Card_Rarities")
 }
 
 model PokemonEnergy {
@@ -150,7 +150,7 @@ model PokemonEnergy {
   type   Int
   amount Int
 
-  @@map("Pokémon_energy")
+  @@map("Pokémon_Energy")
 }
 
 model PokemonPostfix {
@@ -158,14 +158,14 @@ model PokemonPostfix {
   name           String           @db.VarChar(8)
   pokemonCardDex PokemonCardDex[]
 
-  @@map("Pokémon_postfixes")
+  @@map("Pokémon_Postfixes")
 }
 
 model PokemonStage {
   id   Int    @id @default(autoincrement())
   name String @db.VarChar(8)
 
-  @@map("Pokémon_stage")
+  @@map("Pokémon_Stage")
 }
 
 model PokemonTrade {
@@ -182,7 +182,7 @@ model PokemonTrade {
   @@unique([pokemonId, accountId], map: "pokemon_account_id")
   @@index([accountId], map: "account_id")
   @@index([tradeTypeId], map: "trade_type_id")
-  @@map("Pokémon_trades")
+  @@map("Pokémon_Trades")
 }
 
 model PokemonType {
@@ -191,7 +191,7 @@ model PokemonType {
   weakness       Int?
   pokemonCardDex PokemonCardDex[]
 
-  @@map("Pokémon_types")
+  @@map("Pokémon_Types")
 }
 
 model Session {
@@ -209,7 +209,7 @@ model TradeType {
   name          String         @db.VarChar(8)
   pokemonTrades PokemonTrade[]
 
-  @@map("Trade_types")
+  @@map("Trade_Types")
 }
 
 model User {
