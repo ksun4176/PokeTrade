@@ -2,13 +2,13 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import LoginIcon from '@mui/icons-material/Login';
-import HelpIcon from '@mui/icons-material/Help';
-import { CenterGradientContainer } from '../sharedComponents/CenterGradientContainer';
-import { StandaloneCard } from '../sharedComponents/StandaloneCard';
+import { CenterGradientContainer } from '../sharedComponents/layouts/CenterGradientContainer';
+import { StandaloneCard } from '../sharedComponents/surfaces/StandaloneCard';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import { AccountContext } from '../utils/contexts/AccountContext';
-import { LoadingOverlay } from '../sharedComponents/LoadingOverlay';
+import { LoadingOverlay } from '../sharedComponents/pages/LoadingOverlay';
+import { JoinDiscordButton } from '../sharedComponents/buttons/JoinDiscordButton';
 
 export default function LogIn() {
   const { user, account } = useContext(AccountContext)
@@ -47,16 +47,8 @@ export default function LogIn() {
           >
             Log in with Discord
           </Button>
-          <Button
-            fullWidth
-            variant="outlined"
-            startIcon={<HelpIcon />}
-            href='https://discord.gg/eTJR8VfXPw'
-            target='_blank'
-          >
-            Go to Support Server
-          </Button>
-          </Box>
+          <JoinDiscordButton />
+        </Box>
       </StandaloneCard>
     </CenterGradientContainer>
   );

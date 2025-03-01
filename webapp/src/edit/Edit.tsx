@@ -10,13 +10,13 @@ import Button from '@mui/material/Button';
 import { Pokemon } from '../utils/types';
 import { AccountContext } from '../utils/contexts/AccountContext';
 import { updateAccountTrades } from '../utils/apis';
-import { TopGradientContainer } from '../sharedComponents/TopGradientContainer';
+import { TopGradientContainer } from '../sharedComponents/layouts/TopGradientContainer';
 import { Location, useLocation, useNavigate } from 'react-router-dom';
 import { AccountStepContent } from './components/AccountStepContent';
 import { PokemonStepContent } from './components/PokemonStepContent';
 import { useFetchAccountTrades } from '../utils/hooks/useFetchAccountTrades';
 import { TradeTypes } from '../utils/constants';
-import Downtime from '../sharedComponents/Downtime';
+import Downtime from '../sharedComponents/pages/Downtime';
 
 const ModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',

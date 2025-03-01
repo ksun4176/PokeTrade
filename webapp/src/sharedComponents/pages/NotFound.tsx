@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography';
-import { StandaloneCard } from './StandaloneCard';
-import { CenterGradientContainer } from './CenterGradientContainer';
+import { StandaloneCard } from '../surfaces/StandaloneCard';
+import { CenterGradientContainer } from '../layouts/CenterGradientContainer';
 
 /**
  * Page to show if invalid route

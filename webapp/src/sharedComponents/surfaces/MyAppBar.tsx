@@ -7,6 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
+import { JoinDiscordButton } from '../buttons/JoinDiscordButton';
 
 type Page = {
   /**
@@ -75,13 +76,17 @@ export function MyAppBar() {
           </Button>)
         }
       </Box>
-      <IconButton
-        size="large"
-        aria-label="my account"
-        onClick={goToMyAccount}
-      >
-        <AccountCircle />
-      </IconButton>
+      <Box>
+        <JoinDiscordButton isIconButton />
+        <IconButton
+          size="large"
+          aria-label="Go To My Account"
+          onClick={goToMyAccount}
+        >
+          <AccountCircle />
+        </IconButton>
+      </Box>
+      
     </StyledToolbar>
   </AppBar>
 }

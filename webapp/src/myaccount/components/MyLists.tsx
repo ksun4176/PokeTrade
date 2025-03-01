@@ -10,7 +10,7 @@ import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
-import { CustomTabPanel, TabA11yProps } from '../../sharedComponents/CustomTabPanel';
+import { CustomTabPanel, TabA11yProps } from '../../sharedComponents/layouts/CustomTabPanel';
 import { useNavigate } from 'react-router-dom';
 
 type TabInfo = {

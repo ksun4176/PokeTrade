@@ -1,4 +1,4 @@
-import { TopGradientContainer } from '../sharedComponents/TopGradientContainer';
+import { TopGradientContainer } from '../sharedComponents/layouts/TopGradientContainer';
 import { AccountToPokemon, CardToAccount, Pokemon, TradeWithAccount } from '../utils/types';
 import Box from '@mui/material/Box';
 import { useContext, useEffect, useState } from 'react';
@@ -15,11 +15,11 @@ import AccountCard from './components/AccountCard';
 import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
-import { MyAppBar } from '../sharedComponents/MyAppBar';
+import { MyAppBar } from '../sharedComponents/surfaces/MyAppBar';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
-import Downtime from '../sharedComponents/Downtime';
+import Downtime from '../sharedComponents/pages/Downtime';
 
 type HomeProps = {
   /**

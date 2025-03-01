@@ -3,13 +3,13 @@ import LogIn from "./login/Login";
 import Edit from "./edit/Edit";
 import { useFetchAccount } from "./utils/hooks/useFetchAccount";
 import { AccountContext } from "./utils/contexts/AccountContext";
-import { LoadingOverlay } from "./sharedComponents/LoadingOverlay";
+import { LoadingOverlay } from "./sharedComponents/pages/LoadingOverlay";
 import Home from "./home/Home";
-import Downtime from "./sharedComponents/Downtime";
+import Downtime from "./sharedComponents/pages/Downtime";
 import { useFetchPokemons } from "./utils/hooks/useFetchPokemons";
 import MyAccount from "./myaccount/MyAccount";
-import NotFound from "./sharedComponents/NotFound";
-import RedirectToIndex from "./sharedComponents/RedirectToIndex";
+import NotFound from "./sharedComponents/pages/NotFound";
+import RedirectToIndex from "./sharedComponents/pages/RedirectToIndex";
  
 function App() {
   const { user, setUser, account, setAccount, accountError, accountLoading } = useFetchAccount();

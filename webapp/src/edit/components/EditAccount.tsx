@@ -1,7 +1,7 @@
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import TextField from "@mui/material/TextField";
-import { StandaloneCard } from "../../sharedComponents/StandaloneCard";
+import { StandaloneCard } from "../../sharedComponents/surfaces/StandaloneCard";
 import { useCallback } from "react";
 
 export type EditAccountProps = {

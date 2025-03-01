@@ -133,7 +133,7 @@ Response:
 
 
 ### `discord/sendtrademessage`
-**POST**: Send a trade message through Discord to link up
+**POST**: Send a trade message through Discord to link up users. This will go through all Discord servers that the bot + both users are in and send message in one that is set up correctly.
 Body:
 - pokemonId: ID of the Pokémon being requested
 - user: The user we want to send message to

@@ -1,5 +1,5 @@
 import { Pokemon } from '../utils/types';
-import { TopGradientContainer } from '../sharedComponents/TopGradientContainer';
+import { TopGradientContainer } from '../sharedComponents/layouts/TopGradientContainer';
 import Grid from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import AccountInfo from './components/AccountInfo';
 import MyList from './components/MyLists';
 import Button from '@mui/material/Button';
-import { MyAppBar } from '../sharedComponents/MyAppBar';
+import { MyAppBar } from '../sharedComponents/surfaces/MyAppBar';
 import { postLogOut } from '../utils/apis';
 import { useContext } from 'react';
 import { AccountContext } from '../utils/contexts/AccountContext';
