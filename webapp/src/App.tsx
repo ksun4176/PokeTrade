@@ -10,6 +10,7 @@ import { useFetchPokemons } from "./utils/hooks/useFetchPokemons";
 import MyAccount from "./myaccount/MyAccount";
 import NotFound from "./sharedComponents/pages/NotFound";
 import RedirectToIndex from "./sharedComponents/pages/RedirectToIndex";
+import Welcome from "./welcome/Welcome";
  
 function App() {
   const { user, setUser, account, setAccount, accountError, accountLoading } = useFetchAccount();
@@ -28,20 +29,22 @@ function App() {
     </Routes>
   }
   else {
+    let welcomeElement = <Welcome pokemons={pokemons} />;
     let homeElement = <Home pokemons={pokemons} />;
     let editElement = <Edit pokemons={pokemons} />;
     let myAccountElement = <MyAccount pokemons={pokemons} />;
     if (!user || accountError) {
       // not logged in
-      homeElement = editElement = myAccountElement = <RedirectToIndex />;
+      welcomeElement = homeElement = editElement = myAccountElement = <RedirectToIndex />;
     }
     else if (!account) {
       // no account set up
-      homeElement = myAccountElement = <RedirectToIndex />;
+      homeElement = editElement = myAccountElement = <RedirectToIndex />;
     }
 
     routes = <Routes>
       <Route path="/" element={<LogIn />} />
+      <Route path="/welcome" element={welcomeElement} />
       <Route path="/home" element={homeElement} />
       <Route path="/edit" element={editElement} />
       <Route path="/myaccount" element={myAccountElement} />
