@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import LoginIcon from '@mui/icons-material/Login';
 import { CenterGradientContainer } from '../sharedComponents/layouts/CenterGradientContainer';
-import { StandaloneCard } from '../sharedComponents/surfaces/StandaloneCard';
+import { SimpleCard } from '../sharedComponents/surfaces/SimpleCard';
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import { AccountContext } from '../utils/contexts/AccountContext';
@@ -22,7 +22,7 @@ export default function LogIn() {
       navigate('/home', { replace: true });
     }
     else if (user) {
-      navigate('/edit', { replace: true });
+      navigate('/welcome', { replace: true });
     }
   },[account, user, navigate]);
 
@@ -31,7 +31,10 @@ export default function LogIn() {
   }
   return (
     <CenterGradientContainer direction="column" justifyContent="space-between">
-      <StandaloneCard variant="outlined" sx={{ p: 4 }}>
+      <SimpleCard variant="outlined" sx={{
+        p: 4,
+        margin: 'auto'
+      }}>
         <Typography
           component="h1"
           variant="h4"
@@ -49,7 +52,7 @@ export default function LogIn() {
           </Button>
           <JoinDiscordButton />
         </Box>
-      </StandaloneCard>
+      </SimpleCard>
     </CenterGradientContainer>
   );
 }

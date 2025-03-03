@@ -1,5 +1,5 @@
 import Typography from '@mui/material/Typography';
-import { StandaloneCard } from '../surfaces/StandaloneCard';
+import { SimpleCard } from '../surfaces/SimpleCard';
 import { CenterGradientContainer } from '../layouts/CenterGradientContainer';
 
 /**
@@ -8,7 +8,10 @@ import { CenterGradientContainer } from '../layouts/CenterGradientContainer';
 export default function Downtime() {
   return (
     <CenterGradientContainer direction="column">
-      <StandaloneCard variant="outlined" sx={{ p: 4 }}>
+      <SimpleCard variant="outlined" sx={{
+        p: 4,
+        margin: 'auto'
+      }}>
         <Typography
           component="h1"
           variant="h4"
@@ -21,7 +24,7 @@ export default function Downtime() {
         >
           Try again later!
         </Typography>
-      </StandaloneCard>
+      </SimpleCard>
     </CenterGradientContainer>
   );
 }

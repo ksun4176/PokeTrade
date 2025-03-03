@@ -1,7 +1,7 @@
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import TextField from "@mui/material/TextField";
-import { StandaloneCard } from "../../sharedComponents/surfaces/StandaloneCard";
+import { SimpleCard } from "../../sharedComponents/surfaces/SimpleCard";
 import { useCallback } from "react";
 
 export type EditAccountProps = {
@@ -54,7 +54,7 @@ export function EditAccount(props: EditAccountProps) {
     }
   },[setFriendCode, setFriendCodeError]);
 
-  return <StandaloneCard sx={{ pl: 2, pr: 2 }}>
+  return <SimpleCard sx={{ pl: 2, pr: 2 }}>
     <CardHeader title='Linked Account' sx={{ pb: 0 }} />
     <CardContent
       component='form'
@@ -80,5 +80,5 @@ export function EditAccount(props: EditAccountProps) {
         onChange={event => updateFriendCode(event.target.value)}
       />
     </CardContent>
-  </StandaloneCard>
+  </SimpleCard>
 }

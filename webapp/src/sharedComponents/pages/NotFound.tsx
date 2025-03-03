@@ -1,5 +1,5 @@
 import Typography from '@mui/material/Typography';
-import { StandaloneCard } from '../surfaces/StandaloneCard';
+import { SimpleCard } from '../surfaces/SimpleCard';
 import { CenterGradientContainer } from '../layouts/CenterGradientContainer';
 
 /**
@@ -8,14 +8,17 @@ import { CenterGradientContainer } from '../layouts/CenterGradientContainer';
 export default function NotFound() {
   return (
     <CenterGradientContainer direction="column">
-      <StandaloneCard variant="outlined" sx={{ p: 4 }}>
+      <SimpleCard variant="outlined" sx={{
+        p: 4,
+        margin: 'auto'
+      }}>
         <Typography
           component="h1"
           variant="h1"
         >
           404 Not Found
         </Typography>
-      </StandaloneCard>
+      </SimpleCard>
     </CenterGradientContainer>
   );
 }

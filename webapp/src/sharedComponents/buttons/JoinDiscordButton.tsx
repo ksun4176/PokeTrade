@@ -23,7 +23,6 @@ export function JoinDiscordButton(props: IJoinDiscordButtonProps) {
     </IconButton>
   }
   return <Button
-    fullWidth
     variant="outlined"
     startIcon={<FaDiscord color="5865F2" />}
     target={target}

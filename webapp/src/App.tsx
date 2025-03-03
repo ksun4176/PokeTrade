@@ -29,7 +29,7 @@ function App() {
     </Routes>
   }
   else {
-    let welcomeElement = <Welcome pokemons={pokemons} />;
+    let welcomeElement = <Welcome />;
     let homeElement = <Home pokemons={pokemons} />;
     let editElement = <Edit pokemons={pokemons} />;
     let myAccountElement = <MyAccount pokemons={pokemons} />;

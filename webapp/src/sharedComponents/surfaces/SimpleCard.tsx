@@ -4,13 +4,12 @@ import { styled } from "@mui/material/styles";
 /**
  * Small card to show information
  */
-export const StandaloneCard = styled(Card)(({ theme }) => ({
+export const SimpleCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignSelf: 'center',
   width: '100%',
   gap: theme.spacing(2),
-  margin: 'auto',
   [theme.breakpoints.up('sm')]: {
     maxWidth: '450px',
   },

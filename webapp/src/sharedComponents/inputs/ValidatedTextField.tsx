@@ -1,14 +1,15 @@
 import TextField, { TextFieldProps } from "@mui/material/TextField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ValidatedTextFieldProps = {
   label: string,
   validator: (value: string) => string;
   onChange: (value: string, isValid: boolean) => void;
+  initialValue?: string,
   textFieldProps?: TextFieldProps;
 }
 export const ValidatedTextField = (props: ValidatedTextFieldProps) => {
-  const { label, validator, onChange, textFieldProps } = props;
+  const { label, validator, onChange, initialValue, textFieldProps } = props;
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -18,6 +19,10 @@ export const ValidatedTextField = (props: ValidatedTextFieldProps) => {
     setError(errorMessage);
     onChange(newValue, !errorMessage);
   };
+
+  useEffect(() => {
+    if (initialValue) setValue(initialValue);
+  }, [initialValue]);
 
   return (
     <TextField
