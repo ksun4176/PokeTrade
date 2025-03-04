@@ -4,22 +4,27 @@ import Button from '@mui/material/Button';
 import { AccountContext } from '../utils/contexts/AccountContext';
 import { TopGradientContainer } from '../sharedComponents/layouts/TopGradientContainer';
 import { useNavigate } from 'react-router-dom';
-import { EditAccount, EditAccountState, SaveAccountToDb } from '../sharedComponents/EditAccount';
 import { JoinDiscordButton } from '../sharedComponents/buttons/JoinDiscordButton';
 import Box from '@mui/material/Box';
+import { SaveAccountToDb } from '../utils/apis';
+import { SimpleCard } from '../sharedComponents/surfaces/SimpleCard';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import { ValidatedTextField } from '../sharedComponents/inputs/ValidatedTextField';
+import { FriendCodeValidator, IgnValidator } from '../utils/validators';
 
 export default function Welcome() {
   const { account, setAccount } = useContext(AccountContext);
   const navigate = useNavigate();
   
-  const [accountDetails, setAccountDetails] = useState<EditAccountState>({
-    ign: '',
+  const [accountDetails, setAccountDetails] = useState({
+    inGameName: '',
     friendCode: '',
-    ignValid: false,
+    inGameNameValid: false,
     friendCodeValid: false
   });
   const accountValid: Record<string, boolean> = {
-    ignValid: accountDetails.ignValid,
+    inGameNameValid: accountDetails.inGameNameValid,
     friendCodeValid: accountDetails.friendCodeValid
   }
   
@@ -28,7 +33,21 @@ export default function Welcome() {
     setAccount(newAccount);
     navigate('/home');
   }
-  console.log(saveAccount);
+  
+  const onIgnChange = (value: string, isValid: boolean) => {
+    setAccountDetails(oldState => ({
+      ...oldState,
+      inGameName: value,
+      inGameNameValid: isValid
+    }))
+  }
+  const onFriendCodeChange = (value: string, isValid: boolean) => {
+    setAccountDetails(oldState => ({
+      ...oldState,
+      friendCode: value,
+      friendCodeValid: isValid
+    }))
+  }
 
   return <TopGradientContainer flexDirection='column' alignItems='center' p={2}>
     <Typography
@@ -48,9 +67,27 @@ export default function Welcome() {
     <Box m={2}>
       <JoinDiscordButton />
     </Box>
-    <EditAccount 
-      setAccountDetails={setAccountDetails}
-    />
+    <SimpleCard sx={{ pl: 2, pr: 2 }}>
+      <CardHeader title='Account' sx={{ pb: 0 }} />
+      <CardContent>
+        <ValidatedTextField
+          label='In Game Name'
+          validator={IgnValidator}
+          onChange={onIgnChange}
+          required
+          margin='dense'
+          fullWidth
+        />
+        <ValidatedTextField
+          label='Friend Code'
+          validator={FriendCodeValidator}
+          onChange={onFriendCodeChange}
+          required
+          margin='dense'
+          fullWidth
+        />
+      </CardContent>
+    </SimpleCard>
     <Button
       variant='contained'
       color='success'

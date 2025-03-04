@@ -1,24 +1,15 @@
-import Box from '@mui/material/Box';
 import { useFetchAccountTrades } from '../../utils/hooks/useFetchAccountTrades';
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useRef } from 'react';
 import { AccountContext } from '../../utils/contexts/AccountContext';
 import { TradeTypes } from '../../utils/constants';
 import { Pokemon } from '../../utils/types';
 import PokemonList from './PokemonList';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import { CustomTabPanel, TabA11yProps } from '../../sharedComponents/layouts/CustomTabPanel';
+import { CustomTabs, TabInfo } from '../../sharedComponents/layouts/CustomTabs';
 import { useNavigate } from 'react-router-dom';
-
-type TabInfo = {
-  /** Label to show in tab */
-  label: string,
-  /** Content to display when we are on that tab */
-  content: React.ReactNode,
-}
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
 
 type MyListsProps = {
   /**
@@ -28,10 +19,11 @@ type MyListsProps = {
 }
 export default function MyLists(props: MyListsProps) {
   const { account } = useContext(AccountContext);
+  const tabIndex = useRef(0);
   const navigate = useNavigate();
 
   const editList = () => {
-    navigate('/edit', { state: { activeStep: tabIndex+1 } });
+    navigate('/pokemonedit');
   }
 
   /**
@@ -42,15 +34,8 @@ export default function MyLists(props: MyListsProps) {
   const wishlist = accountTrades.filter(t => t.tradeTypeId === TradeTypes.Request).map(t => t.pokemonId);
   const listForTrade = accountTrades.filter(t => t.tradeTypeId === TradeTypes.Offer).map(t => t.pokemonId);
 
-  /**
-   * Handle moving between tab content
-   */
+  const tabsLabel = `pokemon list tabs`;
   const tabPrefix = `pokemonlist-tab`;
-  const [tabIndex, setTabIndex] = useState(0);
-  const switchTab = (_event: React.SyntheticEvent, newTabIndex: number) => {
-    setTabIndex(newTabIndex);
-  };
-  
   const tabs: TabInfo[] = [
     {
       label: 'Wishlist',
@@ -67,6 +52,15 @@ export default function MyLists(props: MyListsProps) {
       />
     }
   ];
+  const onTabChange = useCallback((index: number) => {
+    tabIndex.current = index;
+  }, []);
+  const tabsHeadingContent = <IconButton
+    color='info'
+    onClick={editList}
+  >
+    <EditIcon />
+  </IconButton>;
 
   return <Card variant='outlined' sx={{
     flexGrow: 1,
@@ -76,29 +70,13 @@ export default function MyLists(props: MyListsProps) {
     gap: 1,
   }}>
     <CardContent>
-      <Box sx={{ display: 'flex' }}>
-        <Tabs
-          value={tabIndex}
-          onChange={switchTab} 
-          aria-label='pokemon list tabs'
-        >
-          <Tab label='Wishlist' {...TabA11yProps(tabPrefix, 0)} />
-          <Tab label='List for Trading' {...TabA11yProps(tabPrefix, 1)} />
-        </Tabs>
-        <Box flex='1 1 auto' />
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={editList}
-        >
-          Edit List
-        </Button>
-      </Box>
-      <Box>
-        <CustomTabPanel prefix={tabPrefix} index={tabIndex}>
-          {tabs[tabIndex].content}
-        </CustomTabPanel>
-      </Box>
+      <CustomTabs 
+        tabPrefix={tabPrefix}
+        tabs={tabs}
+        onTabChange={onTabChange}
+        tabsHeadingContent={tabsHeadingContent}
+        aria-label={tabsLabel}
+      />
     </CardContent>
   </Card>
 }

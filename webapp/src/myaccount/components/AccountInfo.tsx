@@ -14,7 +14,7 @@ export default function AccountInfo() {
   const navigate = useNavigate();
 
   const editAccount = () => {
-    navigate('/edit', { state: { activeStep: 0 } })
+    navigate('/accountedit')
   }
 
   return <>

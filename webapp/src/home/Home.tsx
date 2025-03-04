@@ -70,7 +70,7 @@ export default function Home(props: HomeProps) {
   };
 
   const editWishlist = () => {
-    navigate('/edit', { state: { activeStep: 1 } });
+    navigate('/pokemonedit');
   }
 
   const { accountTradeMatches, accountTradeMatchesError } = useFetchAccountTradeMatches(account?.id);

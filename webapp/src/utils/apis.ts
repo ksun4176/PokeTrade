@@ -42,22 +42,6 @@ export const getAccountTradeMatches = (accountId: number) => axios.get<AccountTr
   ));
 
 /**
- * Update account
- * @param accountId account to update
- * @param inGameName new in game name
- * @param friendCode new friend code
- * @returns new updated account
- */
-export const updateAccountInfo = (accountId: number, inGameName?: string, friendCode?: string) => axios.put<Account>(
-  `${process.env.REACT_APP_API_URL}/accounts/${accountId}`,
-  {
-    inGameName,
-    friendCode
-  },
-  CONFIG
-);
-
-/**
  * Update trades linked to an account
  * @param accountId account to update
  * @param wishlist exhaustive wishlist of pokemons
@@ -78,21 +62,6 @@ export const updateAccountTrades = (accountId: number, wishlist: Set<number>, li
     CONFIG
   );
 }
-
-/**
- * create a new account
- * @param inGameName new in game name
- * @param friendCode new friend code
- * @returns newly created account
- */
-export const createAccount = (inGameName: string, friendCode: string) => axios.post<Account>(
-  `${process.env.REACT_APP_API_URL}/users/@me/accounts`,
-  {
-    inGameName,
-    friendCode
-  },
-  CONFIG
-);
 
 /**
  * Log out user
@@ -118,3 +87,41 @@ export const sendTradeMessage = (pokemonId: number, user: User) => axios.post<st
   },
   CONFIG
 );
+
+/**
+ * Update old account or create a new account
+ * @param oldAccount Old account details OR null if creating a new account
+ * @param newAccountDetails New account details to set
+ * @returns Saved account details
+ */
+export type AccountDetails = {
+  inGameName: string;
+  friendCode: string;
+}
+export async function SaveAccountToDb(oldAccount: Account | null, newAccountDetails: AccountDetails) {
+  const { inGameName, friendCode } = newAccountDetails;
+  let newAccount: Account;
+  if (oldAccount) {
+    const updateAccountInfoResponse = await axios.put<Account>(
+      `${process.env.REACT_APP_API_URL}/accounts/${oldAccount.id}`,
+      {
+        inGameName,
+        friendCode
+      },
+      CONFIG
+    );
+    newAccount = updateAccountInfoResponse.data;
+  }
+  else {
+    const createAccountResponse = await axios.post<Account>(
+      `${process.env.REACT_APP_API_URL}/users/@me/accounts`,
+      {
+        inGameName,
+        friendCode
+      },
+      CONFIG
+    );
+    newAccount = createAccountResponse.data;
+  }
+  return newAccount;
+}

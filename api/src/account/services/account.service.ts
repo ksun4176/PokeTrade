@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { Account, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/services/prisma.service";
 import { Services } from "src/utils/constants";
@@ -32,6 +32,10 @@ export class AccountService implements IAccountService {
     @Inject(Services.PRISMA) private readonly prisma: PrismaService
   ) { }
   
+  private isFriendCodeValid(friendCode: string) {
+    return /^[0-9]{16}$/.test(friendCode);
+  }
+
   async getAccounts(filter?: Prisma.AccountWhereInput) {
     const accounts = await this.prisma.account.findMany({ where: filter });
     console.log(`${accounts.length} accounts found.`);
@@ -40,6 +44,9 @@ export class AccountService implements IAccountService {
 
   async updateAccount(accountId: number, accountDetails: Prisma.AccountUpdateInput) {
     const { inGameName, friendCode } = accountDetails;
+    if (!this.isFriendCodeValid(friendCode as string)) {
+      throw new BadRequestException('Friend code must be a 16 digit number');
+    }
     const account = await this.prisma.account.update({
       where: {
         id: accountId
@@ -55,6 +62,9 @@ export class AccountService implements IAccountService {
 
   async createAccount(userId: number, accountDetails: Prisma.AccountUncheckedCreateInput) {
     const { inGameName, friendCode } = accountDetails;
+    if (!this.isFriendCodeValid(friendCode)) {
+      throw new BadRequestException('Friend code must be a 16 digit number');
+    }
     const account = await this.prisma.account.create({ 
       data: {
         userId: userId,

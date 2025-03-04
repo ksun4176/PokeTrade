@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import LogIn from "./login/Login";
-import Edit from "./edit/Edit";
+import AccountEdit from "./edit/AccountEdit";
 import { useFetchAccount } from "./utils/hooks/useFetchAccount";
 import { AccountContext } from "./utils/contexts/AccountContext";
 import { LoadingOverlay } from "./sharedComponents/pages/LoadingOverlay";
@@ -31,22 +31,24 @@ function App() {
   else {
     let welcomeElement = <Welcome />;
     let homeElement = <Home pokemons={pokemons} />;
-    let editElement = <Edit pokemons={pokemons} />;
+    let accountEditElement = <AccountEdit />;
+    let pokemonEditElement = <AccountEdit />;
     let myAccountElement = <MyAccount pokemons={pokemons} />;
     if (!user || accountError) {
       // not logged in
-      welcomeElement = homeElement = editElement = myAccountElement = <RedirectToIndex />;
+      welcomeElement = homeElement = accountEditElement = pokemonEditElement = myAccountElement = <RedirectToIndex />;
     }
     else if (!account) {
       // no account set up
-      homeElement = editElement = myAccountElement = <RedirectToIndex />;
+      homeElement = accountEditElement = pokemonEditElement = myAccountElement = <RedirectToIndex />;
     }
 
     routes = <Routes>
       <Route path="/" element={<LogIn />} />
       <Route path="/welcome" element={welcomeElement} />
       <Route path="/home" element={homeElement} />
-      <Route path="/edit" element={editElement} />
+      <Route path="/accountedit" element={accountEditElement} />
+      <Route path="/pokemonedit" element={pokemonEditElement} />
       <Route path="/myaccount" element={myAccountElement} />
       <Route path="*" element={<NotFound />} />
     </Routes>

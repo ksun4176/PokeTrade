@@ -1,34 +1,33 @@
 import TextField, { TextFieldProps } from "@mui/material/TextField";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-type ValidatedTextFieldProps = {
-  label: string,
+type ValidatedTextFieldProps = Omit<TextFieldProps,"value" | "error" | "helperText" | "onChange"> & 
+{
   validator: (value: string) => string;
   onChange: (value: string, isValid: boolean) => void;
-  initialValue?: string,
-  textFieldProps?: TextFieldProps;
-}
+  initialValue?: string;
+  resetNum?: number;
+};
 export const ValidatedTextField = (props: ValidatedTextFieldProps) => {
-  const { label, validator, onChange, initialValue, textFieldProps } = props;
+  const { label, validator, onChange, initialValue, resetNum, ...textFieldProps } = props;
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    const newValue = event.target.value;
+  const handleChange = useCallback((newValue: string) => {
     const errorMessage = validator(newValue);
     setValue(newValue);
     setError(errorMessage);
     onChange(newValue, !errorMessage);
-  };
+  }, [onChange, validator]);
 
   useEffect(() => {
-    if (initialValue) setValue(initialValue);
-  }, [initialValue]);
+    handleChange(initialValue ?? '');
+  }, [initialValue, handleChange, resetNum]);
 
   return (
     <TextField
       label={label}
       value={value}
-      onChange={handleChange}
+      onChange={e => handleChange(e.target.value)}
       error={!!error}
       helperText={error}
       {...textFieldProps}
