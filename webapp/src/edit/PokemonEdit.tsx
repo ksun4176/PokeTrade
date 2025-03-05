@@ -129,7 +129,7 @@ export default function PokemonEdit(props: PokemonEditProps) {
       && initialTab >= 0 && initialTab < tabs.length) {
       setInitialTab(initialTab);
     }
-  }, [location.state])
+  }, [location.state, tabs.length])
 
   if (accountTradesError) {
     return <Downtime />
