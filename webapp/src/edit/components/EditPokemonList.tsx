@@ -41,7 +41,6 @@ export const EditPokemonList = function(props:IEditPokemonListProps) {
       alignContent: 'flex-start',
       gap: '4px',
       overflowX: 'auto',
-      mx: 2
     }}>
       {Array.from(selectedPokemons).map(id =>
         <PokemonCard 
@@ -52,7 +51,7 @@ export const EditPokemonList = function(props:IEditPokemonListProps) {
         />
       )}
     </Paper>
-    <Box m={1} sx={{ flex: '1 1 auto', mx: 2 }}>
+    <Box sx={{ flex: '1 1 auto', my: 1 }}>
       {/* Data Virtualization around the Pokemon cards */}
       <AutoSizer>
         {({ height, width }: { height: number, width: number }) => {
