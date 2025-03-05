@@ -21,6 +21,7 @@ import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
 import Downtime from '../sharedComponents/pages/Downtime';
 import { EditLocationState } from '../edit/PokemonEdit';
+import { getPokemonShortName } from '../utils/utils';
 
 type HomeProps = {
   /**
@@ -221,7 +222,7 @@ export default function Home(props: HomeProps) {
                                 }
                               }}>
                                 <Typography>
-                                  {pokemon.expansion.name} {pokemon.name}{pokemon.pokemonPostfix ? ` ${pokemon.pokemonPostfix.name}` : ``}
+                                  {getPokemonShortName(pokemon)}
                                 </Typography>
                               </CardContent>
                             </Card>

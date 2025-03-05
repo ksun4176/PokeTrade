@@ -1,15 +1,13 @@
-import React, { JSX } from "react";
-import { pokemonImagesMap } from "../assets";
+import { JSX, memo } from "react";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import { Pokemon } from "../utils/types";
 import Badge from "@mui/material/Badge";
+import { getPokemonFullName } from "../utils/utils";
 
-export interface ICardProps {
+interface ICardProps {
   /**
    * Pokemon toshow
    */
@@ -39,39 +37,36 @@ export interface ICardProps {
    */
   badgeContent?: string|number
 }
+export const PokemonCard = memo((props: ICardProps) => {
+  const { pokemon, height, onClick,  disabled, showOverlay, overlayIcon, badgeContent } = props;
 
-export class PokemonCard extends React.Component<ICardProps> {
-  override render() {
-    const { pokemon, height, onClick,  disabled, showOverlay, overlayIcon, badgeContent } = this.props;
-
-    const imageSource = pokemonImagesMap.get(pokemon.id);
-    const cardContent = imageSource ?
+  const imgSrc = `${process.env.PUBLIC_URL}/images/${pokemon.expansion.code}-${pokemon.dexId}.webp`;
+  const card = <Card sx={{
+    p: 0,
+  }}>
+    <CardActionArea disabled={disabled} onClick={onClick} sx={{
+      height: height,
+      width: height / 683 * 490,
+    }}>
       <CardMedia
         component="img"
-        src={imageSource}
-        alt={pokemon.name}
-      /> :
-      <CardContent sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignContent: 'center',
-        justifyContent: 'center',
-      }}>
-        <Typography variant="subtitle1" textAlign='center'>{pokemon.name}{pokemon.pokemonPostfix ? ` ${pokemon.pokemonPostfix.name}` : ``}</Typography>
-        <Typography variant="caption" textAlign='center'>{pokemon.expansion.code} #{pokemon.dexId}</Typography>
-        <Typography variant="caption" textAlign='center'>{pokemon.pokemonCardRarity.name}</Typography>
-      </CardContent>
-
-    const card = <Card sx={{
-      p: 0,
-    }}>
-      <CardActionArea disabled={disabled} onClick={onClick} sx={{
-        height: height,
-        width: height / 683 * 490,
-      }}>
-        {cardContent}
-        { showOverlay &&
-          <>
+        src={imgSrc}
+        alt={getPokemonFullName(pokemon)}
+      />
+      { showOverlay &&
+        <>
+          <Box sx={{
+            overflow: 'hidden',
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            borderRadius: 'inherit',
+            opacity: .5,
+            backgroundColor: '#000',
+          }} />
+          { !!overlayIcon &&
             <Box sx={{
               overflow: 'hidden',
               position: 'absolute',
@@ -79,36 +74,23 @@ export class PokemonCard extends React.Component<ICardProps> {
               right: 0,
               bottom: 0,
               left: 0,
-              borderRadius: 'inherit',
-              opacity: .5,
-              backgroundColor: '#000',
-            }} />
-            { !!overlayIcon &&
-              <Box sx={{
-                overflow: 'hidden',
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'transparent'
-              }}>
-                {overlayIcon}
-              </Box>
-            }
-          </>
-        }
-      </CardActionArea>
-    </Card>;
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent'
+            }}>
+              {overlayIcon}
+            </Box>
+          }
+        </>
+      }
+    </CardActionArea>
+  </Card>;
 
-    if (badgeContent !== undefined) {
-      return <Badge badgeContent={badgeContent} showZero color='primary'>
-        {card}
-      </Badge>
-    }
-    return card;
+  if (badgeContent !== undefined) {
+    return <Badge badgeContent={badgeContent} showZero color='primary'>
+      {card}
+    </Badge>
   }
-}
+  return card;
+});
