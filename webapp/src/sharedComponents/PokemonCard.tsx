@@ -40,7 +40,7 @@ interface ICardProps {
 export const PokemonCard = memo((props: ICardProps) => {
   const { pokemon, height, onClick,  disabled, showOverlay, overlayIcon, badgeContent } = props;
 
-  const imgSrc = `${process.env.PUBLIC_URL}/images/${pokemon.expansion.code}-${pokemon.dexId}.webp`;
+  const imgSrc = `${process.env.PUBLIC_URL}/images/${pokemon.expansion.code}-${pokemon.dexId}.webp`.toLowerCase();
   const card = <Card sx={{
     p: 0,
   }}>
