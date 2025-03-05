@@ -45,12 +45,13 @@ export class PokemonCard extends React.Component<ICardProps> {
     const { pokemon, height, onClick,  disabled, showOverlay, overlayIcon, badgeContent } = this.props;
 
     const imageSource = pokemonImagesMap.get(pokemon.id);
-
     const cardContent = imageSource ?
-      <CardMedia component="img" height={height} src={imageSource} alt={pokemon.name} sx={{ objectFit: "contain"}} /> :
+      <CardMedia
+        component="img"
+        src={imageSource}
+        alt={pokemon.name}
+      /> :
       <CardContent sx={{
-        height: height,
-        width: height / 683 * 490,
         display: 'flex',
         flexDirection: 'column',
         alignContent: 'center',
@@ -61,8 +62,13 @@ export class PokemonCard extends React.Component<ICardProps> {
         <Typography variant="caption" textAlign='center'>{pokemon.pokemonCardRarity.name}</Typography>
       </CardContent>
 
-    const card = <Card sx={{ p: 0 }}>
-      <CardActionArea disabled={disabled} onClick={onClick}>
+    const card = <Card sx={{
+      p: 0,
+    }}>
+      <CardActionArea disabled={disabled} onClick={onClick} sx={{
+        height: height,
+        width: height / 683 * 490,
+      }}>
         {cardContent}
         { showOverlay &&
           <>

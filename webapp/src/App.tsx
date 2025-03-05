@@ -11,6 +11,7 @@ import MyAccount from "./myaccount/MyAccount";
 import NotFound from "./sharedComponents/pages/NotFound";
 import RedirectToIndex from "./sharedComponents/pages/RedirectToIndex";
 import Welcome from "./welcome/Welcome";
+import PokemonEdit from "./edit/PokemonEdit";
  
 function App() {
   const { user, setUser, account, setAccount, accountError, accountLoading } = useFetchAccount();
@@ -32,7 +33,7 @@ function App() {
     let welcomeElement = <Welcome />;
     let homeElement = <Home pokemons={pokemons} />;
     let accountEditElement = <AccountEdit />;
-    let pokemonEditElement = <AccountEdit />;
+    let pokemonEditElement = <PokemonEdit pokemons={pokemons} />;
     let myAccountElement = <MyAccount pokemons={pokemons} />;
     if (!user || accountError) {
       // not logged in

@@ -51,6 +51,8 @@ export function CustomTabs(props: CustomTabsProps) {
   return <Box
     height='100%'
     width='100%'
+    display='flex'
+    flexDirection='column'
   >
     <Box
       pb={1}
@@ -61,7 +63,7 @@ export function CustomTabs(props: CustomTabsProps) {
         onChange={(_e, newTabIndex: number) => switchTab(newTabIndex)} 
         {...tabsProps}
       >
-        { tabs.map((tab, index) => <Tab label={tab.label} {...TabA11yProps(tabPrefix, index)} />)}
+        { tabs.map((tab, index) => <Tab key={index} label={tab.label} {...TabA11yProps(tabPrefix, index)} />)}
       </Tabs>
       {tabsHeadingContent}
     </Box>
@@ -93,6 +95,9 @@ const CustomTabPanel = function (props: TabPanelProps) {
     role="tabpanel"
     id={`${prefix}-${index}`}
     aria-labelledby={`${prefix}-${index}`}
+    height='100%'
+    display='flex'
+    flexDirection='column'
   >
     {children}
   </Box>
