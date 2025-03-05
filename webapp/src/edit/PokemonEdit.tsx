@@ -124,8 +124,10 @@ export default function PokemonEdit(props: PokemonEditProps) {
   }, [accountTrades, resetNum]);
 
   useEffect(() => {
-    if (location.state?.initialTab !== undefined) {
-      setInitialTab(location.state.initialTab);
+    const initialTab = location.state?.initialTab;
+    if (initialTab !== undefined
+      && initialTab >= 0 && initialTab < tabs.length) {
+      setInitialTab(initialTab);
     }
   }, [location.state])
 

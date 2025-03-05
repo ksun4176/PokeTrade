@@ -10,6 +10,7 @@ import { CustomTabs, TabInfo } from '../../sharedComponents/layouts/CustomTabs';
 import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import { EditLocationState } from '../../edit/PokemonEdit';
 
 type MyListsProps = {
   /**
@@ -23,7 +24,10 @@ export default function MyLists(props: MyListsProps) {
   const navigate = useNavigate();
 
   const editList = () => {
-    navigate('/pokemonedit');
+    const locationState: EditLocationState = {
+      initialTab: tabIndex.current
+    }
+    navigate('/pokemonedit', { state: locationState });
   }
 
   /**

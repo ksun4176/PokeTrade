@@ -20,6 +20,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
 import Downtime from '../sharedComponents/pages/Downtime';
+import { EditLocationState } from '../edit/PokemonEdit';
 
 type HomeProps = {
   /**
@@ -70,7 +71,10 @@ export default function Home(props: HomeProps) {
   };
 
   const editWishlist = () => {
-    navigate('/pokemonedit');
+      const locationState: EditLocationState = {
+        initialTab: 0
+      }
+      navigate('/pokemonedit', { state: locationState });
   }
 
   const { accountTradeMatches, accountTradeMatchesError } = useFetchAccountTradeMatches(account?.id);
