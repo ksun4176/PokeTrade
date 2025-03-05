@@ -11,7 +11,6 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import AccountCard from './components/AccountCard';
 import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +21,8 @@ import Popover from '@mui/material/Popover';
 import Downtime from '../sharedComponents/pages/Downtime';
 import { EditLocationState } from '../edit/PokemonEdit';
 import { getPokemonShortName } from '../utils/utils';
+import SendMessageButton from './components/SendMessageButton';
+import Divider from '@mui/material/Divider';
 
 type HomeProps = {
   /**
@@ -195,14 +196,16 @@ export default function Home(props: HomeProps) {
                         display: 'flex',
                         p: 1,
                       }}>
-                        <AccountCard
-                          account={selectedAccount}
-                          pokemon={selectedPokemon}
-                          cardSx={{
-                            flex: '0 0 250px',
-                            mr: 1,
-                          }}
-                        />
+                        <Box 
+                          display='flex'
+                          flexDirection='column'
+                          flex='0 0 150px'
+                          gap={1}
+                        >
+                          <Typography textAlign='center'>{selectedAccount.user.username}</Typography>
+                          <SendMessageButton account={selectedAccount} pokemon={selectedPokemon} />
+                        </Box>
+                        <Divider orientation='vertical' sx={{mx: 1}} />
                         <Box height='100%' display='flex' flexWrap='wrap' alignContent='flex-start' gap={1} overflow='hidden'>
                           {
                             requestedPokemons.length === 0 ? 
@@ -220,7 +223,7 @@ export default function Home(props: HomeProps) {
                                     p: 1
                                   }
                                 }}>
-                                  <Typography>
+                                  <Typography noWrap>
                                     {getPokemonShortName(pokemon)}
                                   </Typography>
                                 </CardContent>
