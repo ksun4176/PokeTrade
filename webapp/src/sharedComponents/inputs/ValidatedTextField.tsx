@@ -6,10 +6,9 @@ type ValidatedTextFieldProps = Omit<TextFieldProps,"value" | "error" | "helperTe
   validator: (value: string) => string;
   onChange: (value: string, isValid: boolean) => void;
   initialValue?: string;
-  resetNum?: number;
 };
 export const ValidatedTextField = (props: ValidatedTextFieldProps) => {
-  const { label, validator, onChange, initialValue, resetNum, ...textFieldProps } = props;
+  const { label, validator, onChange, initialValue, ...textFieldProps } = props;
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const handleChange = useCallback((newValue: string) => {
@@ -20,8 +19,8 @@ export const ValidatedTextField = (props: ValidatedTextFieldProps) => {
   }, [onChange, validator]);
 
   useEffect(() => {
-    handleChange(initialValue ?? '');
-  }, [initialValue, handleChange, resetNum]);
+    if (initialValue) handleChange(initialValue);
+  }, [initialValue, handleChange]);
 
   return (
     <TextField

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { AccountContext } from '../utils/contexts/AccountContext';
@@ -34,20 +34,20 @@ export default function Welcome() {
     navigate('/home');
   }
   
-  const onIgnChange = (value: string, isValid: boolean) => {
+  const onIgnChange = useCallback((value: string, isValid: boolean) => {
     setAccountDetails(oldState => ({
       ...oldState,
       inGameName: value,
       inGameNameValid: isValid
     }))
-  }
-  const onFriendCodeChange = (value: string, isValid: boolean) => {
+  },[]);
+  const onFriendCodeChange = useCallback((value: string, isValid: boolean) => {
     setAccountDetails(oldState => ({
       ...oldState,
       friendCode: value,
       friendCodeValid: isValid
     }))
-  }
+  },[]);
 
   return <TopGradientContainer flexDirection='column' alignItems='center' p={2}>
     <Typography

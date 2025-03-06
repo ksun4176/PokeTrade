@@ -2,7 +2,7 @@ import CardContent from "@mui/material/CardContent";
 import { AccountDetails } from "../../utils/apis";
 import { ValidatedTextField } from "../../sharedComponents/inputs/ValidatedTextField";
 import { FriendCodeValidator, IgnValidator } from "../../utils/validators";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useRef } from "react";
 import { AccountContext } from "../../utils/contexts/AccountContext";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
@@ -29,9 +29,9 @@ type AccountEditContentProps = {
 export function AccountEditContent(props: AccountEditContentProps) {
   const { setAccountDetails, resetNum } = props;
   const { account } = useContext(AccountContext);
-  const [initialAccountDetail, setInitialAccountDetail] = useState<AccountDetails>({
-    inGameName: '',
-    friendCode: ''
+  const initialAccountDetail = useRef<AccountDetails>({
+    inGameName: account?.inGameName ?? '',
+    friendCode: account?.friendCode ?? ''
   })
 
   const onIgnChange = useCallback((value: string, isValid: boolean) => {
@@ -48,16 +48,8 @@ export function AccountEditContent(props: AccountEditContentProps) {
       friendCodeValid: isValid
     }))
   }, [setAccountDetails]);
-  
-  useEffect(() => {
-    setInitialAccountDetail(oldState => ({
-      ...oldState,
-      inGameName: account?.inGameName ?? oldState.inGameName,
-      friendCode: account?.friendCode ?? oldState.friendCode
-    }))
-  },[account])
 
-  return <Card variant="outlined" sx={{
+  return <Card key={resetNum} variant="outlined" sx={{
     width: '100%'
   }}>
     <CardContent>
@@ -66,8 +58,7 @@ export function AccountEditContent(props: AccountEditContentProps) {
           label='In Game Name'
           validator={IgnValidator}
           onChange={onIgnChange}
-          initialValue={initialAccountDetail.inGameName}
-          resetNum={resetNum}
+          initialValue={initialAccountDetail.current.inGameName}
           required
           margin='normal'
         />
@@ -75,8 +66,7 @@ export function AccountEditContent(props: AccountEditContentProps) {
           label='Friend Code'
           validator={FriendCodeValidator}
           onChange={onFriendCodeChange}
-          initialValue={initialAccountDetail.friendCode}
-          resetNum={resetNum}
+          initialValue={initialAccountDetail.current.friendCode}
           required
           margin='normal'
         />
