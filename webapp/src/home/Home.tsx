@@ -94,7 +94,7 @@ export default function Home(props: HomeProps) {
   return (
     <TopGradientContainer direction="column">
       <MyAppBar />
-      <Box sx={{ mx: 1 }}>
+      <Box flexGrow={1} display='flex' flexDirection='column' sx={{ mx: 1 }}>
         <Box display='flex' my={1}>
           <Box flex='1 1 auto' display='flex' alignItems='center'>
             <Typography variant='h6'>Your Wishlist</Typography>
