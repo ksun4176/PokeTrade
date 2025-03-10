@@ -82,12 +82,16 @@ export class DiscordService implements IDiscordService {
    * @returns whether a user is a member or not
    */
   private async isMember(serverId: string, user: UserDto) {
-    const { data: members } = await axios.get<GuildMember[]>(`${DISCORD_BASE_URL}/guilds/${serverId}/members/search?limit=1000&query=${user.username}`, {
-      headers: {
-        Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
-      },
-    });
-    return !!members.find(m => m.user.id === user.discordId);
+    try {
+      const { data: member } = await axios.get<GuildMember>(`${DISCORD_BASE_URL}/guilds/${serverId}/members/${user.discordId}`, {
+        headers: {
+          Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
+        },
+      });
+      return member.user.id === user.discordId;
+    }
+    catch (error) { }
+    return false;
   }
 
   /**
@@ -184,7 +188,11 @@ export class DiscordService implements IDiscordService {
       const errorMessage = numServerIsMember > 0 ? 'Bot failed to send message.' : 'No mutual Discord servers found.';
       throw new NotAcceptableException(errorMessage);
     }
-    catch (error) { }
+    catch (error) {
+      if (error instanceof NotAcceptableException) {
+        throw error
+      }
+    }
     throw new InternalServerErrorException('Error sending message.');
   }
 }

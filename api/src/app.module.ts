@@ -7,12 +7,18 @@ import { TradeModule } from './trade/trade.module';
 import { AccountModule } from './account/account.module';
 import { UserModule } from './user/user.module';
 import { DiscordModule } from './discord/discord.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env'
     }),
+    ThrottlerModule.forRoot([{
+      ttl: 1000, //ms
+      limit: 5
+    }]),
     PassportModule.register({ session: true }),
     AuthModule,
     UserModule,
@@ -22,6 +28,9 @@ import { DiscordModule } from './discord/discord.module';
     DiscordModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [{
+    provide: APP_GUARD,
+    useClass: ThrottlerGuard
+  }],
 })
 export class AppModule {}

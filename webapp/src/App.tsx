@@ -14,7 +14,7 @@ import Welcome from "./welcome/Welcome";
 import PokemonEdit from "./edit/PokemonEdit";
  
 function App() {
-  const { user, setUser, account, setAccount, accountError, accountLoading } = useFetchAccount();
+  const { user, setUser, account, setAccount, accountLoading } = useFetchAccount();
   const { pokemons, pokemonsError, pokemonsLoading } = useFetchPokemons();
 
   let routes = <Routes></Routes>
@@ -30,18 +30,23 @@ function App() {
     </Routes>
   }
   else {
-    let welcomeElement = <Welcome />;
-    let homeElement = <Home pokemons={pokemons} />;
-    let accountEditElement = <AccountEdit />;
-    let pokemonEditElement = <PokemonEdit pokemons={pokemons} />;
-    let myAccountElement = <MyAccount pokemons={pokemons} />;
-    if (!user || accountError) {
-      // not logged in
-      welcomeElement = homeElement = accountEditElement = pokemonEditElement = myAccountElement = <RedirectToIndex />;
-    }
-    else if (!account) {
-      // no account set up
-      homeElement = accountEditElement = pokemonEditElement = myAccountElement = <RedirectToIndex />;
+    // redirect all valid pages to index
+    let welcomeElement = <RedirectToIndex />;
+    let homeElement = <RedirectToIndex />;
+    let accountEditElement = <RedirectToIndex />;
+    let pokemonEditElement = <RedirectToIndex />;
+    let myAccountElement = <RedirectToIndex />;
+    if (user) { // logged in
+      
+      if (!account) { // can set up account
+        welcomeElement = <Welcome />
+      }
+      else { // can do trades
+        homeElement = <Home pokemons={pokemons} />;
+        accountEditElement = <AccountEdit />;
+        pokemonEditElement = <PokemonEdit pokemons={pokemons} />;
+        myAccountElement = <MyAccount pokemons={pokemons} />;
+      }
     }
 
     routes = <Routes>
