@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { DiscordModule } from './discord/discord.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { MyLoggerModule } from './mylogger/mylogger.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { APP_GUARD } from '@nestjs/core';
     TradeModule,
     AccountModule,
     DiscordModule,
+    MyLoggerModule,
   ],
   controllers: [],
   providers: [{

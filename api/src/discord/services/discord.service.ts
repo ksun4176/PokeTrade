@@ -1,6 +1,6 @@
-import { ForbiddenException, Inject, Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Inject, Injectable, NotAcceptableException } from '@nestjs/common';
 import { User } from '@prisma/client';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { AllowedMentionsTypes, codeBlock, GuildMember, Message } from 'discord.js';
 import { IAccountService } from 'src/account/services/account.service';
 import { IPokemonService } from 'src/pokemon/services/pokemon.service';
@@ -90,8 +90,12 @@ export class DiscordService implements IDiscordService {
       });
       return member.user.id === user.discordId;
     }
-    catch (error) { }
-    return false;
+    catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.status === HttpStatus.NOT_FOUND) return false;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -189,10 +193,7 @@ export class DiscordService implements IDiscordService {
       throw new NotAcceptableException(errorMessage);
     }
     catch (error) {
-      if (error instanceof NotAcceptableException) {
-        throw error
-      }
+      throw error;
     }
-    throw new InternalServerErrorException('Error sending message.');
   }
 }
