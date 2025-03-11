@@ -130,7 +130,7 @@ export default function Home(props: HomeProps) {
             Update Wishlist
           </Button>
         </Box>
-        <Paper elevation={24} sx={{
+        <Paper elevation={8} sx={{
           height: 245,
           p: 1,
           pt: 2,

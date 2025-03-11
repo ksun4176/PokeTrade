@@ -35,12 +35,6 @@ export default function LogIn() {
         p: 4,
         margin: 'auto'
       }}>
-        <Typography
-          component="h1"
-          variant="h4"
-        >
-          Log in
-        </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Button
             fullWidth
@@ -53,6 +47,7 @@ export default function LogIn() {
           <JoinDiscordButton />
         </Box>
       </SimpleCard>
+      {process.env.REACT_APP_VERSION && <Typography variant='body2' color='text.secondary'>v{process.env.REACT_APP_VERSION}</Typography>}
     </CenterGradientContainer>
   );
 }
