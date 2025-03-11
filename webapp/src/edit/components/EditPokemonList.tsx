@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import { JSX, useEffect, useState } from "react";
+import { forwardRef, JSX, useEffect, useState } from "react";
 import { PokemonCard } from "../../sharedComponents/PokemonCard";
 import { Pokemon } from "../../utils/types";
 import { FixedSizeList} from "react-window";
@@ -33,7 +33,7 @@ export interface IEditPokemonListProps {
  */
 export const EditPokemonList = function(props:IEditPokemonListProps) {
   const { pokemons, selectedPokemons, updatePokemonIds } = props;
-  const widthForResize = useMediaQuery(`(max-width: 500px)`);
+  const widthForResize = useMediaQuery(`(max-width: 480px)`);
   const [filteredPokemons, setFilteredPokemons] = useState<Pokemon[]>([]);
   const [filters, setFilters] = useState<Filter>({
     codeOrName: ''
@@ -72,28 +72,42 @@ export const EditPokemonList = function(props:IEditPokemonListProps) {
         />
       )}
     </Paper>
-    <Box sx={{ flex: '1 1 auto', my: 1 }}>
+    <Box sx={{ flex: '1 1 auto', mb: 1 }}>
       {/* Data Virtualization around the Pokemon cards */}
       <AutoSizer>
         {({ height, width }: { height: number, width: number }) => {
           const numPokemons = filteredPokemons.length;
           const cardHWProportion = 683 / 490; // pokemon card height x width proportion
-          const pokemonsGap = 4; // px gap between cards
-          let pokemonsHeight = 200;
+          const pokemonGap = 4; // px gap between cards
+          let pokemonHeight = 200;
           if (widthForResize) {
             // if we can no longer fit 3 cards in a row, start shrinking the cards to the minimum of 150
-            pokemonsHeight = Math.max(Math.floor((width / 3 - pokemonsGap) * cardHWProportion), 150);
+            pokemonHeight = Math.max(Math.floor((width / 3 - pokemonGap * 2) * cardHWProportion), 150);
           }
-          const pokemonsWidth = (pokemonsHeight / cardHWProportion) + pokemonsGap;  
-          const itemsPerRow = Math.floor(width / pokemonsWidth);
+          const pokemonWidth = (pokemonHeight / cardHWProportion) + pokemonGap;  
+          const itemsPerRow = Math.floor(width / pokemonWidth);
           const rowCount = Math.ceil(numPokemons / itemsPerRow);
+          // styling to add padding for search bar
+          const paddingTop = 40;
+          const innerElementType = forwardRef<HTMLElement, any>(({ style, ...rest }, ref) => (
+            <Box
+              ref={ref}
+              style={{
+                ...style,
+                paddingTop: pokemonGap,
+                height: `${parseFloat(style.height as string) + paddingTop}px`
+              }}
+              {...rest}
+            />
+          ));
 
           return (
             <FixedSizeList
               height={height}
               width={width}
               itemCount={rowCount}
-              itemSize={pokemonsHeight + pokemonsGap}
+              itemSize={pokemonHeight}
+              innerElementType={innerElementType}
             >
               {({ index, style }) => {
                 const items: JSX.Element[] = [];
@@ -105,23 +119,25 @@ export const EditPokemonList = function(props:IEditPokemonListProps) {
                     <PokemonCard
                       key={filteredPokemons[i].id}
                       pokemon={filteredPokemons[i]}
-                      height={pokemonsHeight} 
+                      height={pokemonHeight} 
                       onClick={() => updatePokemonIds(filteredPokemons[i].id, true)} 
                       disabled={selectedPokemons.has(filteredPokemons[i].id)}
                       showOverlay={selectedPokemons.has(filteredPokemons[i].id)}
                     />
                   )
                 }
-
+                const top = `${parseFloat(style.top as string) + pokemonGap + paddingTop}px`;
+                const height = `${parseFloat(style.height as string) - pokemonGap}px`;
                 return (
                   <Box
                     key={index}
                     display='flex'
                     justifyContent='flex-start'
-                    gap={`${pokemonsGap}px`}
+                    gap={`${pokemonGap}px`}
                     sx={{
                       ...style,
-                      height: pokemonsHeight
+                      top,
+                      height
                     }}
                   >
                     {items}
