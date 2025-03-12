@@ -9,20 +9,33 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList } from 'react-window';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
 import { MyAppBar } from '../sharedComponents/surfaces/MyAppBar';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import IconButton from '@mui/material/IconButton';
-import Popover from '@mui/material/Popover';
 import Downtime from '../sharedComponents/pages/Downtime';
 import { EditLocationState } from '../edit/PokemonEdit';
 import { getPokemonShortName } from '../utils/utils';
 import SendMessageButton from './components/SendMessageButton';
 import Divider from '@mui/material/Divider';
+import HelpIconWithPopover from './components/HelpIconWithPopover';
+
+type OfferedPokemonProps = {
+  pokemon: Pokemon;
+  isMatching?: boolean
+}
+const OfferedPokemon = (props: OfferedPokemonProps) => <Box sx={{
+  height: '30%',
+  display: 'flex',
+  alignItems: 'center',
+  borderRadius: 1,
+  px: 1,
+  bgcolor: props.isMatching ? 'success.main' : 'warning.main',
+}}>
+  <Typography noWrap>
+    {getPokemonShortName(props.pokemon)}
+  </Typography>  
+</Box>
 
 type HomeProps = {
   /**
@@ -63,14 +76,6 @@ export default function Home(props: HomeProps) {
     ...trades.matchingTrades.sort(sortTrades),
     ...trades.otherTrades.sort(sortTrades)
   ] : [];
-  
-  const [wishlistHelpAnchorEl, setWishlistHelpAnchorEl] = useState<HTMLElement | null>(null);
-  const handleWishlistHelpOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setWishlistHelpAnchorEl(event.currentTarget);
-  };
-  const handleWishlistHelpClose = () => {
-    setWishlistHelpAnchorEl(null);
-  };
 
   const editWishlist = () => {
       const locationState: EditLocationState = {
@@ -98,30 +103,13 @@ export default function Home(props: HomeProps) {
         <Box display='flex' my={1}>
           <Box flex='1 1 auto' display='flex' alignItems='center'>
             <Typography variant='h6'>Your Wishlist</Typography>
-            <IconButton
-              color='info' 
-              aria-owns={!!wishlistHelpAnchorEl ? 'wishlist-popover' : undefined}
-              aria-haspopup="true"
-              onMouseEnter={handleWishlistHelpOpen}
-              onMouseLeave={handleWishlistHelpClose}
-            >
-              <HelpOutlineIcon />
-            </IconButton>
-            <Popover
-              id="wishlist-popover"
-              sx={{ pointerEvents: 'none' }}
-              open={!!wishlistHelpAnchorEl}
-              anchorEl={wishlistHelpAnchorEl}
-              anchorOrigin={{
-                vertical: 'center',
-                horizontal: 'center',
-              }}
-              onClose={handleWishlistHelpClose}
-            >
-              <Typography sx={{ p: 1 }}>
-                {`Select the Pokémon in your wishlist you would like to search for offers.\nIf you do not see a Pokémon here, go and update your wishlist.`}
-              </Typography>
-            </Popover>
+            <HelpIconWithPopover
+              popoverId='wishlist-popover'
+              popoverContent={
+                `Select the Pokémon in your wishlist you would like to search for offers. ` +
+                `If you do not see a Pokémon here, go and update your wishlist.`
+              }
+            />
           </Box>
           <Button
             variant='contained'
@@ -164,7 +152,17 @@ export default function Home(props: HomeProps) {
           })}
         </Paper>
         { !!selectedPokemon &&
-          <Typography variant='h6' width='100%' py={1}>Offers for {selectedPokemon.name}</Typography>
+          <Box display='flex' alignItems='center' py={1}>
+            <Typography variant='h6'>Offers for {selectedPokemon.name}</Typography>
+            <HelpIconWithPopover
+              popoverId='selected-pokemon-popover'
+              popoverContent={
+                `See all offers for the Pokémon you've selected. ` +
+                `For each account, you will see what Pokémons the user wants in exchange. ` +
+                `Pokémons in green are ones that you are offering while Pokémons in orange are ones that you are not offering.`
+              }
+            />
+          </Box>
         }
         <Box sx={{
           flex: '1 1 auto',
@@ -187,9 +185,10 @@ export default function Home(props: HomeProps) {
                     const selectedTrade = selectedTrades[index];
                     const selectedAccount = selectedTrade.account;
                     const requestedPokemonObj = accountToPokemon.get(selectedAccount.id);
-                    const requestedPokemonIds = requestedPokemonObj ?
-                      [...requestedPokemonObj?.matchingTrades, ...requestedPokemonObj?.otherTrades] : [];
-                    const requestedPokemons = requestedPokemonIds.map(id => pokemons.get(id)!).filter(p => p.rarityId === selectedPokemon.rarityId);
+                    const requestedMatchingTrades = !requestedPokemonObj ? [] : 
+                      requestedPokemonObj.matchingTrades.map(id => pokemons.get(id)!).filter(p => p.rarityId === selectedPokemon.rarityId);
+                    const requestedOtherTrades = !requestedPokemonObj ? [] : 
+                      requestedPokemonObj.otherTrades.map(id => pokemons.get(id)!).filter(p => p.rarityId === selectedPokemon.rarityId);
                     return (
                       <Paper variant="outlined" sx={{
                         ...style,
@@ -208,27 +207,18 @@ export default function Home(props: HomeProps) {
                         <Divider orientation='vertical' sx={{mx: 1}} />
                         <Box height='100%' display='flex' flexWrap='wrap' alignContent='flex-start' gap={1} overflow='hidden'>
                           {
-                            requestedPokemons.length === 0 ? 
+                            (requestedMatchingTrades.length + requestedOtherTrades.length) === 0 ? 
                             <Typography>No Pokémon listed for trade</Typography> :
-                            requestedPokemons.map(pokemon => (
-                              <Card key={pokemon.id} variant='outlined'
-                                sx={{
-                                  height: '30%',
-                                  display: 'flex',
-                                  alignItems: 'center'
-                              }}>
-                                <CardContent sx={{
-                                  p: 1,
-                                  ':last-child': {
-                                    p: 1
-                                  }
-                                }}>
-                                  <Typography noWrap>
-                                    {getPokemonShortName(pokemon)}
-                                  </Typography>
-                                </CardContent>
-                              </Card>
-                            ))
+                            <>
+                              {[
+                                ...requestedMatchingTrades.map(pokemon => (
+                                  <OfferedPokemon key={pokemon.id} pokemon={pokemon} isMatching />
+                                )),
+                                ...requestedOtherTrades.map(pokemon => (
+                                  <OfferedPokemon key={pokemon.id} pokemon={pokemon} />
+                                ))
+                              ]}
+                            </>
                           }
                         </Box>
                       </Paper>

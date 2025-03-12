@@ -62,6 +62,7 @@ export const EditPokemonList = function(props:IEditPokemonListProps) {
       alignContent: 'flex-start',
       gap: '4px',
       overflowX: 'auto',
+      zIndex: 1,
     }}>
       {Array.from(selectedPokemons).map(id =>
         <PokemonCard 
