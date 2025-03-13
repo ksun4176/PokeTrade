@@ -3,7 +3,7 @@
   "name": "Web app for trading in Pokémon TCGPocket",
   "icons": [
     {
-      "src": "pokemontradeicon.ico",
+      "src": "favicon.ico",
       "sizes": "128x128 64x64 32x32 16x16",
       "type": "image/x-icon"
     }

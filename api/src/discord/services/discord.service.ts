@@ -3,6 +3,7 @@ import { User } from '@prisma/client';
 import axios, { AxiosError } from 'axios';
 import { AllowedMentionsTypes, codeBlock, GuildMember, Message } from 'discord.js';
 import { IAccountService } from 'src/account/services/account.service';
+import { MyLoggerService } from 'src/mylogger/mylogger.service';
 import { IPokemonService } from 'src/pokemon/services/pokemon.service';
 import { PrismaService } from 'src/prisma/services/prisma.service';
 import { ITradeService } from 'src/trade/services/trade.service';
@@ -23,6 +24,8 @@ export interface IDiscordService {
 
 @Injectable()
 export class DiscordService implements IDiscordService {
+  private readonly logger = new MyLoggerService(DiscordService.name);
+
   constructor(
     @Inject(Services.PRISMA) private readonly prisma: PrismaService,
     @Inject(Services.ACCOUNT) private readonly accountService: IAccountService,
@@ -162,17 +165,43 @@ export class DiscordService implements IDiscordService {
           account: { userId: user.id },
           pokemonCardDex: { rarityId: pokemon.rarityId }
         });
-        const requested = [], notRequested = [];
+        content += `**They can offer:**\n`;
+        let remaining = 1980 - content.length - codeBlock('diff','').length;
+        const notRequested = [];
+        let offeredTradesStr = '';
         for (const trade of authorOfferedTrades) {
-          if (userRequestedTrades.find(t => t.pokemonId === trade.pokemonId)) requested.push(trade);
-          else notRequested.push(trade);
+          if (userRequestedTrades.find(t => t.pokemonId === trade.pokemonId)) {
+            let tradeStr = `+ ${getPokemonName(trade.pokemonCardDex)}\n`;
+            if (tradeStr.length <= remaining) {
+              offeredTradesStr += tradeStr;
+              remaining -= tradeStr.length;
+            } 
+            else {
+              remaining = -1;
+              break;
+            }
+          }
+          else {
+            notRequested.push(`- ${getPokemonName(trade.pokemonCardDex)}\n`);
+          }
         }
-        content += `**They can offer:**\n` +
-          codeBlock("diff", 
-            requested.map(t => `+ ${getPokemonName(t.pokemonCardDex)}`).join('\n') + 
-            '\n' +
-            notRequested.map(t => `- ${getPokemonName(t.pokemonCardDex)}`).join('\n')
-          );
+        if (remaining > 0) {
+          for (const tradeStr of notRequested) {
+            if (tradeStr.length <= remaining) {
+              offeredTradesStr += tradeStr;
+              remaining -= tradeStr.length;
+            }
+            else {
+              remaining = -1;
+              break;
+            }
+          }
+        }
+        if (remaining < 0) {
+          offeredTradesStr += '... and more\n';
+        }
+        
+        content += codeBlock("diff", offeredTradesStr);
       }
       else {
         content += `You can chat with them here to see what they can offer in return.`;
@@ -186,7 +215,14 @@ export class DiscordService implements IDiscordService {
             await this.message(channel.channelId, content);
             return 'Message sent. Check your Discord.';
           }
-          catch (error) { }
+          catch (error) {
+            if (error instanceof AxiosError) {
+              this.logger.error(error.toJSON(), DiscordService.name);
+            }
+            else {
+              this.logger.error(error, DiscordService.name);
+            }
+          }
         }
       }
       const errorMessage = numServerIsMember > 0 ? 'Bot failed to send message.' : 'No mutual Discord servers found.';

@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, HttpException } from "@nestjs/common";
+import { ArgumentsHost, Catch, HttpException, HttpStatus } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 import { MyLoggerService } from "./mylogger/mylogger.service";
 import { Request } from 'express';
@@ -6,6 +6,7 @@ import { Request } from 'express';
 type MyExceptionObj = {
   path: string,
   exception: string | object,
+  stack?: string
 }
 
 @Catch(HttpException)
@@ -17,10 +18,18 @@ export class HttpExceptionFilter extends BaseExceptionFilter {
 
     const myExceptionObj: MyExceptionObj = {
       path: request.url,
-      exception: exception.getResponse()
+      exception: exception,
+      stack: exception.stack
     };
 
-    this.logger.error(JSON.stringify(myExceptionObj), HttpExceptionFilter.name);
+    let skipLogging = false;
+    if (request.url === '/api/auth/status' && exception.getStatus() === HttpStatus.FORBIDDEN) {
+      skipLogging = true;
+    }
+
+    if (!skipLogging) {
+      this.logger.error(JSON.stringify(myExceptionObj), HttpExceptionFilter.name);
+    }
 
     super.catch(exception, host);
   }
