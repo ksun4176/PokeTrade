@@ -104,7 +104,7 @@ CREATE TABLE `Session` (
     `data` MEDIUMTEXT NOT NULL,
     `expiresAt` TIMESTAMP(6) NOT NULL,
 
-    UNIQUE INDEX `session_sid_key`(`sid`),
+    UNIQUE INDEX `Session_sid_key`(`sid`),
     INDEX `expiresAt`(`expiresAt`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

@@ -20,7 +20,6 @@ async function main() {
 
   // booster packs
   const boosters: Prisma.ExpansionBoosterUncheckedCreateInput[] = [
-    {id: 0, expansionId: 1, name: 'All'},
     {id: 1, expansionId: 1, name: 'Mewtwo'},
     {id: 2, expansionId: 1, name: 'Charizard'},
     {id: 3, expansionId: 1, name: 'Pikachu'},
@@ -121,7 +120,7 @@ async function main() {
     {id: 736, dexId: 49, name: 'Palkia ex', namePostfixId: 2, typeId: 3, rarityId: 4, expansionId: 4, boosterId: 7 },
     {id: 121, dexId: 94, name: 'Pikachu', typeId: 4, rarityId: 1, expansionId: 1, boosterId: 3 },
     {id: 143, dexId: 116, name: 'Kadabra', typeId: 5, rarityId: 2, expansionId: 1, boosterId: 2 },
-    {id: 173, dexId: 146, name: 'Machamp', namePostfixId: 6, typeId: 4, rarityId: 1, expansionId: 4, boosterId: 2 },
+    {id: 173, dexId: 146, name: 'Machamp', namePostfixId: 2, typeId: 6, rarityId: 4, expansionId: 1, boosterId: 2 },
   ];
   for (const card of cards) {
     const insertedPokemon = await prisma.pokemonCardDex.upsert({

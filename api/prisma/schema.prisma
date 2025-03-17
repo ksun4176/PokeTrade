@@ -111,6 +111,7 @@ model PokemonCardDex {
   evolutionId         Int?                 @map("evolution_id")
   illustratorId       Int?                 @map("illustrator_id")
   languageId          Int?                 @map("language_id")
+  blockTrading        Boolean              @map("block_trading") @default(true)
   pokemonCardLanguage PokemonCardLanguage? @relation(fields: [languageId], references: [id], map: "Pokémon_Card_Dex_ibfk_1")
   pokemonType         PokemonType?         @relation(fields: [typeId], references: [id], onDelete: NoAction, map: "Pokémon_Card_Dex_ibfk_2")
   pokemonCardRarity   PokemonCardRarity    @relation(fields: [rarityId], references: [id], onDelete: NoAction, map: "Pokémon_Card_Dex_ibfk_3")
