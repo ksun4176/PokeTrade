@@ -9,7 +9,7 @@ import { PrismaService } from 'src/prisma/services/prisma.service';
 import { ITradeService } from 'src/trade/services/trade.service';
 import { ChannelTypes, DISCORD_BASE_URL, Services, TradeTypes } from 'src/utils/constants';
 import { DiscordPartialServer, TradeWithPokemon, UserDto } from 'src/utils/types';
-import { getPokemonName } from 'src/utils/utils';
+import { getPokemonShortName } from 'src/utils/utils';
 
 export interface IDiscordService {
   /**
@@ -148,7 +148,7 @@ export class DiscordService implements IDiscordService {
 
     try {
       const pokemon = await this.pokemonService.getPokemon(pokemonId);
-      const pokemonName = getPokemonName(pokemon);
+      const pokemonName = getPokemonShortName(pokemon);
       let content = `## ${pokemonName} requested\n` +
         `Hi <@${user.discordId}>!\n` +
         `<@${author.discordId}> is looking to trade for your ${pokemonName}.\n`;
@@ -171,7 +171,7 @@ export class DiscordService implements IDiscordService {
         let offeredTradesStr = '';
         for (const trade of authorOfferedTrades) {
           if (userRequestedTrades.find(t => t.pokemonId === trade.pokemonId)) {
-            let tradeStr = `+ ${getPokemonName(trade.pokemonCardDex)}\n`;
+            let tradeStr = `+ ${getPokemonShortName(trade.pokemonCardDex)}\n`;
             if (tradeStr.length <= remaining) {
               offeredTradesStr += tradeStr;
               remaining -= tradeStr.length;
@@ -182,7 +182,7 @@ export class DiscordService implements IDiscordService {
             }
           }
           else {
-            notRequested.push(`- ${getPokemonName(trade.pokemonCardDex)}\n`);
+            notRequested.push(`- ${getPokemonShortName(trade.pokemonCardDex)}\n`);
           }
         }
         if (remaining > 0) {
