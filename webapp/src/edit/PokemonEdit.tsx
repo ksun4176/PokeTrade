@@ -35,6 +35,11 @@ export default function PokemonEdit(props: PokemonEditProps) {
    * Handle updating wishlist and list for trading
    */
   const { pokemons } = props;
+  const availablePokemons = useRef<Map<number, Pokemon>>(
+    new Map(Array.from(pokemons.values())
+      .filter(p => !p.blockTrading)
+      .map(p => [p.id, p]))
+  );
   const [wishlist, setWishlist] = useState(new Set<number>());
   const [listToTrade, setListToTrade] = useState(new Set<number>());
   const updateList = useCallback((pokemonList: Set<number>, pokemonId: number, isAdd: boolean) => {
@@ -99,7 +104,7 @@ export default function PokemonEdit(props: PokemonEditProps) {
     {
       label: 'Wishlist',
       content: <EditPokemonList
-        pokemons={pokemons}
+        pokemons={availablePokemons.current}
         selectedPokemons={wishlist}
         updatePokemonIds={updateWishlist}
       />
@@ -107,7 +112,7 @@ export default function PokemonEdit(props: PokemonEditProps) {
     {
       label: 'List for Trading',
       content: <EditPokemonList
-        pokemons={pokemons}
+        pokemons={availablePokemons.current}
         selectedPokemons={listToTrade}
         updatePokemonIds={updateListToTrade}
       />
