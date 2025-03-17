@@ -1,15 +1,22 @@
-import { ForbiddenException, HttpStatus, Inject, Injectable, NotAcceptableException } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { ForbiddenException, HttpStatus, Inject, Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
+import { Account, User } from '@prisma/client';
 import axios, { AxiosError } from 'axios';
-import { AllowedMentionsTypes, codeBlock, GuildMember, Message } from 'discord.js';
+import { AllowedMentionsTypes, Channel, codeBlock, GuildMember, Message } from 'discord.js';
 import { IAccountService } from 'src/account/services/account.service';
 import { MyLoggerService } from 'src/mylogger/mylogger.service';
 import { IPokemonService } from 'src/pokemon/services/pokemon.service';
 import { PrismaService } from 'src/prisma/services/prisma.service';
 import { ITradeService } from 'src/trade/services/trade.service';
 import { ChannelTypes, DISCORD_BASE_URL, Services, TradeTypes } from 'src/utils/constants';
-import { DiscordPartialServer, TradeWithPokemon, UserDto } from 'src/utils/types';
+import { DiscordPartialServer, Pokemon, UserDto } from 'src/utils/types';
 import { getPokemonShortName } from 'src/utils/utils';
+
+type UserWithAccount = {
+  id: number;
+  username: string;
+  discordId: string;
+  accounts: Account[];
+};
 
 export interface IDiscordService {
   /**
@@ -124,7 +131,7 @@ export class DiscordService implements IDiscordService {
    * @param content message to send
    */
   private async message(channelId: string, content: string) {
-    await axios.post<Message>(`${DISCORD_BASE_URL}/channels/${channelId}/messages`, {
+    const { data: message } = await axios.post<Message>(`${DISCORD_BASE_URL}/channels/${channelId}/messages`, {
       content: content,
       allowed_mentions: {
         parse: [AllowedMentionsTypes.User]
@@ -134,6 +141,92 @@ export class DiscordService implements IDiscordService {
         Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
       },
     });
+    return message;
+  }
+
+  /**
+   * Creates a new thread from an existing message.
+   * @param channelId ID of Discord channel
+   * @param messageId ID of Discord message
+   * @param threadName Name of thread
+   * @returns Thread channel
+   */
+  private async createThread(channelId: string, messageId: string, threadName: string) {
+    const { data: thread } = await axios.post<Channel>(`${DISCORD_BASE_URL}/channels/${channelId}/messages/${messageId}/threads`, {
+      name: threadName
+    }, {
+      headers: {
+        Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
+      },
+    });
+    return thread;
+  }
+
+  /**
+   * 
+   * @param threadChannel Channel to send message in
+   * @param pokemon Pokemon we're messaging about
+   * @param author Author
+   * @param authorAccount 
+   * @param user 
+   * @param userAccount 
+   */
+  private async sendPokemonMessage(threadChannel: Channel, pokemon: Pokemon, author: UserWithAccount, user: UserWithAccount) {
+    const pokemonName = getPokemonShortName(pokemon);
+    let content = `Hi <@${user.discordId}>!\n` +
+      `<@${author.discordId}> is looking to trade for your ${pokemonName}.\n`;
+
+    const authorOfferedTrades = author.accounts.length === 0 ? [] :
+      await this.tradeService.getPokemonTradeMatchesForAccount(pokemon, author.accounts[0]);
+    if (authorOfferedTrades.length > 0) {
+      const userRequestedTrades = user.accounts.length === 0 ? [] :
+        await this.tradeService.getTrades({
+          tradeTypeId: TradeTypes.Request,
+          accountId: user.accounts[0].id,
+          pokemonCardDex: { rarityId: pokemon.rarityId }
+        });
+      content += `**They can offer:**\n`;
+      let remaining = 1980 - content.length - codeBlock('diff','').length;
+      const notRequested = [];
+      let offeredTradesStr = '';
+      for (const trade of authorOfferedTrades) {
+        if (userRequestedTrades.find(t => t.pokemonId === trade.pokemonId)) {
+          let tradeStr = `+ ${getPokemonShortName(trade.pokemonCardDex)}\n`;
+          if (tradeStr.length <= remaining) {
+            offeredTradesStr += tradeStr;
+            remaining -= tradeStr.length;
+          } 
+          else {
+            remaining = -1;
+            break;
+          }
+        }
+        else {
+          notRequested.push(`- ${getPokemonShortName(trade.pokemonCardDex)}\n`);
+        }
+      }
+      if (remaining > 0) {
+        for (const tradeStr of notRequested) {
+          if (tradeStr.length <= remaining) {
+            offeredTradesStr += tradeStr;
+            remaining -= tradeStr.length;
+          }
+          else {
+            remaining = -1;
+            break;
+          }
+        }
+      }
+      if (remaining < 0) {
+        offeredTradesStr += '... and more\n';
+      }
+      
+      content += codeBlock("diff", offeredTradesStr);
+    }
+    else {
+      content += `You can chat with them here to see what they can offer in return.`;
+    }
+    await this.message(threadChannel.id, content);
   }
 
   async sendTradeMessage(pokemonId: number, author: User, user: UserDto) {
@@ -146,90 +239,56 @@ export class DiscordService implements IDiscordService {
       throw new NotAcceptableException('No Discord server is set up for bot to send a message in.');
     }
 
-    try {
-      const pokemon = await this.pokemonService.getPokemon(pokemonId);
-      const pokemonName = getPokemonShortName(pokemon);
-      let content = `## ${pokemonName} requested\n` +
-        `Hi <@${user.discordId}>!\n` +
-        `<@${author.discordId}> is looking to trade for your ${pokemonName}.\n`;
-      
-      // get trades that the author offer for the pokemon and add them to the message based on if user requested them or not
-      const accounts = await this.accountService.getAccounts({userId: author.id});
-      let authorOfferedTrades: TradeWithPokemon[] = [];
-      if (accounts.length > 0) {
-        authorOfferedTrades = await this.tradeService.getPokemonTradeMatchesForAccount(pokemon, accounts[0]);
-      }
-      if (authorOfferedTrades.length > 0) {
-        const userRequestedTrades = await this.tradeService.getTrades({
-          tradeTypeId: TradeTypes.Request,
-          account: { userId: user.id },
-          pokemonCardDex: { rarityId: pokemon.rarityId }
-        });
-        content += `**They can offer:**\n`;
-        let remaining = 1980 - content.length - codeBlock('diff','').length;
-        const notRequested = [];
-        let offeredTradesStr = '';
-        for (const trade of authorOfferedTrades) {
-          if (userRequestedTrades.find(t => t.pokemonId === trade.pokemonId)) {
-            let tradeStr = `+ ${getPokemonShortName(trade.pokemonCardDex)}\n`;
-            if (tradeStr.length <= remaining) {
-              offeredTradesStr += tradeStr;
-              remaining -= tradeStr.length;
-            } 
-            else {
-              remaining = -1;
-              break;
+    const authorAccounts = await this.accountService.getAccounts({userId: author.id});
+    if (authorAccounts.length === 0) {
+      throw new InternalServerErrorException(`Author's account is not found`);
+    }
+    const userAccounts = await this.accountService.getAccounts({userId: user.id});
+    if (userAccounts.length === 0) {
+      throw new InternalServerErrorException(`User's account is not found`);
+    }
+
+    const pokemon = await this.pokemonService.getPokemon(pokemonId);
+    const pokemonName = getPokemonShortName(pokemon);
+    const messageContent = `${author.username} requested ${pokemonName} from ${user.username}`;
+    
+    let numServerIsMember = 0;
+    for (const channel of channels) {
+      const isMember = await this.isMember(channel.serverId, user);
+      if (isMember) {
+        numServerIsMember++;
+        try {
+          const message = await this.message(channel.channelId, messageContent);
+
+          const threadName = `${pokemonName} | ${author.username}, ${user.username}`;
+          const threadChannel = await this.createThread(channel.channelId, message.id, threadName.slice(0,100));
+
+          await this.sendPokemonMessage(
+            threadChannel,
+            pokemon,
+            {
+              ...author,
+              accounts: authorAccounts
+            },
+            {
+              ...user,
+              accounts: userAccounts
             }
+          );
+
+          return 'Message sent. Check your Discord.';
+        }
+        catch (error) {
+          if (error instanceof AxiosError) {
+            this.logger.error(error.toJSON(), DiscordService.name);
           }
           else {
-            notRequested.push(`- ${getPokemonShortName(trade.pokemonCardDex)}\n`);
-          }
-        }
-        if (remaining > 0) {
-          for (const tradeStr of notRequested) {
-            if (tradeStr.length <= remaining) {
-              offeredTradesStr += tradeStr;
-              remaining -= tradeStr.length;
-            }
-            else {
-              remaining = -1;
-              break;
-            }
-          }
-        }
-        if (remaining < 0) {
-          offeredTradesStr += '... and more\n';
-        }
-        
-        content += codeBlock("diff", offeredTradesStr);
-      }
-      else {
-        content += `You can chat with them here to see what they can offer in return.`;
-      }
-      let numServerIsMember = 0;
-      for (const channel of channels) {
-        const isMember = await this.isMember(channel.serverId, user);
-        if (isMember) {
-          numServerIsMember++;
-          try {
-            await this.message(channel.channelId, content);
-            return 'Message sent. Check your Discord.';
-          }
-          catch (error) {
-            if (error instanceof AxiosError) {
-              this.logger.error(error.toJSON(), DiscordService.name);
-            }
-            else {
-              this.logger.error(error, DiscordService.name);
-            }
+            this.logger.error(error, DiscordService.name);
           }
         }
       }
-      const errorMessage = numServerIsMember > 0 ? 'Bot failed to send message.' : 'No mutual Discord servers found.';
-      throw new NotAcceptableException(errorMessage);
     }
-    catch (error) {
-      throw error;
-    }
+    const errorMessage = numServerIsMember > 0 ? 'Bot failed to send message.' : 'No mutual Discord servers found.';
+    throw new NotAcceptableException(errorMessage);
   }
 }
