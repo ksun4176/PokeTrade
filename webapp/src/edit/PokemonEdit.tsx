@@ -124,8 +124,17 @@ export default function PokemonEdit(props: PokemonEditProps) {
   
   const { accountTrades, accountTradesError } = useFetchAccountTrades(account?.id);
   useEffect(() => {
-    setWishlist(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Request).map(t => t.pokemonId)));
-    setListToTrade(new Set(accountTrades.filter(t => t.tradeTypeId === TradeTypes.Offer).map(t => t.pokemonId)));
+    const availablePokemonIds = Array.from(availablePokemons.current.keys());
+    setWishlist(new Set(
+      accountTrades
+        .filter(t => t.tradeTypeId === TradeTypes.Request && availablePokemonIds.includes(t.pokemonId))
+        .map(t => t.pokemonId)
+    ));
+    setListToTrade(new Set(
+      accountTrades
+        .filter(t => t.tradeTypeId === TradeTypes.Offer && availablePokemonIds.includes(t.pokemonId))
+        .map(t => t.pokemonId)
+    ));
   }, [accountTrades, resetNum]);
 
   useEffect(() => {
