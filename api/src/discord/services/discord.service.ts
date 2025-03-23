@@ -1,7 +1,7 @@
 import { ForbiddenException, HttpStatus, Inject, Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
 import { Account, User } from '@prisma/client';
 import axios, { AxiosError } from 'axios';
-import { AllowedMentionsTypes, Channel, codeBlock, GuildMember, Message } from 'discord.js';
+import { AllowedMentionsTypes, Channel, codeBlock, GuildMember, Message, ThreadAutoArchiveDuration } from 'discord.js';
 import { IAccountService } from 'src/account/services/account.service';
 import { MyLoggerService } from 'src/mylogger/mylogger.service';
 import { IPokemonService } from 'src/pokemon/services/pokemon.service';
@@ -153,7 +153,8 @@ export class DiscordService implements IDiscordService {
    */
   private async createThread(channelId: string, messageId: string, threadName: string) {
     const { data: thread } = await axios.post<Channel>(`${DISCORD_BASE_URL}/channels/${channelId}/messages/${messageId}/threads`, {
-      name: threadName
+      name: threadName,
+      auto_archive_duration: ThreadAutoArchiveDuration.ThreeDays
     }, {
       headers: {
         Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
@@ -185,7 +186,7 @@ export class DiscordService implements IDiscordService {
           accountId: user.accounts[0].id,
           pokemonCardDex: { rarityId: pokemon.rarityId }
         });
-      content += `**They can offer:**\n`;
+      content += `**Trade matches you might be interested in:**\n`;
       let remaining = 1980 - content.length - codeBlock('diff','').length;
       const notRequested = [];
       let offeredTradesStr = '';
