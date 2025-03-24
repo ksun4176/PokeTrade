@@ -125,3 +125,13 @@ export async function SaveAccountToDb(oldAccount: Account | null, newAccountDeta
   }
   return newAccount;
 }
+
+export async function postAccountStatusUpdate(account: Account) {
+  const response = await axios.post<Account>(
+    `${process.env.REACT_APP_API_URL}/accounts/${account.id}/status`,
+    {},
+    CONFIG
+  );
+  const newAccount = response.data;
+  return newAccount;
+}

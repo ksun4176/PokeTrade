@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { Account, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/services/prisma.service";
-import { Services } from "src/utils/constants";
+import { AccountStatus, Services } from "src/utils/constants";
 
 export interface IAccountService {
   /**
@@ -11,12 +11,18 @@ export interface IAccountService {
    */
   getAccounts(filter?: Prisma.AccountWhereInput): Promise<Account[]>;
   /**
+   * Update the account status
+   * @param account Account to update
+   * @returns Updated account
+   */
+  updateAccountStatus(account: Account): Promise<Account>;
+  /**
    * Update the account
-   * @param accountId Account to update
+   * @param account Account to update
    * @param accountDetails Details to update the account with
    * @returns Updated account
    */
-  updateAccount(accountId: number, accountDetails: Prisma.AccountUpdateInput): Promise<Account>;
+  updateAccount(account: Account, accountDetails: Prisma.AccountUpdateInput): Promise<Account>;
   /**
    * Create an account linked to a user
    * @param userId User to link account to
@@ -42,22 +48,36 @@ export class AccountService implements IAccountService {
     return accounts;
   }
 
-  async updateAccount(accountId: number, accountDetails: Prisma.AccountUpdateInput) {
+  async updateAccountStatus(account: Account) {
+    const newStatus = account.status === AccountStatus.Available ? AccountStatus.Unavailable : AccountStatus.Available;
+    const newAccount = await this.prisma.account.update({
+      where: {
+        id: account.id
+      },
+      data: {
+        status: newStatus
+      }
+    });
+    console.log(`Account [${newAccount.id}] status was updated.`)
+    return newAccount;
+  }
+
+  async updateAccount(account: Account, accountDetails: Prisma.AccountUpdateInput) {
     const { inGameName, friendCode } = accountDetails;
     if (!this.isFriendCodeValid(friendCode as string)) {
       throw new BadRequestException('Friend code must be a 16 digit number');
     }
-    const account = await this.prisma.account.update({
+    const newAccount = await this.prisma.account.update({
       where: {
-        id: accountId
+        id: account.id
       },
       data: {
         inGameName,
         friendCode
       }
     });
-    console.log(`Account [${accountId}] was updated.`)
-    return account;
+    console.log(`Account [${newAccount.id}] was updated.`)
+    return newAccount;
   }
 
   async createAccount(userId: number, accountDetails: Prisma.AccountUncheckedCreateInput) {

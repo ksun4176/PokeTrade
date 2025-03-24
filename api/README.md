@@ -42,6 +42,12 @@ Body:
 - inGameName: The name of the account
 - friendCode: The friend code to add the account
 
+### `/accounts/:accountId/status`
+Params: 
+- accountId: ID of account
+
+**POST**: Update the account status. This will toggle between available and unavailable.
+
 ### `/accounts/:accountId/trades`
 Params: 
 - accountId: ID of account

@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `pokémon_card_dex` ADD COLUMN `block_trading` BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE `Pokémon_Card_Dex` ADD COLUMN `block_trading` BOOLEAN NOT NULL DEFAULT true;

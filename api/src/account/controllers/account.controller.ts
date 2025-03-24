@@ -30,10 +30,26 @@ export class AccountController {
     if (accounts.length === 0) {
       throw new ForbiddenException('Cannot modify this account');
     }
-    return this.accountService.updateAccount(accountId, {
+    return this.accountService.updateAccount(accounts[0], {
       inGameName,
       friendCode,
     });
+  }
+
+  @Post(':accountId/status')
+  @UseGuards(AuthenticatedGuard)
+  async updateAccountStatus(
+    @AuthUser() user: User,
+    @Param('accountId', ParseIntPipe) accountId: number,
+  ) {
+    const accounts = await this.accountService.getAccounts({
+      id: accountId,
+      userId: user.id,
+    });
+    if (accounts.length === 0) {
+      throw new ForbiddenException('Cannot modify this account');
+    }
+    return this.accountService.updateAccountStatus(accounts[0]);
   }
 
   @Get(':accountId/trades')

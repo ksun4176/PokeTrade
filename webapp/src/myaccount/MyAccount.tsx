@@ -61,6 +61,7 @@ export default function MyAccount(props: MyAccountProps) {
               display: 'flex',
               flexDirection: 'column',
               flexGrow: 1,
+              alignItems: 'flex-start',
               width: '100%',
               pb: 2
             }}

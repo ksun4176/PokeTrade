@@ -38,6 +38,7 @@ model Account {
   friendCode     String         @unique(map: "friend_code") @map("friend_code") @db.VarChar(32)
   userId         Int            @map("player_id")
   user           User           @relation(fields: [userId], references: [id], onDelete: NoAction, map: "Accounts_ibfk_1")
+  status         Int            @default(1)
   pokemonTrades PokemonTrade[]
 
   @@index([userId], map: "player_id")

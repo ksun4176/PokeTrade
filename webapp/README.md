@@ -5,7 +5,7 @@ The web app to manage trade requests/offers.
 - [First Access](#first-access)
 - [Updating Wishlist and Offers](#updating-wishlist-and-offers)
 - [Searching for Trades](#searching-for-trades)
-- [View Account Info](#view-account-info)
+- [Account Settings](#account-settings)
 - [FAQs](#faqs)
 - [File Structure](#file-structure)
 - [Contributing](#contributing)
@@ -29,9 +29,13 @@ You can see what trades are available out there in the `Home` page. This is wher
 3. Send a message to that person in a Discord server
 4. Make updates to your wishlist to search for more Pokémons
 
-## View Account Info
-You will see the profile icon on the top right. This will redirect you to the `MyAccount` page where you can view information on your account.
-You can also log out from here. 
+## Account Settings
+You can see the profile icon on the top right. There is a little indicator for the status of your account.
+Clicking the icon will redirect you to the `MyAccount` page where you can view information on your account.
+From here you can:
+1. Change account status (Green: Available, Red: Unavailable)
+  - This controls whether your trade offers will show up in searches
+2. Log out
 
 ## FAQs
 

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Account, PokemonTrade, Prisma } from "@prisma/client";
 import { PrismaService } from "src/prisma/services/prisma.service";
-import { Services, TradeTypes } from "src/utils/constants";
+import { AccountStatus, Services, TradeTypes } from "src/utils/constants";
 import { AccountToPokemon, AccountTradeMatches, CardToAccount, Pokemon, pokemonInclude, tradeAccountInclude, TradeWithPokemon } from "src/utils/types";
 
 export interface ITradeService {
@@ -82,7 +82,8 @@ export class TradeService implements ITradeService {
     const matchingTrades = await this.prisma.pokemonTrade.findMany({
       where: {
         tradeTypeId: TradeTypes.Offer,
-        pokemonId: { in: wishlist }
+        pokemonId: { in: wishlist },
+        account: { status: AccountStatus.Available } // check that account is available
       },
       include: {
         ...tradeAccountInclude,

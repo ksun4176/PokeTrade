@@ -26,4 +26,9 @@ export enum ChannelTypes {
   TradeMessage = 1,
 }
 
+export enum AccountStatus {
+  Available = 1,
+  Unavailable = 2
+}
+
 export const DISCORD_BASE_URL = 'https://discord.com/api/v9';

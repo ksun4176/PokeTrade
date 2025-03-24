@@ -8,6 +8,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { JoinDiscordButton } from '../buttons/JoinDiscordButton';
+import Badge from '@mui/material/Badge';
+import { useContext } from 'react';
+import { AccountContext } from '../../utils/contexts/AccountContext';
+import { getAccountStatusColor } from '../../utils/utils';
 
 type Page = {
   /**
@@ -41,6 +45,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
  * Navigation bar to show over all pages
  */
 export function MyAppBar() {
+  const { account } = useContext(AccountContext);
   const navigate = useNavigate();
 
   const goToMyAccount = () => {
@@ -83,7 +88,21 @@ export function MyAppBar() {
           aria-label="Go To My Account"
           onClick={goToMyAccount}
         >
-          <AccountCircle />
+          <Badge
+            variant='dot'
+            overlap='circular'
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right'
+            }}
+            sx={{
+              "& .MuiBadge-badge": {
+                backgroundColor: getAccountStatusColor(account!)
+              }
+            }}
+          >
+            <AccountCircle />
+          </Badge>
         </IconButton>
       </Box>
       
