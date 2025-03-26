@@ -6,8 +6,8 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
 export enum GroupBy {
-  Expansion = 'Expansion',
-  Rarity = 'Rarity',
+  Expansion,
+  Rarity,
 }
 type PokemonListProps = {
   /**

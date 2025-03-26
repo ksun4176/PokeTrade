@@ -11,9 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import { EditLocationState } from '../../edit/PokemonEdit';
-import Button from '@mui/material/Button';
-import SortIcon from '@mui/icons-material/Sort';
 import Box from '@mui/material/Box';
+import GroupPokemonButton from './GroupPokemonButton';
 
 type MyListsProps = {
   /**
@@ -33,6 +32,10 @@ export default function MyLists(props: MyListsProps) {
     }
     navigate('/pokemonedit', { state: locationState });
   }
+
+  const onGroupByChange = useCallback((newGroupBy: GroupBy) => {
+    setGroupBy(newGroupBy);
+  }, []);
 
   /**
    * Wishlist and list for trading
@@ -74,18 +77,14 @@ export default function MyLists(props: MyListsProps) {
     <IconButton
       color='info'
       onClick={editList}
-      sx={{ mr: 2 }}
+      size='small'
     >
       <EditIcon />
     </IconButton>
-    <Button
-      variant='contained'
-      size='small'
-      startIcon={<SortIcon />}
-      onClick={() => setGroupBy(value => value === GroupBy.Expansion ? GroupBy.Rarity : GroupBy.Expansion)}
-    >
-      {groupBy}
-    </Button>
+    <GroupPokemonButton
+      initialValue={groupBy}
+      onGroupByChange={onGroupByChange}
+    />
   </Box>;
 
   return <Card variant='outlined' sx={{
@@ -102,6 +101,8 @@ export default function MyLists(props: MyListsProps) {
         onTabChange={onTabChange}
         tabsHeadingContent={tabsHeadingContent}
         aria-label={tabsLabel}
+        variant="scrollable"
+        scrollButtons="auto"
       />
     </CardContent>
   </Card>
