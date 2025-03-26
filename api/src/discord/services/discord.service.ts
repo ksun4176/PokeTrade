@@ -1,7 +1,7 @@
 import { ForbiddenException, HttpStatus, Inject, Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
-import { Account, User } from '@prisma/client';
+import { Account, DiscordChannel, User } from '@prisma/client';
 import axios, { AxiosError } from 'axios';
-import { AllowedMentionsTypes, Channel, codeBlock, GuildMember, Message, ThreadAutoArchiveDuration } from 'discord.js';
+import { AllowedMentionsTypes, APIGuildMember, APIMessage, APIThreadChannel, codeBlock, ThreadAutoArchiveDuration } from 'discord.js';
 import { IAccountService } from 'src/account/services/account.service';
 import { MyLoggerService } from 'src/mylogger/mylogger.service';
 import { IPokemonService } from 'src/pokemon/services/pokemon.service';
@@ -40,6 +40,26 @@ export class DiscordService implements IDiscordService {
     @Inject(Services.TRADE) private readonly tradeService: ITradeService
   ) { }
 
+  //#region Database
+  /**
+   * Get a list of Discord channels that we can send trade messages in.
+   * @param servers List of Discord servers to search
+   * @returns List of Discord channels
+   */
+  private async getChannelsForTrading(servers: DiscordPartialServer[]) {
+    return await this.prisma.discordChannel.findMany({
+      where: {
+        serverId: { in: servers.map(s => s.id) },
+        channelTypeId: ChannelTypes.TradeMessage
+      },
+      orderBy: {
+        id: 'asc'
+      }
+    });
+  }
+  //#endregion Database
+
+  //#region Server
   /**
    * Get the Discord servers that the bot is in
    * @returns A list of servers
@@ -84,7 +104,9 @@ export class DiscordService implements IDiscordService {
     console.log(`${mutualServers.length } mutual servers found.`);
     return mutualServers;
   }
+  //#endregion Server
 
+  //#region Member
   /**
    * Check whether a user is a member of a Discord server
    * @param serverId ID of Discord server
@@ -93,7 +115,7 @@ export class DiscordService implements IDiscordService {
    */
   private async isMember(serverId: string, user: UserDto) {
     try {
-      const { data: member } = await axios.get<GuildMember>(`${DISCORD_BASE_URL}/guilds/${serverId}/members/${user.discordId}`, {
+      const { data: member } = await axios.get<APIGuildMember>(`${DISCORD_BASE_URL}/guilds/${serverId}/members/${user.discordId}`, {
         headers: {
           Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
         },
@@ -107,31 +129,69 @@ export class DiscordService implements IDiscordService {
       throw error;
     }
   }
+  //#endregion Member
 
+  //#region Thread
   /**
-   * Get a list of Discord channels that we can send trade messages in.
-   * @param servers List of Discord servers to search
-   * @returns List of Discord channels
+   * Find a private thread between users or if one isn't found, create one.
+   * @param channelId ID of Discord channel
+   * @param messageId ID of Discord message
+   * @param threadName Name of thread
+   * @returns Thread channel
    */
-  private async getChannelsForTrading(servers: DiscordPartialServer[]) {
-    return await this.prisma.discordChannel.findMany({
-      where: {
-        serverId: { in: servers.map(s => s.id) },
-        channelTypeId: ChannelTypes.TradeMessage
+  private async findOrCreateThread(author: User, user: UserDto, channel: DiscordChannel) {
+    type Threads = {
+      threads: APIThreadChannel[];
+    }
+    // go through active threads
+    let { data: { threads: activeThreads } } = await axios.get<Threads>(`${DISCORD_BASE_URL}/guilds/${channel.serverId}/threads/active`, {
+      headers: {
+        Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
       },
-      orderBy: {
-        id: 'asc'
-      }
     });
+    activeThreads = activeThreads.filter(t => 
+      t.parent_id === channel.channelId &&
+        t.name.includes(`[${author.discordId}]`) &&
+        t.name.includes(`[${user.discordId}]`)
+    );
+    if (activeThreads.length > 0) {
+      return activeThreads[0];
+    }
+    // go through private threads
+    let { data: { threads: archivedThreads } } = await axios.get<Threads>(`${DISCORD_BASE_URL}/channels/${channel.channelId}/threads/archived/private`, {
+      headers: {
+        Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
+      },
+    });
+    archivedThreads = archivedThreads.filter(t => 
+      t.name.includes(`[${author.discordId}]`) &&
+      t.name.includes(`[${user.discordId}]`)
+    );
+    if (archivedThreads.length > 0) {
+      return archivedThreads[0];
+    }
+    // create thread if needed
+    const threadName = `[${author.discordId}],[${user.discordId}]`;
+    const { data: thread } = await axios.post<APIThreadChannel>(`${DISCORD_BASE_URL}/channels/${channel.channelId}/threads`, {
+      name: threadName,
+      auto_archive_duration: ThreadAutoArchiveDuration.OneDay
+    }, {
+      headers: {
+        Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
+      },
+    });
+    return thread;
   }
+  //#endregion Thread
 
+  //#region Message
   /**
    * Have the bot send a message in a Discord channel
    * @param channelId ID of Discord channel
    * @param content message to send
    */
   private async message(channelId: string, content: string) {
-    const { data: message } = await axios.post<Message>(`${DISCORD_BASE_URL}/channels/${channelId}/messages`, {
+    const { data: message } = await axios.post<APIMessage>(`${DISCORD_BASE_URL}/channels/${channelId}/messages`, {
       content: content,
       allowed_mentions: {
         parse: [AllowedMentionsTypes.User]
@@ -145,34 +205,13 @@ export class DiscordService implements IDiscordService {
   }
 
   /**
-   * Creates a new thread from an existing message.
-   * @param channelId ID of Discord channel
-   * @param messageId ID of Discord message
-   * @param threadName Name of thread
-   * @returns Thread channel
-   */
-  private async createThread(channelId: string, messageId: string, threadName: string) {
-    const { data: thread } = await axios.post<Channel>(`${DISCORD_BASE_URL}/channels/${channelId}/messages/${messageId}/threads`, {
-      name: threadName,
-      auto_archive_duration: ThreadAutoArchiveDuration.ThreeDays
-    }, {
-      headers: {
-        Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
-      },
-    });
-    return thread;
-  }
-
-  /**
-   * 
+   * Send a message about a Pokemon to a thread channel
    * @param threadChannel Channel to send message in
    * @param pokemon Pokemon we're messaging about
-   * @param author Author
-   * @param authorAccount 
-   * @param user 
-   * @param userAccount 
+   * @param author Author and the linked accounts
+   * @param user User and the linked accounts
    */
-  private async sendPokemonMessage(threadChannel: Channel, pokemon: Pokemon, author: UserWithAccount, user: UserWithAccount) {
+  async sendPokemonMessage(threadChannel: APIThreadChannel, pokemon: Pokemon, author: UserWithAccount, user: UserWithAccount) {
     const pokemonName = getPokemonShortName(pokemon);
     let content = `Hi <@${user.discordId}>!\n` +
       `<@${author.discordId}> is looking to trade for your ${pokemonName}.\n`;
@@ -229,6 +268,7 @@ export class DiscordService implements IDiscordService {
     }
     await this.message(threadChannel.id, content);
   }
+  //#endregion Message
 
   async sendTradeMessage(pokemonId: number, author: User, user: UserDto) {
     const servers = await this.getMutualServers(author);
@@ -250,8 +290,7 @@ export class DiscordService implements IDiscordService {
     }
 
     const pokemon = await this.pokemonService.getPokemon(pokemonId);
-    const pokemonName = getPokemonShortName(pokemon);
-    const messageContent = `${author.username} requested ${pokemonName} from ${user.username}`;
+    const messageContent = `${author.username} requested ${getPokemonShortName(pokemon)} from ${user.username}`;
     
     let numServerIsMember = 0;
     for (const channel of channels) {
@@ -259,11 +298,7 @@ export class DiscordService implements IDiscordService {
       if (isMember) {
         numServerIsMember++;
         try {
-          const message = await this.message(channel.channelId, messageContent);
-
-          const threadName = `${pokemonName} | ${author.username}, ${user.username}`;
-          const threadChannel = await this.createThread(channel.channelId, message.id, threadName.slice(0,100));
-
+          const threadChannel = await this.findOrCreateThread(author, user, channel);
           await this.sendPokemonMessage(
             threadChannel,
             pokemon,
@@ -277,6 +312,7 @@ export class DiscordService implements IDiscordService {
             }
           );
 
+          await this.message(channel.channelId, messageContent);
           return 'Message sent. Check your Discord.';
         }
         catch (error) {
