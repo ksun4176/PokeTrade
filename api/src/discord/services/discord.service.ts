@@ -137,43 +137,58 @@ export class DiscordService implements IDiscordService {
    * @param channelId ID of Discord channel
    * @param messageId ID of Discord message
    * @param threadName Name of thread
+   * @param pokemon Pokemon we're trying to create a thread for
    * @returns Thread channel
    */
-  private async findOrCreateThread(author: User, user: UserDto, channel: DiscordChannel) {
+  private async findOrCreateThread(author: User, user: UserDto, channel: DiscordChannel, pokemon: Pokemon) {
     type Threads = {
       threads: APIThreadChannel[];
     }
+    let newThreadName = `|[${author.discordId}],[${user.discordId}]`;
+    newThreadName = getPokemonShortName(pokemon).slice(0,100-newThreadName.length) + newThreadName;
     // go through active threads
-    let { data: { threads: activeThreads } } = await axios.get<Threads>(`${DISCORD_BASE_URL}/guilds/${channel.serverId}/threads/active`, {
+    let { data: { threads: threadsFound } } = await axios.get<Threads>(`${DISCORD_BASE_URL}/guilds/${channel.serverId}/threads/active`, {
       headers: {
         Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
       },
     });
-    activeThreads = activeThreads.filter(t => 
+    threadsFound = threadsFound.filter(t => 
       t.parent_id === channel.channelId &&
         t.name.includes(`[${author.discordId}]`) &&
         t.name.includes(`[${user.discordId}]`)
     );
-    if (activeThreads.length > 0) {
-      return activeThreads[0];
+    if (threadsFound.length === 0) {
+      // go through private threads
+      const { data: { threads: archivedThreads } } = await axios.get<Threads>(`${DISCORD_BASE_URL}/channels/${channel.channelId}/threads/archived/private`, {
+        headers: {
+          Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
+        },
+      });
+      threadsFound = archivedThreads.filter(t => 
+        t.name.includes(`[${author.discordId}]`) &&
+        t.name.includes(`[${user.discordId}]`)
+      );
     }
-    // go through private threads
-    let { data: { threads: archivedThreads } } = await axios.get<Threads>(`${DISCORD_BASE_URL}/channels/${channel.channelId}/threads/archived/private`, {
-      headers: {
-        Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
-      },
-    });
-    archivedThreads = archivedThreads.filter(t => 
-      t.name.includes(`[${author.discordId}]`) &&
-      t.name.includes(`[${user.discordId}]`)
-    );
-    if (archivedThreads.length > 0) {
-      return archivedThreads[0];
+    if (threadsFound.length > 0) {
+      let threadFound = threadsFound[0];
+      try {
+        // try renaming but it's OK if it fails
+        const { data } = await axios.patch<APIThreadChannel>(`${DISCORD_BASE_URL}/channels/${threadFound.id}`, {
+          name: newThreadName,
+        }, {
+          headers: {
+            Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
+          },
+        });
+        threadFound = data;
+      }
+      catch (error) { }
+      return threadFound;
     }
+
     // create thread if needed
-    const threadName = `[${author.discordId}],[${user.discordId}]`;
     const { data: thread } = await axios.post<APIThreadChannel>(`${DISCORD_BASE_URL}/channels/${channel.channelId}/threads`, {
-      name: threadName,
+      name: newThreadName,
       auto_archive_duration: ThreadAutoArchiveDuration.OneDay
     }, {
       headers: {
@@ -298,7 +313,7 @@ export class DiscordService implements IDiscordService {
       if (isMember) {
         numServerIsMember++;
         try {
-          const threadChannel = await this.findOrCreateThread(author, user, channel);
+          const threadChannel = await this.findOrCreateThread(author, user, channel, pokemon);
           await this.sendPokemonMessage(
             threadChannel,
             pokemon,
