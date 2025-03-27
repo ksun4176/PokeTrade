@@ -34,7 +34,11 @@ export class PokemonService implements IPokemonService {
 
   async getPokemons() {
     const pokemons = await this.prisma.pokemonCardDex.findMany({ 
-      include: pokemonInclude
+      include: pokemonInclude,
+      orderBy: [
+        { expansionId: 'asc' },
+        { dexId: 'asc' }
+      ]
     });
     console.log(`${pokemons.length} pokemons found.`)
     return pokemons;
