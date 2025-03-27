@@ -189,7 +189,7 @@ export class DiscordService implements IDiscordService {
     // create thread if needed
     const { data: thread } = await axios.post<APIThreadChannel>(`${DISCORD_BASE_URL}/channels/${channel.channelId}/threads`, {
       name: newThreadName,
-      auto_archive_duration: ThreadAutoArchiveDuration.OneDay
+      auto_archive_duration: ThreadAutoArchiveDuration.ThreeDays
     }, {
       headers: {
         Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
