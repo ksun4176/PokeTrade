@@ -5,5 +5,6 @@ export enum TradeTypes {
 
 export enum AccountStatus {
   Available = 1,
-  Unavailable = 2
+  Unavailable = 2,
+  Deactivated = 3,
 }

@@ -41,6 +41,13 @@ export interface ITradeService {
    * @returns trades matching the Pokemon
    */
   getPokemonTradeMatchesForAccount(pokemon: Pokemon, account: Account): Promise<TradeWithPokemon[]>;
+  /**
+   * Get the last trade that a user added
+   * @param accountId Account ID
+   * @param tradeType If we want to only look at a particular trade type
+   * @returns The trade if any
+   */
+  getAccountLastTrade(accountId: number, tradeType?: TradeTypes): Promise<PokemonTrade | null>;
 }
 
 @Injectable()
@@ -182,5 +189,21 @@ export class TradeService implements ITradeService {
     });
 
     return accountTrades;
+  }
+
+  async getAccountLastTrade(accountId: number, tradeType?: TradeTypes): Promise<PokemonTrade | null> {
+    const trade = await this.prisma.pokemonTrade.findFirst({ 
+      where: {
+        accountId: accountId,
+        tradeTypeId: tradeType
+      },
+      orderBy: {
+        updated: 'desc'
+      }
+    });
+    if (trade) {
+      console.log(`1 trade found.`)
+    }
+    return trade;
   }
 }

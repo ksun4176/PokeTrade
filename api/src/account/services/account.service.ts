@@ -13,9 +13,10 @@ export interface IAccountService {
   /**
    * Update the account status
    * @param account Account to update
+   * @param deactivate Whether to deactivate the account
    * @returns Updated account
    */
-  updateAccountStatus(account: Account): Promise<Account>;
+  updateAccountStatus(account: Account, deactivate?: boolean): Promise<Account>;
   /**
    * Update the account
    * @param account Account to update
@@ -48,8 +49,9 @@ export class AccountService implements IAccountService {
     return accounts;
   }
 
-  async updateAccountStatus(account: Account) {
-    const newStatus = account.status === AccountStatus.Available ? AccountStatus.Unavailable : AccountStatus.Available;
+  async updateAccountStatus(account: Account, deactivate?: boolean) {
+    const newStatus = deactivate ? AccountStatus.Deactivated 
+      : account.status === AccountStatus.Available ? AccountStatus.Unavailable : AccountStatus.Available;
     const newAccount = await this.prisma.account.update({
       where: {
         id: account.id

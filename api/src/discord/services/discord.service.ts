@@ -230,7 +230,12 @@ export class DiscordService implements IDiscordService {
     const pokemonName = getPokemonShortName(pokemon);
     let content = `Hi <@${user.discordId}>!\n` +
       `<@${author.discordId}> is looking to trade for your ${pokemonName}.\n`;
-
+    const authorAccount = author.accounts[0];
+    content += `${authorAccount.inGameName}[${authorAccount.friendCode}]\n`;
+    if (user.accounts.length > 0) {
+      const userAccount = user.accounts[0];
+      content += `${userAccount.inGameName}[${userAccount.friendCode}]`
+    }
     const authorOfferedTrades = author.accounts.length === 0 ? [] :
       await this.tradeService.getPokemonTradeMatchesForAccount(pokemon, author.accounts[0]);
     if (authorOfferedTrades.length > 0) {
@@ -338,6 +343,14 @@ export class DiscordService implements IDiscordService {
             this.logger.error(error, DiscordService.name);
           }
         }
+      }
+    }
+    if (numServerIsMember === 0) {
+      const lastTrade = await this.tradeService.getAccountLastTrade(userAccounts[0].id);
+      let aMonthAgo = new Date();
+      aMonthAgo.setMonth(aMonthAgo.getMonth()-1);
+      if (lastTrade!.updated < aMonthAgo) {
+        this.accountService.updateAccountStatus(userAccounts[0], true);
       }
     }
     const errorMessage = numServerIsMember > 0 ? 'Bot failed to send message.' : 'No mutual Discord servers found.';
