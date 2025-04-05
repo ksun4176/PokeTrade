@@ -231,10 +231,10 @@ export class DiscordService implements IDiscordService {
     let content = `Hi <@${user.discordId}>!\n` +
       `<@${author.discordId}> is looking to trade for your ${pokemonName}.\n`;
     const authorAccount = author.accounts[0];
-    content += `${authorAccount.inGameName}[${authorAccount.friendCode}]\n`;
+    content += `${authorAccount.inGameName} [${authorAccount.friendCode}]\n`;
     if (user.accounts.length > 0) {
       const userAccount = user.accounts[0];
-      content += `${userAccount.inGameName}[${userAccount.friendCode}]`
+      content += `${userAccount.inGameName} [${userAccount.friendCode}]\n`;
     }
     const authorOfferedTrades = author.accounts.length === 0 ? [] :
       await this.tradeService.getPokemonTradeMatchesForAccount(pokemon, author.accounts[0]);
