@@ -66,7 +66,7 @@ export function MyAppBar() {
   >
     <StyledToolbar variant="dense" disableGutters>
       <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-        <Typography variant="h6" component="div" mr={2} color='textPrimary'>
+        <Typography variant="h6" component="div" mr={1} color='textPrimary'>
           PokéTrade
         </Typography>
         {
@@ -84,10 +84,10 @@ export function MyAppBar() {
       <Box sx={{ display: 'flex', alignItems: 'center', px: 0 }}>
         <a href='https://ko-fi.com/O4O71FBM0I' target='_blank'>
           <img
-            height='36px'
+            height='32px'
             style={{
               border: '0px',
-              height: '36px',
+              height: '32px',
               marginTop: '4px',
             }}
             src='https://storage.ko-fi.com/cdn/kofi5.png?v=6'
