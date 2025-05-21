@@ -81,7 +81,18 @@ export function MyAppBar() {
           </Button>)
         }
       </Box>
-      <Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', px: 0 }}>
+        <a href='https://ko-fi.com/O4O71FBM0I' target='_blank'>
+          <img
+            height='36px'
+            style={{
+              border: '0px',
+              height: '36px',
+              marginTop: '4px',
+            }}
+            src='https://storage.ko-fi.com/cdn/kofi5.png?v=6'
+            alt='Buy Me a Coffee at ko-fi.com' />
+        </a>
         <JoinDiscordButton isIconButton />
         <IconButton
           size="large"
